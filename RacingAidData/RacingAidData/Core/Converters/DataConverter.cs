@@ -1,6 +1,6 @@
-﻿using RacingAidData.Models;
+﻿using RacingAidData.Core.Models;
 
-namespace RacingAidData.Converters;
+namespace RacingAidData.Core.Converters;
 
 /// <summary>
 /// Abstract class for converting data into models

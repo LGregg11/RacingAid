@@ -1,4 +1,4 @@
-﻿namespace RacingAidData.Models;
+﻿namespace RacingAidData.Core.Models;
 
 public class DriverModel
 {
