@@ -1,4 +1,4 @@
-﻿namespace RacingAidData.Core.Models;
+﻿namespace RacingAid.Core.Models;
 
 /// <summary>
 /// A Standard telemetry data model

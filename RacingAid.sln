@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RacingAidData", "RacingAidData\RacingAidData.csproj", "{4B52D4C7-C808-4E11-AA36-C69F066C6A4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RacingAid", "RacingAid\RacingAid.csproj", "{4B52D4C7-C808-4E11-AA36-C69F066C6A4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
