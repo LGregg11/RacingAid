@@ -1,10 +1,10 @@
-﻿using RacingAid.Core.Events;
+﻿namespace RacingAid.Core.Subscribers;
 
-namespace RacingAid.Core.Subscribers;
-
-public interface ISubscribeData
+public interface ISubscribeData<out T>
 {
-    event EventHandler<DataReceivedEventArgs>? DataReceived;
+    event Action DataReceived;
+
+    T LatestData { get; }
     
     bool IsSubscribed { get; }
     

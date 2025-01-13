@@ -1,10 +1,9 @@
 ﻿using System.Net.Sockets;
 using RacingAid.Core.Client;
-using RacingAid.Core.Events;
 
 namespace RacingAid.Core.Subscribers;
 
-public class BroadcastDataSubscriber : ISubscribeData
+public class BroadcastDataSubscriber : ISubscribeData<byte[]>
 {
     private readonly IDataClient dataClient;
     private Thread? listenerThread;
@@ -15,7 +14,9 @@ public class BroadcastDataSubscriber : ISubscribeData
         this.dataClient = dataClient;
     }
 
-    public event EventHandler<DataReceivedEventArgs>? DataReceived;
+    public event Action DataReceived;
+    
+    public byte[] LatestData { get; private set; }
 
     public bool IsSubscribed => listenerThread is { IsAlive: true };
 
@@ -45,7 +46,10 @@ public class BroadcastDataSubscriber : ISubscribeData
             {
                 byte[]? receiveBytes = dataClient?.Receive();
                 if (receiveBytes is { Length: > 0 })
-                    DataReceived?.Invoke(this, new DataReceivedEventArgs(receiveBytes));
+                {
+                    LatestData = receiveBytes;
+                    DataReceived?.Invoke();
+                }
             }
             catch (SocketException)
             {
