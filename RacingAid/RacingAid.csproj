@@ -7,4 +7,8 @@
         <RootNamespace>RacingAid</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="IRSDKSharper" Version="1.1.3" />
+    </ItemGroup>
+
 </Project>
