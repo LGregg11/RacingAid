@@ -14,9 +14,9 @@ public class BroadcastDataSubscriber : ISubscribeData<byte[]>
         this.dataClient = dataClient;
     }
 
-    public event Action DataReceived;
+    public event Action?  DataReceived;
     
-    public byte[] LatestData { get; private set; }
+    public byte[]?  LatestData { get; private set; }
 
     public bool IsSubscribed => listenerThread is { IsAlive: true };
 

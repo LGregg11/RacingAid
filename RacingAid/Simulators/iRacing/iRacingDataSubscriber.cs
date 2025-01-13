@@ -7,9 +7,9 @@ public class iRacingDataSubscriber : ISubscribeData<IRacingSdkData>
 {
     private readonly IRacingSdk iRacingSdk;
     
-    public event Action DataReceived;
+    public event Action? DataReceived;
 
-    public IRacingSdkData LatestData { get; private set; }
+    public IRacingSdkData? LatestData { get; private set; }
 
     public bool IsSubscribed => iRacingSdk.IsStarted;
 

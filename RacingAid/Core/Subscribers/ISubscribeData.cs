@@ -2,9 +2,9 @@
 
 public interface ISubscribeData<out T>
 {
-    event Action DataReceived;
+    event Action?  DataReceived;
 
-    T LatestData { get; }
+    T?  LatestData { get; }
     
     bool IsSubscribed { get; }
     
