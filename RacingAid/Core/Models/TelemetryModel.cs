@@ -3,8 +3,10 @@
 /// <summary>
 /// A Standard telemetry data model
 /// </summary>
-public struct TelemetryModel
+public sealed class TelemetryModel : RaceDataModel
 {
+    public override DataType DataType => DataType.Telemetry;
+    
     public float SpeedMetresPerSecond { get; init; }
     
     public float ThrottlePercentage { get; init; }
