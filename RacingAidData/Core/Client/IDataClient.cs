@@ -1,4 +1,4 @@
-﻿namespace RacingAid.Core.Client;
+﻿namespace RacingAidData.Core.Client;
 
 public interface IDataClient : IDisposable
 {

@@ -1,12 +1,10 @@
-﻿namespace RacingAid.Core.Models;
+﻿namespace RacingAidData.Core.Models;
 
 /// <summary>
 /// A Standard telemetry data model
 /// </summary>
 public sealed class TelemetryModel : RaceDataModel
 {
-    public override DataType DataType => DataType.Telemetry;
-    
     public float SpeedMetresPerSecond { get; init; }
     
     public float ThrottlePercentage { get; init; }
@@ -24,5 +22,5 @@ public sealed class TelemetryModel : RaceDataModel
     /// <summary>
     /// The gear. 0 = Neutral, -1 = Reverse
     /// </summary>
-    public short Gear { get; init; }
+    public int Gear { get; init; }
 }

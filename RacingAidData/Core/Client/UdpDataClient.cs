@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 
-namespace RacingAid.Core.Client;
+namespace RacingAidData.Core.Client;
 
 public class UdpDataClient(int port, IPAddress ipAddress) : IDataClient
 {

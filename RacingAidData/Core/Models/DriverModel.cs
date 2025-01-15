@@ -1,4 +1,4 @@
-﻿namespace RacingAid.Core.Models;
+﻿namespace RacingAidData.Core.Models;
 
 public struct DriverModel
 {

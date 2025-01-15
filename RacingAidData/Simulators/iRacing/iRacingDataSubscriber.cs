@@ -1,15 +1,15 @@
 ﻿using IRSDKSharper;
-using RacingAid.Core.Subscribers;
+using RacingAidData.Core.Subscribers;
 
-namespace RacingAid.Simulators.iRacing;
+namespace RacingAidData.Simulators.iRacing;
 
-public class iRacingDataSubscriber : ISubscribeData<IRacingSdkData>
+public class iRacingDataSubscriber : ISubscribeData
 {
     private readonly IRacingSdk iRacingSdk;
     
     public event Action? DataReceived;
 
-    public IRacingSdkData? LatestData { get; private set; }
+    public object LatestData { get; private set; }
 
     public bool IsSubscribed => iRacingSdk.IsStarted;
 
