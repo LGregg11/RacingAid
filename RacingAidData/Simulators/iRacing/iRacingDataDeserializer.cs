@@ -16,16 +16,19 @@ public class iRacingDataDeserializer : IDeserializeData
             return false;
 
         // Driver data
-        IRacingSdkSessionInfo.DriverInfoModel driverInfoModel = iRacingData.SessionInfo.DriverInfo;
-        
-        var drivers = CreateDrivers(driverInfoModel);
-        DriversModel driversModel = new DriversModel
+        if (iRacingData.SessionInfo?.DriverInfo != null)
         {
-            Drivers = drivers,
-            LocalDriver = drivers[driverInfoModel.DriverCarIdx]
-        };
+            IRacingSdkSessionInfo.DriverInfoModel driverInfoModel = iRacingData.SessionInfo.DriverInfo;
         
-        models.Add(driversModel);
+            var drivers = CreateDrivers(driverInfoModel);
+            DriversModel driversModel = new DriversModel
+            {
+                Drivers = drivers,
+                LocalDriver = drivers[driverInfoModel.DriverCarIdx]
+            };
+        
+            models.Add(driversModel);
+        }
         
         // Telemetry data
         // Try get from TelemetryDataProperties

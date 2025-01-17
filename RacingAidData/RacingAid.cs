@@ -8,10 +8,10 @@ namespace RacingAidData;
 
 public class RacingAid
 {
-    private IDeserializeData DataDeserializer { get; set; }
+    private IDeserializeData? DataDeserializer { get; set; }
 
-    private ISubscribeData dataSubscriber;
-    private ISubscribeData DataSubscriber
+    private ISubscribeData? dataSubscriber;
+    private ISubscribeData? DataSubscriber
     {
         get => dataSubscriber;
         set
@@ -19,12 +19,13 @@ public class RacingAid
             if (dataSubscriber == value)
                 return;
 
-            bool startSubscriber = dataSubscriber is { IsSubscribed: true };
-            Stop();
+            var subscriberRunning = dataSubscriber is { IsSubscribed: true };
+            if (subscriberRunning)
+                Stop();
             
             dataSubscriber = value;
 
-            if (startSubscriber)
+            if (subscriberRunning)
                 Start();
         }
     }
@@ -57,19 +58,25 @@ public class RacingAid
 
     public void Start()
     {
+        if (DataSubscriber == null)
+            return;
+        
         DataSubscriber.DataReceived += OnDataReceived;
         DataSubscriber?.Start();
     }
 
     public void Stop()
     {
+        if (DataSubscriber == null)
+            return;
+        
         DataSubscriber.Stop();
         DataSubscriber.DataReceived -= OnDataReceived;
     }
 
     private void OnDataReceived()
     {
-        if (DataSubscriber.LatestData is null)
+        if (DataSubscriber?.LatestData == null || DataDeserializer == null)
             return;
         
         if (!DataDeserializer.TryDeserializeData(DataSubscriber.LatestData, out var models))
