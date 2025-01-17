@@ -1,6 +1,5 @@
 ﻿using System.Windows.Data;
 using System.Windows.Input;
-using RacingAidData;
 using RacingAidData.Simulators;
 using RacingAidWpf.Model;
 
@@ -8,8 +7,6 @@ namespace RacingAidWpf.ViewModel;
 
 public sealed class MainWindowViewModel : NotifyPropertyChanged
 {
-    private readonly RacingAid racingAid = new();
-
     public ICommand StartRacingAidCommand { get; }
 
     public CollectionView SimulatorEntries { get; private set; }
@@ -40,12 +37,12 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         SimulatorEntries = new CollectionView(simulatorEntries);
         selectedSimulatorEntry = simulatorEntries.First();
         
-        StartRacingAidCommand = new StartRacingAidCommand(racingAid);
+        StartRacingAidCommand = new StartRacingAidCommand();
     }
 
     public void Start()
     {
-        racingAid.SetupSimulator(SelectedSimulatorEntry.SimulatorType);
-        racingAid.Start();
+        RacingAidSingleton.Instance.SetupSimulator(SelectedSimulatorEntry.SimulatorType);
+        RacingAidSingleton.Instance.Start();
     }
 }

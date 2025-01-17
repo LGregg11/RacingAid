@@ -1,10 +1,9 @@
 ﻿using System.Windows.Input;
-using RacingAidData;
 using RacingAidWpf.View;
 
 namespace RacingAidWpf.ViewModel;
 
-public class StartRacingAidCommand(RacingAid racingAid) : ICommand
+public class StartRacingAidCommand() : ICommand
 {
     public event EventHandler? CanExecuteChanged;
     
@@ -15,7 +14,7 @@ public class StartRacingAidCommand(RacingAid racingAid) : ICommand
 
     public void Execute(object? parameter)
     {
-        racingAid.Start();
+        RacingAidSingleton.Instance.Start();
         
         TelemetryWindow telemetryWindow = new TelemetryWindow();
         telemetryWindow.Show();
