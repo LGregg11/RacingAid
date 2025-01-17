@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Input;
 using RacingAidData;
 using RacingAidData.Simulators;
 
@@ -10,7 +11,7 @@ namespace RacingAidWpf;
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
-public partial class MainWindow : INotifyPropertyChanged
+public sealed partial class MainWindow : INotifyPropertyChanged
 {
     private readonly RacingAid racingAid = new();
     
@@ -82,9 +83,15 @@ public partial class MainWindow : INotifyPropertyChanged
         }
     }
 
+    private void TelemetryGrid_OnMouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.LeftButton == MouseButtonState.Pressed && Keyboard.IsKeyDown(Key.LeftCtrl))
+            DragMove();
+    }
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }

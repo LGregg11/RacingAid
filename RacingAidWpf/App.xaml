@@ -6,12 +6,14 @@
     <Application.Resources>
         <ResourceDictionary>
             <Style x:Key="DefaultTextBlock" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="25"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="FontSize" Value="15"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="HorizontalAlignment" Value="Center"/>
             </Style>
             <Style x:Key="DefaultTextBox" TargetType="TextBox">
-                <Setter Property="FontSize" Value="25"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="FontSize" Value="15"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="HorizontalAlignment" Value="Center"/>
             </Style>
