@@ -18,9 +18,19 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Model\" />
-      <Folder Include="ViewModel\" />
-      <Folder Include="View\" />
+      <Page Update="View\MainWindow.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ApplicationDefinition Include="View\App.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </ApplicationDefinition>
     </ItemGroup>
 
 </Project>

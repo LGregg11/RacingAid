@@ -6,12 +6,9 @@ using System.Windows.Input;
 using RacingAidData;
 using RacingAidData.Simulators;
 
-namespace RacingAidWpf;
+namespace RacingAidWpf.View;
 
-/// <summary>
-/// Interaction logic for MainWindow.xaml
-/// </summary>
-public sealed partial class MainWindow : INotifyPropertyChanged
+public partial class TelemetryWindow : INotifyPropertyChanged
 {
     private readonly RacingAid racingAid = new();
     
@@ -25,7 +22,7 @@ public sealed partial class MainWindow : INotifyPropertyChanged
     public string SteeringAngle { get; set; } = "0 deg";
     public string DriverName { get; set; } = "Test Name";
     
-    public MainWindow()
+    public TelemetryWindow()
     {
         InitializeComponent();
         DataContext = this;
@@ -36,14 +33,6 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         keepUpdating = true;
         updateThread = new Thread(UpdateLoop);
         updateThread.Start();
-    }
-
-    ~MainWindow()
-    {
-        racingAid.Stop();
-        
-        keepUpdating = false;
-        updateThread.Join();
     }
 
     private void UpdateLoop()
