@@ -2,6 +2,7 @@
 
 public enum Simulator
 {
-    F1,
-    IRacing
+    Unknown,
+    iRacing,
+    F1
 }

@@ -40,7 +40,7 @@ public class RacingAid
 
     public RacingAid()
     {
-        SetupSimulator(Simulator.IRacing);
+        SetupSimulator(Simulator.iRacing);
     }
 
     public void SetupSimulator(Simulator simulator)
@@ -49,7 +49,7 @@ public class RacingAid
         {
             case Simulator.F1:
                 break;
-            case Simulator.IRacing:
+            case Simulator.iRacing:
                 DataDeserializer = new iRacingDataDeserializer();
                 DataSubscriber = new iRacingDataSubscriber();
                 break;

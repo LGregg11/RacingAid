@@ -30,7 +30,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
     {
         var simulatorEntries = new List<SimulatorEntryModel>
         {
-            new(Enum.GetName(Simulator.IRacing), Simulator.IRacing),
+            new(Enum.GetName(Simulator.iRacing), Simulator.iRacing),
             new(Enum.GetName(Simulator.F1), Simulator.F1)
         };
 
