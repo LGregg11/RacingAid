@@ -18,5 +18,8 @@ public class StartRacingAidCommand() : ICommand
         
         TelemetryWindow telemetryWindow = new TelemetryWindow();
         telemetryWindow.Show();
+        
+        DriversWindow driversWindow = new DriversWindow();
+        driversWindow.Show();
     }
 }
