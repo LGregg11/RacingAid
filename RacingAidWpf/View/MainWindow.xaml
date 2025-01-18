@@ -11,11 +11,15 @@
         Title="Racing Aid">
     <Grid>
         <StackPanel HorizontalAlignment="Center" Margin="5" Orientation="Horizontal">
-            <ComboBox Height="25" Width="150" ItemsSource="{Binding SimulatorEntries}"
-                      DisplayMemberPath="SimulatorName"
-                      SelectedValuePath="SimulatorName"
-                      SelectedValue="{Binding SelectedSimulatorEntry}"/>
-            <Button x:Name="StartButton" Height="25" Width="50" Margin="10,0,0,0" Content="Start" Command="{Binding StartRacingAidCommand}"/>
+            <ComboBox Height="25" Width="150"
+                      ItemsSource="{Binding SimulatorEntryCollection}"
+                      SelectedValue="{Binding SelectedSimulatorEntry}"
+                      DisplayMemberPath="SimulatorName"/>
+            <Button x:Name="StartButton"
+                    Height="25" Width="50"
+                    Margin="10,0,0,0"
+                    Content="Start"
+                    Command="{Binding StartRacingAidCommand}"/>
         </StackPanel>
     </Grid>
 </Window>

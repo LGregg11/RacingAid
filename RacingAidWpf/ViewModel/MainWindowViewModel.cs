@@ -1,4 +1,5 @@
-﻿using System.Windows.Data;
+﻿using System.Collections.ObjectModel;
+using System.Windows.Data;
 using System.Windows.Input;
 using RacingAidData.Simulators;
 using RacingAidWpf.Model;
@@ -9,9 +10,9 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
 {
     public ICommand StartRacingAidCommand { get; }
 
-    public CollectionView SimulatorEntries { get; private set; }
+    public ObservableCollection<SimulatorEntryModel> SimulatorEntryCollection { get; private set; }
     
-    private SimulatorEntryModel selectedSimulatorEntry;
+    private SimulatorEntryModel selectedSimulatorEntry = new("N/A", Simulator.Unknown);
 
     public SimulatorEntryModel SelectedSimulatorEntry
     {
@@ -34,8 +35,8 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
             new(Enum.GetName(Simulator.F1), Simulator.F1)
         };
 
-        SimulatorEntries = new CollectionView(simulatorEntries);
-        selectedSimulatorEntry = simulatorEntries.First();
+        SimulatorEntryCollection = new ObservableCollection<SimulatorEntryModel>(simulatorEntries);
+        SelectedSimulatorEntry = simulatorEntries.First();
         
         StartRacingAidCommand = new StartRacingAidCommand();
     }
