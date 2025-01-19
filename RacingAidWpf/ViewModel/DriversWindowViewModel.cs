@@ -21,34 +21,11 @@ public class DriversWindowViewModel : NotifyPropertyChanged
 
     public DriversWindowViewModel()
     {
-        var testDrivers = new ObservableCollection<DriverModel>
-        {
-            new()
-            {
-                FullName = "Test Driver1",
-                CarModel = "Test Model1",
-                CarNumber = 1,
-                SafetyRating = "1234",
-                SkillRating = "1234"
-            },
-            new()
-            {
-                FullName = "Test Driver2",
-                CarModel = "Test Model2",
-                CarNumber = 2,
-                SafetyRating = "1345",
-                SkillRating = "1345"
-            },
-            new()
-            {
-                FullName = "Test Driver3",
-                CarModel = "Test Model3",
-                CarNumber = 3,
-                SafetyRating = "1456",
-                SkillRating = "1456"
-            }
-        };
+        RacingAidUpdateDispatch.Update += UpdateProperties;
+    }
 
-        Drivers = testDrivers;
+    private void UpdateProperties()
+    {
+        Drivers = new ObservableCollection<DriverModel>(RacingAidSingleton.Instance.Drivers.Drivers);
     }
 }
