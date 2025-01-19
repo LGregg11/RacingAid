@@ -8,6 +8,9 @@ namespace RacingAidData;
 
 public class RacingAid
 {
+    private bool modelsHaveUpdated;
+    private bool isRunning;
+    
     private IDeserializeData? DataDeserializer { get; set; }
 
     private ISubscribeData? dataSubscriber;
@@ -29,13 +32,41 @@ public class RacingAid
                 Start();
         }
     }
+
+    public event Action ModelsUpdated;
     
     #region Model Properties
 
-    public DriversModel Drivers { get; private set; } = new();
+    private DriversModel drivers = new();
+
+    public DriversModel Drivers
+    {
+        get => drivers;
+        private set
+        {
+            if (drivers == value)
+                return;
+            
+            drivers = value;
+            modelsHaveUpdated = true;
+        }
+    }
     
-    public TelemetryModel Telemetry { get; private set; } = new();
-        
+    private TelemetryModel telemetry = new();
+
+    public TelemetryModel Telemetry
+    {
+        get => telemetry;
+        private set
+        {
+            if (telemetry == value)
+                return;
+            
+            telemetry = value;
+            modelsHaveUpdated = true;
+        }
+    }
+    
     #endregion
 
     public RacingAid()
@@ -58,20 +89,22 @@ public class RacingAid
 
     public void Start()
     {
-        if (DataSubscriber == null)
+        if (isRunning || DataSubscriber == null)
             return;
         
         DataSubscriber.DataReceived += OnDataReceived;
         DataSubscriber?.Start();
+        isRunning = true;
     }
 
     public void Stop()
     {
-        if (DataSubscriber == null)
+        if (!isRunning || DataSubscriber == null)
             return;
         
         DataSubscriber.Stop();
         DataSubscriber.DataReceived -= OnDataReceived;
+        isRunning = false;
     }
 
     private void OnDataReceived()
@@ -83,10 +116,15 @@ public class RacingAid
             return;
 
         foreach (RaceDataModel model in models)
-            UpdateProperty(model);
+            UpdateModel(model);
+
+        if (modelsHaveUpdated)
+            ModelsUpdated?.Invoke();
+        
+        modelsHaveUpdated = false;
     }
 
-    private void UpdateProperty(RaceDataModel model)
+    private void UpdateModel(RaceDataModel model)
     {
         switch (model)
         {
