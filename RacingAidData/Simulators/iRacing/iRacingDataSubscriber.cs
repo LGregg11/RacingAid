@@ -15,10 +15,7 @@ public class iRacingDataSubscriber : ISubscribeData
 
     public iRacingDataSubscriber()
     {
-        iRacingSdk = new IRacingSdk
-        {
-            UpdateInterval = 30
-        };
+        iRacingSdk = new IRacingSdk();
 
         iRacingSdk.OnTelemetryData += OnTelemetryData;
     }
