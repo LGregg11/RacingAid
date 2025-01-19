@@ -107,7 +107,6 @@ public class LiveTimesheetWindowViewModel : NotifyPropertyChanged
     
     #endregion
     
-
     public LiveTimesheetWindowViewModel()
     {
         RacingAidUpdateDispatch.Update += UpdateProperties;
@@ -116,7 +115,6 @@ public class LiveTimesheetWindowViewModel : NotifyPropertyChanged
     private void UpdateProperties()
     {
         UpdateDriversDataGrid();
-        
     }
 
     private void UpdateDriversDataGrid()
