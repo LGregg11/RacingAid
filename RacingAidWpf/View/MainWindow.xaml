@@ -20,7 +20,14 @@
                     Height="25" Width="50"
                     Margin="10,0,0,0"
                     Content="Start"
-                    Command="{Binding StartRacingAidCommand}"/>
+                    Command="{Binding StartCommand}"
+                    IsEnabled="{Binding IsStopped}"/>
+            <Button x:Name="StopButton"
+                    Height="25" Width="50"
+                    Margin="10,0,0,0"
+                    Content="Stop"
+                    Command="{Binding StopCommand}"
+                    IsEnabled="{Binding IsStarted}"/>
         </StackPanel>
     </Grid>
 </Window>

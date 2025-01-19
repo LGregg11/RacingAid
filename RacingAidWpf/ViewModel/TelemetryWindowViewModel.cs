@@ -1,13 +1,9 @@
-﻿using System.Windows;
-using RacingAidWpf.Extensions;
+﻿using RacingAidWpf.Extensions;
 
 namespace RacingAidWpf.ViewModel;
 
 public class TelemetryWindowViewModel : NotifyPropertyChanged
 {
-    private readonly Thread updateThread;
-    private bool keepUpdating;
-
     private string driverName = "N/A";
     public string DriverName
     {
@@ -95,22 +91,9 @@ public class TelemetryWindowViewModel : NotifyPropertyChanged
 
     public TelemetryWindowViewModel()
     {
-        keepUpdating = true;
-        updateThread = new Thread(UpdateLoop);
-        updateThread.Start();
+        RacingAidUpdateDispatch.Update += UpdateProperties;
     }
-
-    private void UpdateLoop()
-    {
-        while (keepUpdating)
-        {
-            if (Application.Current?.Dispatcher is { } dispatcher)
-                dispatcher.Invoke(UpdateProperties);
-            
-            Thread.Sleep(100);
-        }
-    }
-
+    
     private void UpdateProperties()
     {
         var telemetry = RacingAidSingleton.Instance.Telemetry;
