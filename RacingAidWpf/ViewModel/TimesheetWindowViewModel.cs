@@ -1,10 +1,13 @@
 ﻿using System.Collections.ObjectModel;
+using RacingAidWpf.Configuration;
 using RacingAidWpf.Model;
 
 namespace RacingAidWpf.ViewModel;
 
-public class LiveTimesheetWindowViewModel : NotifyPropertyChanged
+public class TimesheetWindowViewModel : NotifyPropertyChanged
 {
+    private readonly TimesheetConfigSection timesheetConfigSection;
+    
     private ObservableCollection<TimesheetGridRow> timesheet = [];
     public ObservableCollection<TimesheetGridRow> Timesheet
     {
@@ -107,9 +110,12 @@ public class LiveTimesheetWindowViewModel : NotifyPropertyChanged
     
     #endregion
     
-    public LiveTimesheetWindowViewModel()
+    public TimesheetWindowViewModel()
     {
         RacingAidUpdateDispatch.Update += UpdateProperties;
+
+        timesheetConfigSection = new TimesheetConfigSection();
+        timesheetConfigSection.ConfigUpdated += OnConfigUpdated;
     }
 
     private void UpdateProperties()
@@ -148,5 +154,15 @@ public class LiveTimesheetWindowViewModel : NotifyPropertyChanged
         }
 
         Timesheet = newTimesheet;
+    }
+
+    private void OnConfigUpdated()
+    {
+        CarNumberColumnVisibility = timesheetConfigSection.DisplayCarNumber;
+        SafetyColumnVisibility = timesheetConfigSection.DisplaySafetyRating;
+        SkillColumnVisibility = timesheetConfigSection.DisplaySkillRating;
+        LastLapColumnVisibility = timesheetConfigSection.DisplayLastLap;
+        FastestLapColumnVisibility = timesheetConfigSection.DisplayFastestLap;
+        LeaderColumnVisibility = timesheetConfigSection.DisplayLeader;
     }
 }
