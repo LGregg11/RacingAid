@@ -6,6 +6,7 @@
         xmlns:viewModel="clr-namespace:RacingAidWpf.ViewModel"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModel:MainWindowViewModel}"
+        Closed="MainWindow_OnClosed"
         Width="300"
         Height="100"
         Title="Racing Aid">

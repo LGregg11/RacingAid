@@ -17,8 +17,10 @@ public sealed partial class MainWindow
         DataContext = mainWindowViewModel;
     }
 
-    private void StartButton_OnClick(object sender, RoutedEventArgs e)
+
+    private void MainWindow_OnClosed(object? sender, EventArgs e)
     {
-        mainWindowViewModel.Start();
+        StopButton.Command.Execute(sender);
+        Application.Current.Shutdown();
     }
 }
