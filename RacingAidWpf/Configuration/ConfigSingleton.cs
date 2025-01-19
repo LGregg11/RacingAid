@@ -10,6 +10,4 @@ public static class ConfigSingleton
     
     private static ConfigParser? configParser;
     public static ConfigParser ConfigParser => configParser ??= new ConfigParser(ConfigFilePath);
-    
-    
 }

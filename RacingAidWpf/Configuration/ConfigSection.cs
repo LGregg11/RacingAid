@@ -13,8 +13,5 @@ public abstract class ConfigSection(IConfig config, string section)
         return value;
     }
 
-    protected bool SetValue<T>(string key, T? value)
-    {
-        return config.SetValue(section, key, value);
-    }
+    private void SetValue<T>(string key, T? value) => config.SetValue(section, key, value);
 }
