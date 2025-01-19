@@ -77,6 +77,20 @@ public class LiveTimesheetWindowViewModel : NotifyPropertyChanged
         }
     }
 
+    private bool fastestLapColumnVisibility = true;
+    public bool FastestLapColumnVisibility
+    {
+        get => fastestLapColumnVisibility;
+        private set
+        {
+            if (fastestLapColumnVisibility == value)
+                return;
+            
+            fastestLapColumnVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+
     private bool leaderColumnVisibility = true;
     public bool LeaderColumnVisibility
     {
@@ -121,7 +135,7 @@ public class LiveTimesheetWindowViewModel : NotifyPropertyChanged
         for (var i=0; i < entriesToDisplay; i++)
         {
             var driver = newDrivers[i];
-            
+
             newTimesheet.Add(
                 new TimesheetGridRow(
                     i+1,
@@ -131,7 +145,8 @@ public class LiveTimesheetWindowViewModel : NotifyPropertyChanged
                     driver.SafetyRating,
                     driver.CarModel,
                     driver.CarNumber,
-                    driver.LastLapMs));
+                    driver.LastLapMs,
+                    driver.FastestLapMs));
         }
 
         Timesheet = newTimesheet;

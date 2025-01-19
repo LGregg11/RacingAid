@@ -9,6 +9,7 @@ public class TimesheetGridRow(
     string carModel,
     int carNumber,
     int lastLapTimeMs = 0,
+    int fastestLapTimeMs = 0,
     int deltaToLeaderMs = 0,
     bool inPits = true) : IEquatable<TimesheetGridRow>
 {
@@ -21,6 +22,7 @@ public class TimesheetGridRow(
     public string SkillRating { get; set; } = skillRating;
     public string SafetyRating { get; set; } = safetyRating;
     public int LastLapTimeMs { get; set; } = lastLapTimeMs;
+    public int FastestLapTimeMs { get; set; } = fastestLapTimeMs;
     public int DeltaToLeaderMs { get; set; } = deltaToLeaderMs;
 
     public bool InPits { get; set; } = inPits;

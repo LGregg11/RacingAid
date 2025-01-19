@@ -43,6 +43,11 @@ public class TimesheetEntryModel
     public int LastLapMs { get; init; }
     
     /// <summary>
+    /// Fastest lap time in milliseconds
+    /// </summary>
+    public int FastestLapMs { get; init; }
+    
+    /// <summary>
     /// Laps driven
     /// </summary>
     public int LapsDriven { get; init; }

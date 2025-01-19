@@ -61,6 +61,7 @@ public class iRacingDataDeserializer : IDeserializeData
                 ClassPosition = positionResult.ClassPosition,
                 LapsDriven = (int)positionResult.LapsDriven,
                 LastLapMs = (int)(positionResult.LastTime * 1000),
+                FastestLapMs = (int)(positionResult.FastestTime * 1000),
                 IsLocal = carIdx == driverInfo.DriverCarIdx
             });
         }
