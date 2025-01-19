@@ -4,7 +4,7 @@ using Salaros.Configuration;
 
 namespace RacingAidWpf.Configuration;
 
-public static class ConfigParserSingleton
+public static class ConfigSingleton
 {
     private static readonly string ConfigFilePath = Path.Combine(Application.ResourceAssembly.Location, "config.ini");
     
