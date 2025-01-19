@@ -9,7 +9,7 @@ namespace RacingAidWpf.ViewModel;
 public sealed class MainWindowViewModel : NotifyPropertyChanged
 {
     private TelemetryWindow? telemetryWindow;
-    private LiveTimesheetWindow? driversWindow;
+    private TimesheetWindow? driversWindow;
     
     public ICommand StartCommand { get; }
     public ICommand StopCommand { get; }
@@ -73,7 +73,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         telemetryWindow = new TelemetryWindow();
         telemetryWindow.Show();
         
-        driversWindow = new LiveTimesheetWindow();
+        driversWindow = new TimesheetWindow();
         driversWindow.Show();
     }
 
