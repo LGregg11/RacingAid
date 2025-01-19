@@ -36,7 +36,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         
-        <Canvas Grid.RowSpan="6" Grid.ColumnSpan="2" Opacity="0.3" Background="Black"/>
+        <Canvas Grid.RowSpan="6" Grid.ColumnSpan="2" Style="{StaticResource DefaultCanvasStyle}"/>
         
         <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource DefaultTextBlock}" Text="Driver name"/>
         <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource DefaultTextBlock}" Text="{Binding DriverName}"/>

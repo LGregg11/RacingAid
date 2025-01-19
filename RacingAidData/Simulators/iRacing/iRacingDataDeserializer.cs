@@ -15,19 +15,18 @@ public class iRacingDataDeserializer : IDeserializeData
         if (data is not IRacingSdkData iRacingData)
             return false;
 
-        // Driver data
-        if (iRacingData.SessionInfo?.DriverInfo != null)
+        // Timesheet data
+        if (iRacingData.SessionInfo?.DriverInfo is {} driverInfo &&
+            iRacingData.SessionInfo.SessionInfo.Sessions.LastOrDefault() is {} latestSession)
         {
-            IRacingSdkSessionInfo.DriverInfoModel driverInfoModel = iRacingData.SessionInfo.DriverInfo;
-        
-            var drivers = CreateDrivers(driverInfoModel);
-            DriversModel driversModel = new DriversModel
+            var entries = CreateTimesheetEntries(driverInfo, latestSession);
+            TimesheetModel timesheetModel = new TimesheetModel
             {
-                Drivers = drivers,
-                LocalDriver = drivers[driverInfoModel.DriverCarIdx]
+                Entries = entries,
+                LocalEntry = entries.FirstOrDefault(e => e.IsLocal)
             };
         
-            models.Add(driversModel);
+            models.Add(timesheetModel);
         }
         
         // Telemetry data
@@ -37,25 +36,36 @@ public class iRacingDataDeserializer : IDeserializeData
         return true;
     }
 
-    private static List<DriverModel> CreateDrivers(IRacingSdkSessionInfo.DriverInfoModel driverInfoModel)
+    private static List<TimesheetEntryModel> CreateTimesheetEntries(IRacingSdkSessionInfo.DriverInfoModel driverInfo,
+        IRacingSdkSessionInfo.SessionInfoModel.SessionModel latestSession)
     {
-        var drivers = new List<DriverModel>();
-        foreach (var driverData in driverInfoModel.Drivers)
+        var timesheetEntries = new List<TimesheetEntryModel>();
+        
+        // Loop through position results to ensure the position order is correct - can grab necessary driver info
+        foreach (var positionResult in latestSession.ResultsPositions.OrderBy(p => p.Position))
         {
-            if (!int.TryParse(driverData.CarNumber, out var carNumber))
+            var carIdx = positionResult.CarIdx;
+            var driver = driverInfo.Drivers[carIdx];
+            
+            if (!int.TryParse(driver.CarNumber, out var carNumber))
                 carNumber = -1;
             
-            drivers.Add(new DriverModel
+            timesheetEntries.Add(new TimesheetEntryModel
             {
-                FullName = driverData.UserName,
-                CarModel = driverData.CarScreenName,
+                FullName = driver.UserName,
+                CarModel = driver.CarScreenName,
                 CarNumber = carNumber, 
-                SkillRating = driverData.IRating.ToString(),
-                SafetyRating = driverData.LicString
+                SkillRating = driver.IRating.ToString(),
+                SafetyRating = driver.LicString,
+                OverallPosition = positionResult.Position,
+                ClassPosition = positionResult.ClassPosition,
+                LapsDriven = (int)positionResult.LapsDriven,
+                LastLapMs = (int)(positionResult.LastTime * 1000),
+                IsLocal = carIdx == driverInfo.DriverCarIdx
             });
         }
 
-        return drivers;
+        return timesheetEntries;
     }
 
     private static RaceDataModel CreateTelemetryModel(IRacingSdkData iRacingData)

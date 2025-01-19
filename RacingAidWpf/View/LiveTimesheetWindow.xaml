@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:viewModel="clr-namespace:RacingAidWpf.ViewModel"
+        xmlns:converters="clr-namespace:RacingAidWpf.Converters"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModel:LiveTimesheetWindowViewModel}"
         Title="Drivers"
@@ -17,9 +18,12 @@
     <Window.Background>
         <SolidColorBrush Color="Transparent"/>
     </Window.Background>
+    <Window.Resources>
+        <converters:LapTimeConverter x:Key="LapTimeConverter"/>
+    </Window.Resources>
     <Grid x:Name="DriversGrid" MouseDown="DriversGrid_OnMouseDown">
         
-        <Canvas Opacity="0.3" Background="Black"/>
+        <Canvas Style="{StaticResource DefaultCanvasStyle}"/>
         
         <DataGrid ItemsSource="{Binding Timesheet}"
                   Style="{StaticResource DefaultDataGridStyle}"
@@ -34,7 +38,7 @@
                 <DataGridTextColumn Header="No." Binding="{Binding CarNumber}" Width="1*" Visibility="{Binding CarNumberColumnVisibility}"/>
                 <DataGridTextColumn Header="Safety" Binding="{Binding SafetyRating}" Width="1*" Visibility="{Binding SafetyColumnVisibility}"/>
                 <DataGridTextColumn Header="Skill" Binding="{Binding SkillRating}" Width="1*" Visibility="{Binding SkillColumnVisibility}"/>
-                <DataGridTextColumn Header="Last Lap" Binding="{Binding LastLapTimeMs}" Width="2*" Visibility="{Binding LastLapColumnVisibility}"/>
+                <DataGridTextColumn Header="Last Lap" Binding="{Binding LastLapTimeMs, Converter={StaticResource LapTimeConverter}}" Width="2*" Visibility="{Binding LastLapColumnVisibility}"/>
                 <DataGridTextColumn Header="Leader" Binding="{Binding DeltaToLeaderMs}" Width="1*" Visibility="{Binding LeaderColumnVisibility}"/>
             </DataGrid.Columns>
         </DataGrid>

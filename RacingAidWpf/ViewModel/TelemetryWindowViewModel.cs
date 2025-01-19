@@ -104,7 +104,7 @@ public class TelemetryWindowViewModel : NotifyPropertyChanged
         Gear = telemetry.Gear;
         SteeringAngleDegrees = telemetry.SteeringAngleDegrees;
         
-        var fullName = RacingAidSingleton.Instance.Drivers.LocalDriver.FullName;
+        var fullName = RacingAidSingleton.Instance.Timesheet.LocalEntry?.FullName;
         if (!string.IsNullOrEmpty(fullName))
             DriverName = fullName;
     }

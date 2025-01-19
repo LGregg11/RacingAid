@@ -37,17 +37,17 @@ public class RacingAid
     
     #region Model Properties
 
-    private DriversModel drivers = new();
+    private TimesheetModel timesheet = new();
 
-    public DriversModel Drivers
+    public TimesheetModel Timesheet
     {
-        get => drivers;
+        get => timesheet;
         private set
         {
-            if (drivers == value)
+            if (timesheet == value)
                 return;
             
-            drivers = value;
+            timesheet = value;
             modelsHaveUpdated = true;
         }
     }
@@ -128,8 +128,8 @@ public class RacingAid
     {
         switch (model)
         {
-            case DriversModel driversModel:
-                Drivers = driversModel;
+            case TimesheetModel driversModel:
+                Timesheet = driversModel;
                 break;
             case TelemetryModel telemetryModel:
                 Telemetry = telemetryModel;

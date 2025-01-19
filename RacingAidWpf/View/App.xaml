@@ -6,8 +6,10 @@
     <Application.Resources>
         <ResourceDictionary>
             <SolidColorBrush x:Key="DefaultBackgroundColor" Color="Transparent"/>
+            <SolidColorBrush x:Key="DefaultCanvasColor" Color="Black"/>
             <SolidColorBrush x:Key="DefaultTextColor" Color="White"/>
             
+            <sys:Double x:Key="DefaultOpacity">0.5</sys:Double>
             <sys:Double x:Key="DefaultFontSize">15</sys:Double>
             <sys:Double x:Key="DefaultDataGridFontSize">15</sys:Double>
             
@@ -46,19 +48,22 @@
                 <Setter Property="CanUserDeleteRows" Value="False"/>
                 <Setter Property="HeadersVisibility" Value="Column"/>
             </Style>
-            
             <Style x:Key="DefaultDataGridColumnHeaderStyle" TargetType="DataGridColumnHeader">
                 <Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}"/>
                 <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}"/>
                 <Setter Property="FontSize" Value="{StaticResource DefaultDataGridFontSize}"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
             </Style>
-            
             <Style x:Key="DefaultDataGridRowStyle" TargetType="DataGridRow">
                 <Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}"/>
                 <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}"/>
                 <Setter Property="FontSize" Value="{StaticResource DefaultDataGridFontSize}"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            </Style>
+            
+            <Style x:Key="DefaultCanvasStyle" TargetType="Canvas">
+                <Setter Property="Opacity" Value="{StaticResource DefaultOpacity}"/>
+                <Setter Property="Background" Value="{StaticResource DefaultCanvasColor}"/>
             </Style>
         </ResourceDictionary>
     </Application.Resources>

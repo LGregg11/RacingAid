@@ -107,7 +107,7 @@ public class LiveTimesheetWindowViewModel : NotifyPropertyChanged
 
     private void UpdateDriversDataGrid()
     {
-        var newDrivers = RacingAidSingleton.Instance.Drivers.Drivers;
+        var newDrivers = RacingAidSingleton.Instance.Timesheet.Entries;
 
         if (newDrivers.Count == 0)
         {
@@ -130,7 +130,8 @@ public class LiveTimesheetWindowViewModel : NotifyPropertyChanged
                     driver.SkillRating,
                     driver.SafetyRating,
                     driver.CarModel,
-                    driver.CarNumber));
+                    driver.CarNumber,
+                    driver.LastLapMs));
         }
 
         Timesheet = newTimesheet;

@@ -8,8 +8,8 @@ public class TimesheetGridRow(
     string safetyRating,
     string carModel,
     int carNumber,
-    float lastLapTimeMs = 0f,
-    float deltaToLeaderMs = 0f,
+    int lastLapTimeMs = 0,
+    int deltaToLeaderMs = 0,
     bool inPits = true) : IEquatable<TimesheetGridRow>
 {
     public string CarModel { get; } = carModel;
@@ -20,8 +20,8 @@ public class TimesheetGridRow(
     public string FullName { get; set; } = name;
     public string SkillRating { get; set; } = skillRating;
     public string SafetyRating { get; set; } = safetyRating;
-    public float LastLapTimeMs { get; set; } = lastLapTimeMs;
-    public float DeltaToLeaderMs { get; set; } = deltaToLeaderMs;
+    public int LastLapTimeMs { get; set; } = lastLapTimeMs;
+    public int DeltaToLeaderMs { get; set; } = deltaToLeaderMs;
 
     public bool InPits { get; set; } = inPits;
 

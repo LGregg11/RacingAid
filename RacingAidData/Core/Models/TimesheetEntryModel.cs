@@ -1,7 +1,17 @@
 ﻿namespace RacingAidData.Core.Models;
 
-public struct DriverModel
+public class TimesheetEntryModel
 {
+    /// <summary>
+    /// Overall position
+    /// </summary>
+    public int OverallPosition { get; init; }
+    
+    /// <summary>
+    /// Class position
+    /// </summary>
+    public int ClassPosition { get; init; }
+    
     /// <summary>
     /// Driver name
     /// </summary>
@@ -26,4 +36,19 @@ public struct DriverModel
     /// The number the car is racing under
     /// </summary>
     public int CarNumber { get; init; }
+    
+    /// <summary>
+    /// Last lap time in milliseconds
+    /// </summary>
+    public int LastLapMs { get; init; }
+    
+    /// <summary>
+    /// Laps driven
+    /// </summary>
+    public int LapsDriven { get; init; }
+    
+    /// <summary>
+    /// Whether this entry is of the local user
+    /// </summary>
+    public bool IsLocal { get; init; }
 }
