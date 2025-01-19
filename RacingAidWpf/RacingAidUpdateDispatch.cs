@@ -74,6 +74,6 @@ public static class RacingAidUpdateDispatch
     {
         InvokeUpdateAutoResetEvent.Reset();
         modelsUpdated = false;
-        SynchronizationContext?.Send(_ => Update?.Invoke(), null);
+        SynchronizationContext?.Post(_ => Update?.Invoke(), null);
     }
 }

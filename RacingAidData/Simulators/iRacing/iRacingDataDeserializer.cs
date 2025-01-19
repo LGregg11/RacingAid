@@ -51,7 +51,7 @@ public class iRacingDataDeserializer : IDeserializeData
                 CarModel = driverData.CarScreenName,
                 CarNumber = carNumber, 
                 SkillRating = driverData.IRating.ToString(),
-                SafetyRating = driverData.LicString // TODO: might be wrong tbf..
+                SafetyRating = driverData.LicString
             });
         }
 

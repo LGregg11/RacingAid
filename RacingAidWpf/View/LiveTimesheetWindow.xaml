@@ -1,0 +1,42 @@
+﻿<Window x:Class="RacingAidWpf.View.LiveTimesheetWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:viewModel="clr-namespace:RacingAidWpf.ViewModel"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance viewModel:LiveTimesheetWindowViewModel}"
+        Title="Drivers"
+        SizeToContent="WidthAndHeight"
+        MaxWidth="800"
+        MaxHeight="500"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        Topmost="True"
+        AllowsTransparency="True">
+    <Window.Background>
+        <SolidColorBrush Color="Transparent"/>
+    </Window.Background>
+    <Grid x:Name="DriversGrid" MouseDown="DriversGrid_OnMouseDown">
+        
+        <Canvas Opacity="0.3" Background="Black"/>
+        
+        <DataGrid ItemsSource="{Binding Timesheet}"
+                  Style="{StaticResource DefaultDataGridStyle}"
+                  ColumnHeaderStyle="{StaticResource DefaultDataGridColumnHeaderStyle}"
+                  RowStyle="{StaticResource DefaultDataGridRowStyle}"
+                  AutoGenerateColumns="False"
+                  VerticalScrollBarVisibility="Hidden"
+                  HorizontalScrollBarVisibility="Hidden">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Pos." Binding="{Binding PositionOverall}" Width="1*"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="4*"/>
+                <DataGridTextColumn Header="No." Binding="{Binding CarNumber}" Width="1*" Visibility="{Binding CarNumberColumnVisibility}"/>
+                <DataGridTextColumn Header="Safety" Binding="{Binding SafetyRating}" Width="1*" Visibility="{Binding SafetyColumnVisibility}"/>
+                <DataGridTextColumn Header="Skill" Binding="{Binding SkillRating}" Width="1*" Visibility="{Binding SkillColumnVisibility}"/>
+                <DataGridTextColumn Header="Last Lap" Binding="{Binding LastLapTimeMs}" Width="2*" Visibility="{Binding LastLapColumnVisibility}"/>
+                <DataGridTextColumn Header="Leader" Binding="{Binding DeltaToLeaderMs}" Width="1*" Visibility="{Binding LeaderColumnVisibility}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

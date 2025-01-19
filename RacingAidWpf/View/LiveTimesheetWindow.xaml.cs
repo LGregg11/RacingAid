@@ -3,14 +3,14 @@ using RacingAidWpf.ViewModel;
 
 namespace RacingAidWpf.View;
 
-public partial class DriversWindow
+public partial class LiveTimesheetWindow
 {
-    private readonly DriversWindowViewModel driversWindowViewModel = new();
+    private readonly LiveTimesheetWindowViewModel liveTimesheetWindowViewModel = new();
     
-    public DriversWindow()
+    public LiveTimesheetWindow()
     {
         InitializeComponent();
-        DataContext = driversWindowViewModel;
+        DataContext = liveTimesheetWindowViewModel;
     }
 
     private void DriversGrid_OnMouseDown(object sender, MouseButtonEventArgs e)

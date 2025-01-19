@@ -9,7 +9,7 @@ namespace RacingAidWpf.ViewModel;
 public sealed class MainWindowViewModel : NotifyPropertyChanged
 {
     private TelemetryWindow? telemetryWindow;
-    private DriversWindow? driversWindow;
+    private LiveTimesheetWindow? driversWindow;
     
     public ICommand StartCommand { get; }
     public ICommand StopCommand { get; }
@@ -67,13 +67,13 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         RacingAidSingleton.Instance.SetupSimulator(SelectedSimulatorEntry.SimulatorType);
         RacingAidSingleton.Instance.Start();
 
-        RacingAidUpdateDispatch.UpdateRefreshRateMs = 0;
+        RacingAidUpdateDispatch.UpdateRefreshRateMs = 100;
         RacingAidUpdateDispatch.Start();
         
         telemetryWindow = new TelemetryWindow();
         telemetryWindow.Show();
         
-        driversWindow = new DriversWindow();
+        driversWindow = new LiveTimesheetWindow();
         driversWindow.Show();
     }
 
