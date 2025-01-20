@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 using RacingAidWpf.Configuration;
 using RacingAidWpf.Model;
 
@@ -22,12 +23,12 @@ public class TimesheetWindowViewModel : NotifyPropertyChanged
     
     #region Visibility properties
 
-    public static bool IsCarNumberColumnVisible => ConfigSectionSingleton.TimesheetSection.DisplayCarNumber;
-    public static bool IsSafetyColumnVisible => ConfigSectionSingleton.TimesheetSection.DisplaySafetyRating;
-    public static bool IsSkillColumnVisible => ConfigSectionSingleton.TimesheetSection.DisplaySkillRating;
-    public static bool IsLastLapColumnVisible => ConfigSectionSingleton.TimesheetSection.DisplayLastLap;
-    public static bool IsFastestLapColumnVisible => ConfigSectionSingleton.TimesheetSection.DisplayFastestLap;
-    public static bool IsGapToLeaderColumnVisible => ConfigSectionSingleton.TimesheetSection.DisplayGapToLeader;
+    public Visibility CarNumberColumnVisibility => ConfigSectionSingleton.TimesheetSection.DisplayCarNumber ? Visibility.Visible : Visibility.Hidden;
+    public Visibility SafetyColumnVisibility => ConfigSectionSingleton.TimesheetSection.DisplaySafetyRating ? Visibility.Visible : Visibility.Hidden;
+    public Visibility SkillColumnVisibility => ConfigSectionSingleton.TimesheetSection.DisplaySkillRating ? Visibility.Visible : Visibility.Hidden;
+    public Visibility LastLapColumnVisibility => ConfigSectionSingleton.TimesheetSection.DisplayLastLap ? Visibility.Visible : Visibility.Hidden;
+    public Visibility FastestLapColumnVisibility => ConfigSectionSingleton.TimesheetSection.DisplayFastestLap ? Visibility.Visible : Visibility.Hidden;
+    public Visibility GapToLeaderColumnVisibility => ConfigSectionSingleton.TimesheetSection.DisplayGapToLeader ? Visibility.Visible : Visibility.Hidden;
     
     #endregion
     
@@ -78,11 +79,11 @@ public class TimesheetWindowViewModel : NotifyPropertyChanged
 
     private void OnConfigUpdated()
     {
-        OnPropertyChanged(nameof(IsCarNumberColumnVisible));
-        OnPropertyChanged(nameof(IsSafetyColumnVisible));
-        OnPropertyChanged(nameof(IsSkillColumnVisible));
-        OnPropertyChanged(nameof(IsLastLapColumnVisible));
-        OnPropertyChanged(nameof(IsFastestLapColumnVisible));
-        OnPropertyChanged(nameof(IsGapToLeaderColumnVisible));
+        OnPropertyChanged(nameof(CarNumberColumnVisibility));
+        OnPropertyChanged(nameof(SafetyColumnVisibility));
+        OnPropertyChanged(nameof(SkillColumnVisibility));
+        OnPropertyChanged(nameof(LastLapColumnVisibility));
+        OnPropertyChanged(nameof(FastestLapColumnVisibility));
+        OnPropertyChanged(nameof(GapToLeaderColumnVisibility));
     }
 }
