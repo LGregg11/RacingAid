@@ -1,21 +1,36 @@
 ﻿namespace RacingAidWpf.Configuration;
 
-public class TimesheetConfigSection : ConfigSection
+public class TimesheetConfigSection(IConfig config) : ConfigSection(config, "Timesheet")
 {
-    public bool CarNumberColumnVisibility { get; private init; } = true;
-    public bool SafetyColumnVisibility { get; private init; } = true;
-    public bool SkillColumnVisibility { get; private init; } = true;
-    public bool LastLapColumnVisibility { get; private init; } = true;
-    public bool FastestLapColumnVisibility { get; private init; } = true;
-    public bool LeaderColumnVisibility { get; private init; } = true;
-    
-    public TimesheetConfigSection(IConfig config) : base(config, "Timesheet")
+    public bool DisplayCarNumber
     {
-        CarNumberColumnVisibility = GetValue(nameof(CarNumberColumnVisibility), CarNumberColumnVisibility);
-        SafetyColumnVisibility = GetValue(nameof(SafetyColumnVisibility), SafetyColumnVisibility);
-        SkillColumnVisibility = GetValue(nameof(SkillColumnVisibility), SkillColumnVisibility);
-        LastLapColumnVisibility = GetValue(nameof(LastLapColumnVisibility), LastLapColumnVisibility);
-        FastestLapColumnVisibility = GetValue(nameof(FastestLapColumnVisibility), FastestLapColumnVisibility);
-        LeaderColumnVisibility = GetValue(nameof(LeaderColumnVisibility), LeaderColumnVisibility);
+        get => GetBool(nameof(DisplayCarNumber));
+        set => SetValue(nameof(DisplayCarNumber), value.ToString());
+    }
+    
+    public bool DisplaySafetyRating
+    {
+        get => GetBool(nameof(DisplaySafetyRating));
+        set => SetValue(nameof(DisplaySafetyRating), value.ToString());
+    }
+    public bool DisplaySkillRating
+    {
+        get => GetBool(nameof(DisplaySkillRating));
+        set => SetValue(nameof(DisplaySkillRating), value.ToString());
+    }
+    public bool DisplayLastLap
+    {
+        get => GetBool(nameof(DisplayLastLap));
+        set => SetValue(nameof(DisplayLastLap), value.ToString());
+    }
+    public bool DisplayFastestLap
+    {
+        get => GetBool(nameof(DisplayFastestLap));
+        set => SetValue(nameof(DisplayFastestLap), value.ToString());
+    }
+    public bool DisplayGapToLeader
+    {
+        get => GetBool(nameof(DisplayGapToLeader));
+        set => SetValue(nameof(DisplayGapToLeader), value.ToString());
     }
 }

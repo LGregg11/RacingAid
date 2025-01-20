@@ -20,6 +20,7 @@
     </Window.Background>
     <Window.Resources>
         <converters:LapTimeConverter x:Key="LapTimeConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
     <Grid x:Name="DriversGrid" MouseDown="DriversGrid_OnMouseDown">
         
@@ -35,12 +36,12 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Pos." Binding="{Binding PositionOverall}" Width="1*"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="4*"/>
-                <DataGridTextColumn Header="No." Binding="{Binding CarNumber}" Width="1*" Visibility="{Binding CarNumberColumnVisibility}"/>
-                <DataGridTextColumn Header="Safety" Binding="{Binding SafetyRating}" Width="1*" Visibility="{Binding SafetyColumnVisibility}"/>
-                <DataGridTextColumn Header="Skill" Binding="{Binding SkillRating}" Width="1*" Visibility="{Binding SkillColumnVisibility}"/>
-                <DataGridTextColumn Header="Last Lap" Binding="{Binding LastLapTimeMs, Converter={StaticResource LapTimeConverter}}" Width="2*" Visibility="{Binding LastLapColumnVisibility}"/>
-                <DataGridTextColumn Header="Fastest Lap" Binding="{Binding FastestLapTimeMs, Converter={StaticResource LapTimeConverter}}" Width="2*" Visibility="{Binding FastestLapColumnVisibility}"/>
-                <DataGridTextColumn Header="Leader" Binding="{Binding DeltaToLeaderMs}" Width="1*" Visibility="{Binding LeaderColumnVisibility}"/>
+                <DataGridTextColumn Header="No." Binding="{Binding CarNumber}" Width="1*" Visibility="{Binding viewModel:TimesheetWindowViewModel.IsCarNumberColumnVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <DataGridTextColumn Header="Safety" Binding="{Binding SafetyRating}" Width="1*" Visibility="{Binding IsSafetyColumnVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <DataGridTextColumn Header="Skill" Binding="{Binding SkillRating}" Width="1*" Visibility="{Binding IsSkillColumnVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <DataGridTextColumn Header="Last Lap" Binding="{Binding LastLapTimeMs, Converter={StaticResource LapTimeConverter}}" Width="2*" Visibility="{Binding IsLastLapColumnVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <DataGridTextColumn Header="Fastest Lap" Binding="{Binding FastestLapTimeMs, Converter={StaticResource LapTimeConverter}}" Width="2*" Visibility="{Binding IsFastestLapColumnVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <DataGridTextColumn Header="Leader" Binding="{Binding DeltaToLeaderMs}" Width="1*" Visibility="{Binding IsGapToLeaderColumnVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

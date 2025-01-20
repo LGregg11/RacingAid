@@ -7,11 +7,18 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModel:MainWindowViewModel}"
         Closed="MainWindow_OnClosed"
-        Width="300"
-        Height="100"
+        SizeToContent="WidthAndHeight"
         Title="Racing Aid">
     <Grid>
-        <StackPanel HorizontalAlignment="Center" Margin="5" Orientation="Horizontal">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="5" Orientation="Horizontal">
             <ComboBox Height="25" Width="150"
                       ItemsSource="{Binding SimulatorEntryCollection}"
                       SelectedValue="{Binding SelectedSimulatorEntry}"
@@ -29,5 +36,15 @@
                     Command="{Binding StopCommand}"
                     IsEnabled="{Binding IsStarted}"/>
         </StackPanel>
+        <GroupBox Grid.Row="1" Grid.Column="0" Header="Timesheet">
+            <StackPanel Orientation="Vertical">
+                <CheckBox Content="Display Car Number" IsChecked="{Binding DisplayCarNumber}"/>
+                <CheckBox Content="Display Safety Rating" IsChecked="{Binding DisplaySafetyRating}"/>
+                <CheckBox Content="Display Skill Rating" IsChecked="{Binding DisplaySkillRating}"/>
+                <CheckBox Content="Display Fastest Lap" IsChecked="{Binding DisplayFastestLap}"/>
+                <CheckBox Content="Display Last Lap" IsChecked="{Binding DisplayLastLap}"/>
+                <CheckBox Content="Display Gap To Leader" IsChecked="{Binding DisplayGapToLeader}"/>
+            </StackPanel>
+        </GroupBox>
     </Grid>
 </Window>

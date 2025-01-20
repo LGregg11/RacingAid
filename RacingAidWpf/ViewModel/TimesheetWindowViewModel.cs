@@ -6,8 +6,6 @@ namespace RacingAidWpf.ViewModel;
 
 public class TimesheetWindowViewModel : NotifyPropertyChanged
 {
-    private readonly TimesheetConfigSection timesheetConfigSection;
-    
     private ObservableCollection<TimesheetGridRow> timesheet = [];
     public ObservableCollection<TimesheetGridRow> Timesheet
     {
@@ -24,89 +22,12 @@ public class TimesheetWindowViewModel : NotifyPropertyChanged
     
     #region Visibility properties
 
-    private bool carNumberColumnVisibility = true;
-    public bool CarNumberColumnVisibility
-    {
-        get => carNumberColumnVisibility;
-        private set
-        {
-            if (carNumberColumnVisibility == value)
-                return;
-            
-            carNumberColumnVisibility = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private bool safetyColumnVisibility = true;
-    public bool SafetyColumnVisibility
-    {
-        get => safetyColumnVisibility;
-        private set
-        {
-            if (safetyColumnVisibility == value)
-                return;
-            
-            safetyColumnVisibility = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private bool skillColumnVisibility = true;
-    public bool SkillColumnVisibility
-    {
-        get => skillColumnVisibility;
-        private set
-        {
-            if (skillColumnVisibility == value)
-                return;
-            
-            skillColumnVisibility = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private bool lastLapColumnVisibility = true;
-    public bool LastLapColumnVisibility
-    {
-        get => lastLapColumnVisibility;
-        private set
-        {
-            if (lastLapColumnVisibility == value)
-                return;
-            
-            lastLapColumnVisibility = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private bool fastestLapColumnVisibility = true;
-    public bool FastestLapColumnVisibility
-    {
-        get => fastestLapColumnVisibility;
-        private set
-        {
-            if (fastestLapColumnVisibility == value)
-                return;
-            
-            fastestLapColumnVisibility = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private bool leaderColumnVisibility = true;
-    public bool LeaderColumnVisibility
-    {
-        get => leaderColumnVisibility;
-        private set
-        {
-            if (leaderColumnVisibility == value)
-                return;
-            
-            leaderColumnVisibility = value;
-            OnPropertyChanged();
-        }
-    }
+    public static bool IsCarNumberColumnVisible => ConfigSectionSingleton.TimesheetSection.DisplayCarNumber;
+    public static bool IsSafetyColumnVisible => ConfigSectionSingleton.TimesheetSection.DisplaySafetyRating;
+    public static bool IsSkillColumnVisible => ConfigSectionSingleton.TimesheetSection.DisplaySkillRating;
+    public static bool IsLastLapColumnVisible => ConfigSectionSingleton.TimesheetSection.DisplayLastLap;
+    public static bool IsFastestLapColumnVisible => ConfigSectionSingleton.TimesheetSection.DisplayFastestLap;
+    public static bool IsGapToLeaderColumnVisible => ConfigSectionSingleton.TimesheetSection.DisplayGapToLeader;
     
     #endregion
     
@@ -114,8 +35,7 @@ public class TimesheetWindowViewModel : NotifyPropertyChanged
     {
         RacingAidUpdateDispatch.Update += UpdateProperties;
 
-        timesheetConfigSection = new TimesheetConfigSection();
-        timesheetConfigSection.ConfigUpdated += OnConfigUpdated;
+        ConfigSectionSingleton.TimesheetSection.ConfigUpdated += OnConfigUpdated;
     }
 
     private void UpdateProperties()
@@ -158,11 +78,11 @@ public class TimesheetWindowViewModel : NotifyPropertyChanged
 
     private void OnConfigUpdated()
     {
-        CarNumberColumnVisibility = timesheetConfigSection.DisplayCarNumber;
-        SafetyColumnVisibility = timesheetConfigSection.DisplaySafetyRating;
-        SkillColumnVisibility = timesheetConfigSection.DisplaySkillRating;
-        LastLapColumnVisibility = timesheetConfigSection.DisplayLastLap;
-        FastestLapColumnVisibility = timesheetConfigSection.DisplayFastestLap;
-        LeaderColumnVisibility = timesheetConfigSection.DisplayLeader;
+        OnPropertyChanged(nameof(IsCarNumberColumnVisible));
+        OnPropertyChanged(nameof(IsSafetyColumnVisible));
+        OnPropertyChanged(nameof(IsSkillColumnVisible));
+        OnPropertyChanged(nameof(IsLastLapColumnVisible));
+        OnPropertyChanged(nameof(IsFastestLapColumnVisible));
+        OnPropertyChanged(nameof(IsGapToLeaderColumnVisible));
     }
 }

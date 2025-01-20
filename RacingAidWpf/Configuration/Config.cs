@@ -1,21 +1,62 @@
-﻿using Salaros.Configuration;
+﻿using System.ComponentModel;
+using System.IO;
+using Salaros.Configuration;
 
 namespace RacingAidWpf.Configuration;
 
-public class Config(string path) : IConfig
+public class Config : IConfig
 {
-    private readonly ConfigParser configParser = new(path);
+    private readonly ConfigParser configParser;
 
-    public bool TryGetValue<T>(string section, string key, out T? value)
+    public Config(string configFilePath)
     {
-        value = default;
-        if (configParser.GetValue(section, key) is not T configValue)
-            return false;
+        if (!File.Exists(configFilePath))
+            File.Create(configFilePath);
         
-        value = configValue;
-        return true;
+        configParser = new ConfigParser(configFilePath);
     }
 
-    public bool SetValue<T>(string section, string key, T value) =>
-        value?.ToString() is { } stringValue && configParser.SetValue(section, key, stringValue);
+    public bool TryGetBool(string section, string key, out bool? value)
+    {
+        value = null;
+        if (configParser.GetValue(section, key, true) is {} configValue)
+            value = configValue;
+        
+        return value != null;
+    }
+
+    public bool TryGetInt(string section, string key, out int? value)
+    {
+        value = null;
+        if (configParser.GetValue(section, key, 0) is { } configValue)
+            value = configValue;
+        
+        return value.HasValue;
+    }
+
+    public bool TryGetDouble(string section, string key, out double? value)
+    {
+        value = null;
+        if (configParser.GetValue(section, key, 0d) is { } configValue)
+            value = configValue;
+
+        return value.HasValue;
+    }
+
+    public bool TryGetString(string section, string key, out string? value)
+    {
+        value = null;
+        if (configParser.GetValue(section, key) is { } configValue)
+            value = configValue;
+
+        return value != null;
+    }
+
+    public bool SetValue(string section, string key, string value)
+    {
+        configParser.SetValue(section, key, value);
+        configParser.Save();
+
+        return false;
+    }
 }

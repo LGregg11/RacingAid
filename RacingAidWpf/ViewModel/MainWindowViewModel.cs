@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using RacingAidData.Simulators;
+using RacingAidWpf.Configuration;
 using RacingAidWpf.Model;
 using RacingAidWpf.View;
 
@@ -44,6 +45,88 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+    
+    #region Timesheet config properties
+
+    public bool DisplayCarNumber
+    {
+        get => ConfigSectionSingleton.TimesheetSection.DisplayCarNumber;
+        set
+        {
+            if (ConfigSectionSingleton.TimesheetSection.DisplayCarNumber == value)
+                return;
+            
+            ConfigSectionSingleton.TimesheetSection.DisplayCarNumber = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool DisplaySafetyRating
+    {
+        get => ConfigSectionSingleton.TimesheetSection.DisplaySafetyRating;
+        set
+        {
+            if (ConfigSectionSingleton.TimesheetSection.DisplaySafetyRating == value)
+                return;
+            
+            ConfigSectionSingleton.TimesheetSection.DisplaySafetyRating = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public bool DisplaySkillRating
+    {
+        get => ConfigSectionSingleton.TimesheetSection.DisplaySkillRating;
+        set
+        {
+            if (ConfigSectionSingleton.TimesheetSection.DisplaySkillRating == value)
+                return;
+            
+            ConfigSectionSingleton.TimesheetSection.DisplaySkillRating = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public bool DisplayLastLap
+    {
+        get => ConfigSectionSingleton.TimesheetSection.DisplayLastLap;
+        set
+        {
+            if (ConfigSectionSingleton.TimesheetSection.DisplayLastLap == value)
+                return;
+            
+            ConfigSectionSingleton.TimesheetSection.DisplayLastLap = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public bool DisplayFastestLap
+    {
+        get => ConfigSectionSingleton.TimesheetSection.DisplayFastestLap;
+        set
+        {
+            if (ConfigSectionSingleton.TimesheetSection.DisplayFastestLap == value)
+                return;
+            
+            ConfigSectionSingleton.TimesheetSection.DisplayFastestLap = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public bool DisplayGapToLeader
+    {
+        get => ConfigSectionSingleton.TimesheetSection.DisplayGapToLeader;
+        set
+        {
+            if (ConfigSectionSingleton.TimesheetSection.DisplayGapToLeader == value)
+                return;
+            
+            ConfigSectionSingleton.TimesheetSection.DisplayGapToLeader = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    #endregion
     
     public MainWindowViewModel()
     {
