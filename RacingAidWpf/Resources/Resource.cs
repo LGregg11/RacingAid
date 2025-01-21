@@ -5,7 +5,9 @@ namespace RacingAidWpf.Resources;
 public static class Resource
 {
     private static readonly string AssemblyPath =
-        $"pack://application:,,,/{Assembly.GetExecutingAssembly().GetName().Name};component/Resources";
+        $"pack://application:,,,/{ExecutingAssembly.GetName().Name};component/Resources";
+    
+    public static Assembly ExecutingAssembly => Assembly.GetExecutingAssembly();
     
     public static Uri SteeringWheelUri => GetImageUri("SteeringWheel.png");
 
