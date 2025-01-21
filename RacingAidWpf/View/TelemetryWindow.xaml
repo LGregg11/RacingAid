@@ -8,8 +8,7 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModel:TelemetryWindowViewModel}"
         Title="Telemetry Tests"
-        Width="300"
-        Height="150"
+        SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         Topmost="True"
@@ -26,6 +25,8 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -36,7 +37,9 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         
-        <Canvas Grid.RowSpan="6" Grid.ColumnSpan="2" Style="{StaticResource DefaultCanvasStyle}"/>
+        <Canvas Grid.RowSpan="6" Grid.ColumnSpan="4" Style="{StaticResource DefaultCanvasStyle}"/>
+        
+        <Image Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="6" Margin="10" Width="80" Height="80" Source="{Binding SteeringWheelImage}"/>
         
         <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource DefaultTextBlock}" Text="Driver name"/>
         <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource DefaultTextBlock}" Text="{Binding DriverName}"/>

@@ -1,4 +1,6 @@
-﻿using RacingAidWpf.Extensions;
+﻿using System.Windows.Media.Imaging;
+using RacingAidWpf.Extensions;
+using RacingAidWpf.Resources;
 
 namespace RacingAidWpf.ViewModel;
 
@@ -88,6 +90,8 @@ public class TelemetryWindowViewModel : NotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
+    public BitmapImage SteeringWheelImage => new(Resource.SteeringWheelUri);
 
     public TelemetryWindowViewModel()
     {
