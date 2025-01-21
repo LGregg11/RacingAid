@@ -6,6 +6,8 @@ namespace RacingAidWpf.ViewModel;
 
 public class TelemetryWindowViewModel : NotifyPropertyChanged
 {
+    private const float FloatTolerance = 0.01f;
+    
     private string driverName = "N/A";
     public string DriverName
     {
@@ -26,7 +28,7 @@ public class TelemetryWindowViewModel : NotifyPropertyChanged
         get => speedKph;
         private set
         {
-            if (Math.Abs(speedKph - value) < 0.1f)
+            if (Math.Abs(speedKph - value) < FloatTolerance)
                 return;
             
             speedKph = value;
@@ -40,7 +42,7 @@ public class TelemetryWindowViewModel : NotifyPropertyChanged
         get => brakePercentage;
         private set
         {
-            if (Math.Abs(brakePercentage - value) < 0.1f)
+            if (Math.Abs(brakePercentage - value) < FloatTolerance)
                 return;
             
             brakePercentage = value;
@@ -54,10 +56,24 @@ public class TelemetryWindowViewModel : NotifyPropertyChanged
         get => throttlePercentage;
         private set
         {
-            if (Math.Abs(throttlePercentage - value) < 0.1f)
+            if (Math.Abs(throttlePercentage - value) < FloatTolerance)
                 return;
             
             throttlePercentage = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    private float clutchPercentage;
+    public float ClutchPercentage
+    {
+        get => clutchPercentage;
+        private set
+        {
+            if (Math.Abs(clutchPercentage - value) < FloatTolerance)
+                return;
+            
+            clutchPercentage = value;
             OnPropertyChanged();
         }
     }
@@ -83,7 +99,7 @@ public class TelemetryWindowViewModel : NotifyPropertyChanged
         get => steeringAngleDegrees;
         private set
         {
-            if (Math.Abs(steeringAngleDegrees - value) < 0.1f)
+            if (Math.Abs(steeringAngleDegrees - value) < FloatTolerance)
                 return;
             
             steeringAngleDegrees = value;
@@ -105,9 +121,10 @@ public class TelemetryWindowViewModel : NotifyPropertyChanged
     {
         var telemetry = RacingAidSingleton.Instance.Telemetry;
         
-        SpeedKph = telemetry.SpeedMetresPerSecond.ToKph();
-        BrakePercentage = telemetry.BrakeInput;
         ThrottlePercentage = telemetry.ThrottleInput;
+        BrakePercentage = telemetry.BrakeInput;
+        ClutchPercentage = telemetry.ClutchInput;
+        SpeedKph = telemetry.SpeedMetresPerSecond.ToKph();
         Gear = telemetry.Gear;
         SteeringAngleDegrees = telemetry.SteeringAngleDegrees;
         

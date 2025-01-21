@@ -16,6 +16,11 @@ public sealed class TelemetryModel : RaceDataModel
     /// 1 = 100%
     /// </remarks>
     public float BrakeInput { get; init; }
+
+    /// <remarks>
+    /// 1 = 100%
+    /// </remarks>
+    public float ClutchInput { get; init; }
     
     /// <summary>
     /// The steering angle in degrees. Negative steering angle = counter-clockwise rotation
