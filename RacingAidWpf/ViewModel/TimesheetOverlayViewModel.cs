@@ -5,7 +5,7 @@ using RacingAidWpf.Model;
 
 namespace RacingAidWpf.ViewModel;
 
-public class TimesheetWindowViewModel : NotifyPropertyChanged
+public class TimesheetOverlayViewModel : NotifyPropertyChanged
 {
     private ObservableCollection<TimesheetGridRow> timesheet = [];
     public ObservableCollection<TimesheetGridRow> Timesheet
@@ -32,7 +32,7 @@ public class TimesheetWindowViewModel : NotifyPropertyChanged
     
     #endregion
     
-    public TimesheetWindowViewModel()
+    public TimesheetOverlayViewModel()
     {
         RacingAidUpdateDispatch.Update += UpdateProperties;
 

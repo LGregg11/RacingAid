@@ -1,17 +1,16 @@
 ﻿using System.Windows.Input;
-using RacingAidWpf.OverlayManagement;
 using RacingAidWpf.ViewModel;
 
 namespace RacingAidWpf.View;
 
-public partial class TimesheetWindow
+public partial class TimesheetOverlay
 {
-    private readonly TimesheetWindowViewModel timesheetWindowViewModel = new();
+    private readonly TimesheetOverlayViewModel timesheetOverlayViewModel = new();
     
-    public TimesheetWindow()
+    public TimesheetOverlay()
     {
         InitializeComponent();
-        DataContext = timesheetWindowViewModel;
+        DataContext = timesheetOverlayViewModel;
     }
 
     private void DriversGrid_OnMouseDown(object sender, MouseButtonEventArgs e)

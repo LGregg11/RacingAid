@@ -1,26 +1,26 @@
-﻿<overlays:Overlay x:Class="RacingAidWpf.View.TelemetryWindow"
+﻿<overlayManagement:Overlay x:Class="RacingAidWpf.View.TelemetryOverlay"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:converters="clr-namespace:RacingAidWpf.Converters"
         xmlns:viewModel="clr-namespace:RacingAidWpf.ViewModel"
-        xmlns:overlays="clr-namespace:RacingAidWpf.WindowManagement.Overlays"
+        xmlns:overlayManagement="clr-namespace:RacingAidWpf.OverlayManagement"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance viewModel:TelemetryWindowViewModel}"
+        d:DataContext="{d:DesignInstance viewModel:TelemetryOverlayViewModel}"
         Title="Telemetry Tests"
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         Topmost="True"
         AllowsTransparency="True">
-    <overlays:Overlay.Resources>
+    <overlayManagement:Overlay.Resources>
         <converters:SpeedConverter x:Key="SpeedConverter"/>
         <converters:GearConverter x:Key="GearConverter"/>
-    </overlays:Overlay.Resources>
-    <overlays:Overlay.Background>
+    </overlayManagement:Overlay.Resources>
+    <overlayManagement:Overlay.Background>
         <SolidColorBrush Color="Transparent"/>
-    </overlays:Overlay.Background>
+    </overlayManagement:Overlay.Background>
     <Grid x:Name="TelemetryGrid" MouseDown="TelemetryGrid_OnMouseDown">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -54,4 +54,4 @@
             <TextBlock Grid.Row="1" Style="{StaticResource DefaultTextBlock}" TextAlignment="Center" FontWeight="ExtraBold" FontSize="40" Foreground="Goldenrod" Text="{Binding Gear, Converter={StaticResource GearConverter}}"/>
         </Grid>
     </Grid>
-</overlays:Overlay>
+</overlayManagement:Overlay>

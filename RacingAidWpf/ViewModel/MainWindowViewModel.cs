@@ -3,15 +3,15 @@ using System.Windows.Input;
 using RacingAidData.Simulators;
 using RacingAidWpf.Configuration;
 using RacingAidWpf.Model;
+using RacingAidWpf.OverlayManagement;
 using RacingAidWpf.View;
-using RacingAidWpf.WindowManagement;
 
 namespace RacingAidWpf.ViewModel;
 
 public sealed class MainWindowViewModel : NotifyPropertyChanged
 {
-    private TelemetryWindow? telemetryWindow;
-    private TimesheetWindow? driversWindow;
+    private TelemetryOverlay? telemetryWindow;
+    private TimesheetOverlay? driversWindow;
     
     private readonly GeneralConfigSection generalConfigSection = ConfigSectionSingleton.GeneralSection;
     private readonly TimesheetConfigSection timesheetConfigSection = ConfigSectionSingleton.TimesheetSection;
@@ -214,10 +214,10 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
 
         RacingAidUpdateDispatch.Start();
         
-        telemetryWindow = new TelemetryWindow();
+        telemetryWindow = new TelemetryOverlay();
         telemetryWindow.Show();
         
-        driversWindow = new TimesheetWindow();
+        driversWindow = new TimesheetOverlay();
         driversWindow.Show();
     }
 

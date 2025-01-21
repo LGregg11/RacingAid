@@ -3,14 +3,14 @@ using RacingAidWpf.ViewModel;
 
 namespace RacingAidWpf.View;
 
-public partial class TelemetryWindow
+public partial class TelemetryOverlay
 {
-    private readonly TelemetryWindowViewModel telemetryWindowViewModel = new();
+    private readonly TelemetryOverlayViewModel telemetryOverlayViewModel = new();
     
-    public TelemetryWindow()
+    public TelemetryOverlay()
     {
         InitializeComponent();
-        DataContext = telemetryWindowViewModel;
+        DataContext = telemetryOverlayViewModel;
     }
 
     private void TelemetryGrid_OnMouseDown(object sender, MouseButtonEventArgs e)

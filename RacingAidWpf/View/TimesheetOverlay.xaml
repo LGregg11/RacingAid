@@ -7,7 +7,7 @@
         xmlns:converters="clr-namespace:RacingAidWpf.Converters"
         xmlns:overlayManagement="clr-namespace:RacingAidWpf.OverlayManagement"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance viewModel:TimesheetWindowViewModel}"
+        d:DataContext="{d:DesignInstance viewModel:TimesheetOverlayViewModel}"
         Title="Timesheet"
         SizeToContent="WidthAndHeight"
         MaxWidth="800"
