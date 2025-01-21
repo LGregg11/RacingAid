@@ -7,6 +7,10 @@ public static class ConfigSectionSingleton
 {
     private static readonly string ConfigFilePath = Path.Combine(Path.GetDirectoryName(Application.ResourceAssembly.Location) ?? string.Empty, "config.ini");
     private static Config Config => new(ConfigFilePath);
+    
+    private static GeneralConfigSection? generalSection;
+    public static GeneralConfigSection GeneralSection =>
+        generalSection ??= new GeneralConfigSection(Config);
 
     private static TimesheetConfigSection? timesheetSection;
     public static TimesheetConfigSection TimesheetSection =>
