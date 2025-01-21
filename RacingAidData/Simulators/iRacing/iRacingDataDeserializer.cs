@@ -40,9 +40,12 @@ public class iRacingDataDeserializer : IDeserializeData
         IRacingSdkSessionInfo.SessionInfoModel.SessionModel latestSession)
     {
         var timesheetEntries = new List<TimesheetEntryModel>();
+
+        if (latestSession.ResultsPositions is not { Count: > 0 } resultsPositions)
+            return timesheetEntries;
         
         // Loop through position results to ensure the position order is correct - can grab necessary driver info
-        foreach (var positionResult in latestSession.ResultsPositions.OrderBy(p => p.Position))
+        foreach (var positionResult in resultsPositions.OrderBy(p => p.Position))
         {
             var carIdx = positionResult.CarIdx;
             var driver = driverInfo.Drivers[carIdx];
