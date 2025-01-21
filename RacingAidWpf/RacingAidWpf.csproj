@@ -34,4 +34,15 @@
       </ApplicationDefinition>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Resources\Images\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Resources\Images\SteeringWheel.png" />
+      <Content Include="Resources\Images\SteeringWheel.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>
