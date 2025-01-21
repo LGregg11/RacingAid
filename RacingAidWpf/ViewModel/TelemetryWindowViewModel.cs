@@ -1,4 +1,5 @@
 ﻿using System.Windows.Media.Imaging;
+using RacingAidData;
 using RacingAidWpf.Configuration;
 using RacingAidWpf.Resources;
 
@@ -7,6 +8,9 @@ namespace RacingAidWpf.ViewModel;
 public class TelemetryWindowViewModel : NotifyPropertyChanged
 {
     private const float FloatTolerance = 0.01f;
+    
+    private readonly RacingAid racingAid = RacingAidSingleton.Instance;
+    private readonly TelemetryConfigSection telemetryConfigSection = ConfigSectionSingleton.TelemetrySection;
     
     private string driverName = "N/A";
     public string DriverName
@@ -116,12 +120,12 @@ public class TelemetryWindowViewModel : NotifyPropertyChanged
     {
         RacingAidUpdateDispatch.Update += UpdateProperties;
         
-        ConfigSectionSingleton.TelemetrySection.ConfigUpdated += OnConfigUpdated;
+        telemetryConfigSection.ConfigUpdated += OnConfigUpdated;
     }
 
     private void UpdateProperties()
     {
-        var telemetry = RacingAidSingleton.Instance.Telemetry;
+        var telemetry = racingAid.Telemetry;
         
         ThrottlePercentage = telemetry.ThrottleInput;
         BrakePercentage = telemetry.BrakeInput;
@@ -130,7 +134,7 @@ public class TelemetryWindowViewModel : NotifyPropertyChanged
         Gear = telemetry.Gear;
         SteeringAngleDegrees = telemetry.SteeringAngleDegrees;
         
-        var fullName = RacingAidSingleton.Instance.Timesheet.LocalEntry?.FullName;
+        var fullName = racingAid.Timesheet.LocalEntry?.FullName;
         if (!string.IsNullOrEmpty(fullName))
             DriverName = fullName;
     }

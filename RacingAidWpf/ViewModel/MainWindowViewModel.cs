@@ -12,6 +12,10 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
     private TelemetryWindow? telemetryWindow;
     private TimesheetWindow? driversWindow;
     
+    private readonly GeneralConfigSection generalConfigSection = ConfigSectionSingleton.GeneralSection;
+    private readonly TimesheetConfigSection timesheetConfigSection = ConfigSectionSingleton.TimesheetSection;
+    private readonly TelemetryConfigSection telemetryConfigSection = ConfigSectionSingleton.TelemetrySection;
+    
     public ICommand StartCommand { get; }
     public ICommand StopCommand { get; }
 
@@ -52,78 +56,78 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
     
     public bool DisplayCarNumber
     {
-        get => ConfigSectionSingleton.TimesheetSection.DisplayCarNumber;
+        get => timesheetConfigSection.DisplayCarNumber;
         set
         {
-            if (ConfigSectionSingleton.TimesheetSection.DisplayCarNumber == value)
+            if (timesheetConfigSection.DisplayCarNumber == value)
                 return;
             
-            ConfigSectionSingleton.TimesheetSection.DisplayCarNumber = value;
+            timesheetConfigSection.DisplayCarNumber = value;
             OnPropertyChanged();
         }
     }
 
     public bool DisplaySafetyRating
     {
-        get => ConfigSectionSingleton.TimesheetSection.DisplaySafetyRating;
+        get => timesheetConfigSection.DisplaySafetyRating;
         set
         {
-            if (ConfigSectionSingleton.TimesheetSection.DisplaySafetyRating == value)
+            if (timesheetConfigSection.DisplaySafetyRating == value)
                 return;
             
-            ConfigSectionSingleton.TimesheetSection.DisplaySafetyRating = value;
+            timesheetConfigSection.DisplaySafetyRating = value;
             OnPropertyChanged();
         }
     }
     
     public bool DisplaySkillRating
     {
-        get => ConfigSectionSingleton.TimesheetSection.DisplaySkillRating;
+        get => timesheetConfigSection.DisplaySkillRating;
         set
         {
-            if (ConfigSectionSingleton.TimesheetSection.DisplaySkillRating == value)
+            if (timesheetConfigSection.DisplaySkillRating == value)
                 return;
             
-            ConfigSectionSingleton.TimesheetSection.DisplaySkillRating = value;
+            timesheetConfigSection.DisplaySkillRating = value;
             OnPropertyChanged();
         }
     }
     
     public bool DisplayLastLap
     {
-        get => ConfigSectionSingleton.TimesheetSection.DisplayLastLap;
+        get => timesheetConfigSection.DisplayLastLap;
         set
         {
-            if (ConfigSectionSingleton.TimesheetSection.DisplayLastLap == value)
+            if (timesheetConfigSection.DisplayLastLap == value)
                 return;
             
-            ConfigSectionSingleton.TimesheetSection.DisplayLastLap = value;
+            timesheetConfigSection.DisplayLastLap = value;
             OnPropertyChanged();
         }
     }
     
     public bool DisplayFastestLap
     {
-        get => ConfigSectionSingleton.TimesheetSection.DisplayFastestLap;
+        get => timesheetConfigSection.DisplayFastestLap;
         set
         {
-            if (ConfigSectionSingleton.TimesheetSection.DisplayFastestLap == value)
+            if (timesheetConfigSection.DisplayFastestLap == value)
                 return;
             
-            ConfigSectionSingleton.TimesheetSection.DisplayFastestLap = value;
+            timesheetConfigSection.DisplayFastestLap = value;
             OnPropertyChanged();
         }
     }
     
     public bool DisplayGapToLeader
     {
-        get => ConfigSectionSingleton.TimesheetSection.DisplayGapToLeader;
+        get => timesheetConfigSection.DisplayGapToLeader;
         set
         {
-            if (ConfigSectionSingleton.TimesheetSection.DisplayGapToLeader == value)
+            if (timesheetConfigSection.DisplayGapToLeader == value)
                 return;
             
-            ConfigSectionSingleton.TimesheetSection.DisplayGapToLeader = value;
+            timesheetConfigSection.DisplayGapToLeader = value;
             OnPropertyChanged();
         }
     }
@@ -134,13 +138,13 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
     
     public bool UseMetricUnits
     {
-        get => ConfigSectionSingleton.TelemetrySection.UseMetricUnits;
+        get => telemetryConfigSection.UseMetricUnits;
         set
         {
-            if (ConfigSectionSingleton.TelemetrySection.UseMetricUnits == value)
+            if (telemetryConfigSection.UseMetricUnits == value)
                 return;
             
-            ConfigSectionSingleton.TelemetrySection.UseMetricUnits = value;
+            telemetryConfigSection.UseMetricUnits = value;
             OnPropertyChanged();
         }
     }
