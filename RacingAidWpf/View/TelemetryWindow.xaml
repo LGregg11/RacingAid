@@ -27,18 +27,49 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
         
-        <Canvas Grid.RowSpan="6" Grid.ColumnSpan="4" Style="{StaticResource DefaultCanvasStyle}"/>
+        <Canvas Grid.ColumnSpan="4" Style="{StaticResource DefaultCanvasStyle}"/>
         
-        <Image Grid.Column="2" Grid.Row="0" Grid.RowSpan="6"
+        <Grid Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            
+            <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource DefaultTextBlock}" Text="Driver name"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource DefaultTextBlock}" Text="{Binding DriverName}"/>
+        
+            <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource DefaultTextBlock}" Text="Speed (Kph)"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource DefaultTextBlock}" Text="{Binding SpeedKph}"/>
+        
+            <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource DefaultTextBlock}" Text="Brake (%)"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource DefaultTextBlock}" Text="{Binding BrakePercentage, Converter={StaticResource PercentageConverter}}"/>
+        
+            <TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource DefaultTextBlock}" Text="Throttle (%)"/>
+            <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource DefaultTextBlock}" Text="{Binding ThrottlePercentage, Converter={StaticResource PercentageConverter}}"/>
+        
+            <TextBlock Grid.Row="4" Grid.Column="0" Style="{StaticResource DefaultTextBlock}" Text="Gear"/>
+            <TextBlock Grid.Row="4" Grid.Column="1" Style="{StaticResource DefaultTextBlock}" Text="{Binding Gear, Converter={StaticResource GearConverter}}"/>
+        
+            <TextBlock Grid.Row="5" Grid.Column="0" Style="{StaticResource DefaultTextBlock}" Text="Steering (deg)"/>
+            <TextBlock Grid.Row="5" Grid.Column="1" Style="{StaticResource DefaultTextBlock}" Text="{Binding SteeringAngleDegrees, Converter={StaticResource SteeringConverter}}"/>
+        </Grid>
+        
+        <StackPanel Grid.Column="1" Orientation="Horizontal">
+            <ProgressBar Style="{StaticResource DefaultProgressBar}" Foreground="Green" Value="{Binding ThrottlePercentage, Mode=OneWay}"/>
+            <ProgressBar Style="{StaticResource DefaultProgressBar}" Foreground="Red" Value="{Binding BrakePercentage, Mode=OneWay}"/>
+            <ProgressBar Style="{StaticResource DefaultProgressBar}" Foreground="Blue" Value="{Binding ClutchPercentage, Mode=OneWay}"/>
+        </StackPanel>
+        
+        <Image Grid.Column="2" 
                Margin="10" Width="80" Height="80"
                Source="{Binding SteeringWheelImage}">
             <Image.RenderTransform>
@@ -46,22 +77,6 @@
             </Image.RenderTransform>
         </Image>
         
-        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource DefaultTextBlock}" Text="Driver name"/>
-        <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource DefaultTextBlock}" Text="{Binding DriverName}"/>
         
-        <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource DefaultTextBlock}" Text="Speed (Kph)"/>
-        <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource DefaultTextBlock}" Text="{Binding SpeedKph}"/>
-        
-        <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource DefaultTextBlock}" Text="Brake (%)"/>
-        <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource DefaultTextBlock}" Text="{Binding BrakePercentage, Converter={StaticResource PercentageConverter}}"/>
-        
-        <TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource DefaultTextBlock}" Text="Throttle (%)"/>
-        <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource DefaultTextBlock}" Text="{Binding ThrottlePercentage, Converter={StaticResource PercentageConverter}}"/>
-        
-        <TextBlock Grid.Row="4" Grid.Column="0" Style="{StaticResource DefaultTextBlock}" Text="Gear"/>
-        <TextBlock Grid.Row="4" Grid.Column="1" Style="{StaticResource DefaultTextBlock}" Text="{Binding Gear, Converter={StaticResource GearConverter}}"/>
-        
-        <TextBlock Grid.Row="5" Grid.Column="0" Style="{StaticResource DefaultTextBlock}" Text="Steering (deg)"/>
-        <TextBlock Grid.Row="5" Grid.Column="1" Style="{StaticResource DefaultTextBlock}" Text="{Binding SteeringAngleDegrees, Converter={StaticResource SteeringConverter}}"/>
     </Grid>
 </Window>

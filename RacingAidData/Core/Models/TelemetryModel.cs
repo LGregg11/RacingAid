@@ -18,7 +18,7 @@ public sealed class TelemetryModel : RaceDataModel
     public float BrakeInput { get; init; }
 
     /// <remarks>
-    /// 1 = 100%
+    /// 1 = 100% engaged (i.e. released)
     /// </remarks>
     public float ClutchInput { get; init; }
     

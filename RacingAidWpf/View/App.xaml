@@ -67,6 +67,15 @@
                 <Setter Property="Opacity" Value="{StaticResource DefaultOpacity}"/>
                 <Setter Property="Background" Value="{StaticResource DefaultCanvasColor}"/>
             </Style>
+            
+            <Style x:Key="DefaultProgressBar" TargetType="ProgressBar">
+                <Setter Property="Orientation" Value="Vertical"/>
+                <Setter Property="Margin" Value="1,0"/>
+                <Setter Property="Width" Value="15"/>
+                <Setter Property="Height" Value="80"/>
+                <Setter Property="Minimum" Value="0"/>
+                <Setter Property="Maximum" Value="1"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

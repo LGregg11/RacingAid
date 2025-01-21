@@ -123,7 +123,7 @@ public class TelemetryWindowViewModel : NotifyPropertyChanged
         
         ThrottlePercentage = telemetry.ThrottleInput;
         BrakePercentage = telemetry.BrakeInput;
-        ClutchPercentage = telemetry.ClutchInput;
+        ClutchPercentage = 1f - telemetry.ClutchInput;
         SpeedKph = telemetry.SpeedMetresPerSecond.ToKph();
         Gear = telemetry.Gear;
         SteeringAngleDegrees = telemetry.SteeringAngleDegrees;
