@@ -106,8 +106,8 @@ public class TelemetryWindowViewModel : NotifyPropertyChanged
         var telemetry = RacingAidSingleton.Instance.Telemetry;
         
         SpeedKph = telemetry.SpeedMetresPerSecond.ToKph();
-        BrakePercentage = telemetry.BrakePercentage;
-        ThrottlePercentage = telemetry.ThrottlePercentage;
+        BrakePercentage = telemetry.BrakeInput;
+        ThrottlePercentage = telemetry.ThrottleInput;
         Gear = telemetry.Gear;
         SteeringAngleDegrees = telemetry.SteeringAngleDegrees;
         

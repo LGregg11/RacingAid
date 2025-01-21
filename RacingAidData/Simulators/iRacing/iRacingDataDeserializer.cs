@@ -76,12 +76,12 @@ public class iRacingDataDeserializer : IDeserializeData
     {
         return new TelemetryModel
         {
-            BrakePercentage = iRacingData.GetFloat("Brake"),
+            BrakeInput = iRacingData.GetFloat("Brake"),
             Gear = iRacingData.GetInt("Gear"),
             Rpm = iRacingData.GetFloat("RPM"),
             SpeedMetresPerSecond = iRacingData.GetFloat("Speed"),
             SteeringAngleDegrees = iRacingData.GetFloat("SteeringWheelAngle") * RadToDeg,
-            ThrottlePercentage = iRacingData.GetFloat("Throttle")
+            ThrottleInput = iRacingData.GetFloat("Throttle")
         };
     }
 }
