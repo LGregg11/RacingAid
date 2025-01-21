@@ -44,9 +44,13 @@
             </Image.RenderTransform>
         </Image>
         
-        <StackPanel Grid.Column="3" Orientation="Vertical" VerticalAlignment="Stretch" Margin="5" Width="70">
-            <TextBlock Style="{StaticResource DefaultTextBlock}" TextAlignment="Center" FontWeight="Bold" FontSize="15" Text="{Binding SpeedMetresPerSecond, Converter={StaticResource SpeedConverter}}"/>
-            <TextBlock Style="{StaticResource DefaultTextBlock}" TextAlignment="Center" FontSize="25" Foreground="Goldenrod" Text="{Binding Gear, Converter={StaticResource GearConverter}}"/>
-        </StackPanel>
+        <Grid Grid.Column="3" Margin="1" Width="100">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Style="{StaticResource DefaultTextBlock}" TextAlignment="Center" FontWeight="Bold" FontSize="15" Text="{Binding SpeedMetresPerSecond, Converter={StaticResource SpeedConverter}}"/>
+            <TextBlock Grid.Row="1" Style="{StaticResource DefaultTextBlock}" TextAlignment="Center" FontWeight="ExtraBold" FontSize="40" Foreground="Goldenrod" Text="{Binding Gear, Converter={StaticResource GearConverter}}"/>
+        </Grid>
     </Grid>
 </Window>
