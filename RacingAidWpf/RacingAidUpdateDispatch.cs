@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using RacingAidData;
+﻿using RacingAidData;
 using RacingAidWpf.Configuration;
 
 namespace RacingAidWpf;
@@ -69,8 +68,6 @@ public static class RacingAidUpdateDispatch
 
             if (invokeUpdate)
                 InvokeUpdateOnMainThread();
-            
-            Trace.WriteLine("Loop end");
         }
     }
 

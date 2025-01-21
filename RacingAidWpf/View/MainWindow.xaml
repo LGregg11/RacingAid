@@ -19,7 +19,7 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="5" Orientation="Horizontal">
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Right" Margin="5" Orientation="Horizontal">
             <ComboBox Height="25" Width="150"
                       ItemsSource="{Binding SimulatorEntryCollection}"
                       SelectedValue="{Binding SelectedSimulatorEntry}"
