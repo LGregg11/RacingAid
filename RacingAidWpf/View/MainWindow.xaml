@@ -13,6 +13,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -36,7 +37,36 @@
                     Command="{Binding StopCommand}"
                     IsEnabled="{Binding IsStarted}"/>
         </StackPanel>
-        <GroupBox Grid.Row="1" Grid.Column="0" Header="Timesheet">
+        
+        <GroupBox Grid.Row="1" Grid.Column="0" Header="General">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                
+                <TextBlock Grid.Column="0" Grid.Row="0"
+                           VerticalAlignment="Center" Margin="2,0"
+                           Text="Primary Screen"/>
+                <ComboBox Grid.Column="1" Grid.Row="0"
+                          Height="25" Width="50" Margin="2,0"
+                          ItemsSource="{Binding Screens}"
+                          SelectedValue="{Binding SelectedPrimaryScreen}"/>
+                
+                <TextBlock Grid.Column="0" Grid.Row="1"
+                           VerticalAlignment="Center" Margin="2,0"
+                           Text="Update Interval (ms)"/>
+                <TextBox Grid.Column="1" Grid.Row="1"
+                         VerticalAlignment="Center" VerticalContentAlignment="Center" Height="25" Margin="2,0"
+                         Text="{Binding UpdateIntervalMs}"/> 
+            </Grid>
+        </GroupBox>
+        
+        <GroupBox Grid.Row="1" Grid.Column="1" Header="Timesheet">
             <StackPanel Orientation="Vertical">
                 <CheckBox Content="Display Car Number" IsChecked="{Binding DisplayCarNumber}"/>
                 <CheckBox Content="Display Safety Rating" IsChecked="{Binding DisplaySafetyRating}"/>
@@ -46,7 +76,8 @@
                 <CheckBox Content="Display Gap To Leader" IsChecked="{Binding DisplayGapToLeader}"/>
             </StackPanel>
         </GroupBox>
-        <GroupBox Grid.Row="1" Grid.Column="1" Header="Telemetry">
+        
+        <GroupBox Grid.Row="1" Grid.Column="2" Header="Telemetry">
             <StackPanel Orientation="Vertical">
                 <CheckBox Content="Use Metric Units" IsChecked="{Binding UseMetricUnits}"/>
             </StackPanel>

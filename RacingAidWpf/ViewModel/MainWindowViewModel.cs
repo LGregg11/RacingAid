@@ -3,6 +3,7 @@ using System.Windows.Input;
 using RacingAidData.Simulators;
 using RacingAidWpf.Configuration;
 using RacingAidWpf.Model;
+using RacingAidWpf.ScreenManagement;
 using RacingAidWpf.View;
 
 namespace RacingAidWpf.ViewModel;
@@ -15,6 +16,8 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
     private readonly GeneralConfigSection generalConfigSection = ConfigSectionSingleton.GeneralSection;
     private readonly TimesheetConfigSection timesheetConfigSection = ConfigSectionSingleton.TimesheetSection;
     private readonly TelemetryConfigSection telemetryConfigSection = ConfigSectionSingleton.TelemetrySection;
+
+    private readonly ScreenDetector screenDetector;
     
     public ICommand StartCommand { get; }
     public ICommand StopCommand { get; }
@@ -51,6 +54,38 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
     }
     
     #region Config properties
+    
+    #region General
+
+    public ObservableCollection<int> Screens { get; private set; }
+    
+    public int SelectedPrimaryScreen
+    {
+        get => screenDetector.PrimaryScreen;
+        set
+        {
+            if (screenDetector.PrimaryScreen == value)
+                return;
+
+            screenDetector.PrimaryScreen = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public int UpdateIntervalMs
+    {
+        get => generalConfigSection.UpdateIntervalMs;
+        set
+        {
+            if (generalConfigSection.UpdateIntervalMs == value)
+                return;
+
+            generalConfigSection.UpdateIntervalMs = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    #endregion
     
     #region Timesheet
     
@@ -165,6 +200,10 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         SimulatorEntryCollection = new ObservableCollection<SimulatorEntryModel>(simulatorEntries);
         SelectedSimulatorEntry = simulatorEntries.First();
         
+        screenDetector = new ScreenDetector();
+        Screens = new ObservableCollection<int>(screenDetector.ValidScreens);
+        SelectedPrimaryScreen = Screens.First();
+        
         StartCommand = new StartCommand(Start);
         StopCommand = new StopCommand(Stop);
     }
@@ -176,7 +215,6 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         RacingAidSingleton.Instance.SetupSimulator(SelectedSimulatorEntry.SimulatorType);
         RacingAidSingleton.Instance.Start();
 
-        RacingAidUpdateDispatch.UpdateRefreshRateMs = 33;
         RacingAidUpdateDispatch.Start();
         
         telemetryWindow = new TelemetryWindow();
