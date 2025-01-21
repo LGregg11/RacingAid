@@ -1,9 +1,8 @@
 ﻿using System.Windows.Input;
-using RacingAidWpf.View;
 
 namespace RacingAidWpf.ViewModel;
 
-public class StartCommand(Action startAction) : ICommand
+public class Command(Action action) : ICommand
 {
     public event EventHandler? CanExecuteChanged;
     
@@ -14,6 +13,6 @@ public class StartCommand(Action startAction) : ICommand
 
     public void Execute(object? parameter)
     {
-        startAction();
+        action();
     }
 }

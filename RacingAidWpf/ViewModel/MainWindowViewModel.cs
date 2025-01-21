@@ -201,8 +201,8 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         Screens = new ObservableCollection<int>(ScreenDetector.ValidScreens);
         SelectedPrimaryScreen = Screens.First();
         
-        StartCommand = new StartCommand(Start);
-        StopCommand = new StopCommand(Stop);
+        StartCommand = new Command(Start);
+        StopCommand = new Command(Stop);
     }
 
     private void Start()
