@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using RacingAidData;
+using RacingAidWpf.Configuration;
 
 namespace RacingAidWpf;
 
@@ -11,17 +12,19 @@ public static class RacingAidUpdateDispatch
     private static readonly RacingAid RacingAid = RacingAidSingleton.Instance;
     private static readonly SynchronizationContext? SynchronizationContext = SynchronizationContext.Current;
 
+    private static readonly GeneralConfigSection GeneralConfigSection = ConfigSectionSingleton.GeneralSection;
+
     private static readonly AutoResetEvent InvokeUpdateAutoResetEvent = new(false);
     private static Thread? updateThread;
     private static bool keepThreadAlive;
     private static bool modelsUpdated;
 
-    public static event Action? Update;
-
     /// <remarks>
     /// If set to 0 or less the dispatch will trigger update whenever racing aid data 
     /// </remarks>
-    public static int UpdateRefreshRateMs { get; set; }
+    private static int updateIntervalMs = GeneralConfigSection.UpdateIntervalMs;
+
+    public static event Action? Update;
 
     public static void Start()
     {
@@ -30,9 +33,16 @@ public static class RacingAidUpdateDispatch
 
         updateThread = new Thread(UpdateLoop);
         RacingAid.ModelsUpdated += OnModelUpdated;
+
+        GeneralConfigSection.ConfigUpdated += OnConfigUpdated;
         
         keepThreadAlive = true;
         updateThread.Start();
+    }
+
+    private static void OnConfigUpdated()
+    {
+        updateIntervalMs = GeneralConfigSection.UpdateIntervalMs;
     }
 
     public static void Stop()
@@ -50,8 +60,8 @@ public static class RacingAidUpdateDispatch
     {
         while (keepThreadAlive)
         {
-            if (UpdateRefreshRateMs > 0)
-                Thread.Sleep(UpdateRefreshRateMs);
+            if (updateIntervalMs > 0)
+                Thread.Sleep(updateIntervalMs);
 
             var invokeUpdate = modelsUpdated;
             if (!invokeUpdate)
