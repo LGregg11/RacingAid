@@ -46,8 +46,10 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         }
     }
     
-    #region Timesheet config properties
-
+    #region Config properties
+    
+    #region Timesheet
+    
     public bool DisplayCarNumber
     {
         get => ConfigSectionSingleton.TimesheetSection.DisplayCarNumber;
@@ -127,6 +129,26 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
     }
     
     #endregion
+    
+    #region Telemetry
+    
+    public bool UseMetricUnits
+    {
+        get => ConfigSectionSingleton.TelemetrySection.UseMetricUnits;
+        set
+        {
+            if (ConfigSectionSingleton.TelemetrySection.UseMetricUnits == value)
+                return;
+            
+            ConfigSectionSingleton.TelemetrySection.UseMetricUnits = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    #endregion
+    
+    #endregion
+    
     
     public MainWindowViewModel()
     {

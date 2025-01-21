@@ -46,5 +46,10 @@
                 <CheckBox Content="Display Gap To Leader" IsChecked="{Binding DisplayGapToLeader}"/>
             </StackPanel>
         </GroupBox>
+        <GroupBox Grid.Row="1" Grid.Column="1" Header="Telemetry">
+            <StackPanel Orientation="Vertical">
+                <CheckBox Content="Use Metric Units" IsChecked="{Binding UseMetricUnits}"/>
+            </StackPanel>
+        </GroupBox>
     </Grid>
 </Window>
