@@ -2,15 +2,15 @@
 
 public class GeneralConfigSection(IConfig config) : ConfigSection(config, "General")
 {
-    public int PrimaryMonitor
+    public int PrimaryScreen
     {
-        get => GetInt(nameof(PrimaryMonitor), 1);
-        set => SetValue(nameof(PrimaryMonitor), value.ToString());
+        get => GetInt(nameof(PrimaryScreen), 1);
+        set => SetValue(nameof(PrimaryScreen), value.ToString());
     }
     
-    public int RefreshRateMs
+    public int UpdateIntervalMs
     {
-        get => GetInt(nameof(RefreshRateMs), 33);
-        set => SetValue(nameof(RefreshRateMs), value.ToString());
+        get => GetInt(nameof(UpdateIntervalMs), 33);
+        set => SetValue(nameof(UpdateIntervalMs), value.ToString());
     }
 }

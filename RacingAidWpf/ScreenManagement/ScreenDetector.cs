@@ -1,4 +1,5 @@
-﻿using RacingAidWpf.Configuration;
+﻿using System.Windows.Forms;
+using RacingAidWpf.Configuration;
 
 namespace RacingAidWpf.ScreenManagement;
 
@@ -8,18 +9,25 @@ namespace RacingAidWpf.ScreenManagement;
 public class ScreenDetector
 {
     private static readonly GeneralConfigSection GeneralConfigSection = ConfigSectionSingleton.GeneralSection;
+
+    /// <summary>
+    /// 1, 2, 3 (not 0, 1, 2)
+    /// </summary>
+    public int PrimaryScreen
+    {
+        get => GeneralConfigSection.PrimaryScreen;
+        set => GeneralConfigSection.PrimaryScreen = value;
+    }
     
-    private int primaryScreenIndex;
+    public IEnumerable<int> ValidScreens => Enumerable.Range(1, Screen.AllScreens.Length);
 
     public ScreenDetector()
     {
-        primaryScreenIndex = GeneralConfigSection.PrimaryMonitor - 1;
-
         GeneralConfigSection.ConfigUpdated += OnConfigUpdated;
     }
 
     private void OnConfigUpdated()
     {
-        primaryScreenIndex = GeneralConfigSection.PrimaryMonitor - 1;
+        
     }
 }
