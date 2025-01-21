@@ -5,7 +5,7 @@ using RacingAidWpf.Resources;
 
 namespace RacingAidWpf.OverlayManagement;
 
-public class OverlayPositionController
+public class OverlayController
 {
     private static readonly string OverlayPositionJsonPath =
         Path.Combine(Resource.ExecutingAssembly.Location, "Overlays", "OverlayPositions.json");
@@ -46,6 +46,7 @@ public class OverlayPositionController
 
     public void CloseAll()
     {
+        IsRepositioningEnabled = false;
         SaveOverlayPositions();
         
         foreach(var overlay in overlays)
