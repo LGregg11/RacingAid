@@ -150,7 +150,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         RacingAidSingleton.Instance.SetupSimulator(SelectedSimulatorEntry.SimulatorType);
         RacingAidSingleton.Instance.Start();
 
-        RacingAidUpdateDispatch.UpdateRefreshRateMs = 100;
+        RacingAidUpdateDispatch.UpdateRefreshRateMs = 33;
         RacingAidUpdateDispatch.Start();
         
         telemetryWindow = new TelemetryWindow();
