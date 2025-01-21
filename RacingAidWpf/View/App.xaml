@@ -6,6 +6,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <SolidColorBrush x:Key="DefaultBackgroundColor" Color="Transparent"/>
+            <SolidColorBrush x:Key="DefaultTelemetryBarColor" Color="Black"/>
             <SolidColorBrush x:Key="DefaultCanvasColor" Color="Black"/>
             <SolidColorBrush x:Key="DefaultTextColor" Color="White"/>
             
@@ -69,6 +70,8 @@
             </Style>
             
             <Style x:Key="DefaultProgressBar" TargetType="ProgressBar">
+                <Setter Property="Background" Value="{StaticResource DefaultTelemetryBarColor}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource DefaultTelemetryBarColor}"/>
                 <Setter Property="Orientation" Value="Vertical"/>
                 <Setter Property="Margin" Value="1,0"/>
                 <Setter Property="Width" Value="15"/>

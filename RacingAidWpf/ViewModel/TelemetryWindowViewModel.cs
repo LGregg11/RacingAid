@@ -1,5 +1,5 @@
 ﻿using System.Windows.Media.Imaging;
-using RacingAidWpf.Extensions;
+using RacingAidWpf.Configuration;
 using RacingAidWpf.Resources;
 
 namespace RacingAidWpf.ViewModel;
@@ -22,16 +22,16 @@ public class TelemetryWindowViewModel : NotifyPropertyChanged
         }
     }
 
-    private float speedKph;
-    public float SpeedKph
+    private float speedMetresPerSecond;
+    public float SpeedMetresPerSecond
     {
-        get => speedKph;
+        get => speedMetresPerSecond;
         private set
         {
-            if (Math.Abs(speedKph - value) < FloatTolerance)
+            if (Math.Abs(speedMetresPerSecond - value) < FloatTolerance)
                 return;
             
-            speedKph = value;
+            speedMetresPerSecond = value;
             OnPropertyChanged();
         }
     }
@@ -115,8 +115,10 @@ public class TelemetryWindowViewModel : NotifyPropertyChanged
     public TelemetryWindowViewModel()
     {
         RacingAidUpdateDispatch.Update += UpdateProperties;
+        
+        ConfigSectionSingleton.TelemetrySection.ConfigUpdated += OnConfigUpdated;
     }
-    
+
     private void UpdateProperties()
     {
         var telemetry = RacingAidSingleton.Instance.Telemetry;
@@ -124,12 +126,18 @@ public class TelemetryWindowViewModel : NotifyPropertyChanged
         ThrottlePercentage = telemetry.ThrottleInput;
         BrakePercentage = telemetry.BrakeInput;
         ClutchPercentage = 1f - telemetry.ClutchInput;
-        SpeedKph = telemetry.SpeedMetresPerSecond.ToKph();
+        SpeedMetresPerSecond = telemetry.SpeedMetresPerSecond;
         Gear = telemetry.Gear;
         SteeringAngleDegrees = telemetry.SteeringAngleDegrees;
         
         var fullName = RacingAidSingleton.Instance.Timesheet.LocalEntry?.FullName;
         if (!string.IsNullOrEmpty(fullName))
             DriverName = fullName;
+    }
+
+    private void OnConfigUpdated()
+    {
+        // Force trigger a speed property change
+        OnPropertyChanged(nameof(SpeedMetresPerSecond));
     }
 }
