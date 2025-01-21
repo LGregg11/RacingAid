@@ -11,4 +11,8 @@ public static class ConfigSectionSingleton
     private static TimesheetConfigSection? timesheetSection;
     public static TimesheetConfigSection TimesheetSection =>
         timesheetSection ??= new TimesheetConfigSection(Config);
+    
+    private static TelemetryConfigSection? telemetrySection;
+    public static TelemetryConfigSection TelemetrySection =>
+        telemetrySection ??= new TelemetryConfigSection(Config);
 }
