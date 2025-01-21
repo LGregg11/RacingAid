@@ -88,8 +88,11 @@ public class TelemetryWindowViewModel : NotifyPropertyChanged
             
             steeringAngleDegrees = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(SteeringWheelAngle));
         }
     }
+
+    public double SteeringWheelAngle => -1d * SteeringAngleDegrees;
 
     public BitmapImage SteeringWheelImage => new(Resource.SteeringWheelUri);
 
