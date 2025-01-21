@@ -17,6 +17,7 @@
                 <Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}"/>
                 <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}"/>
                 <Setter Property="FontSize" Value="{StaticResource DefaultFontSize}"/>
+                <Setter Property="Margin" Value="10,5"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="HorizontalAlignment" Value="Center"/>
             </Style>
@@ -24,6 +25,7 @@
                 <Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}"/>
                 <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}"/>
                 <Setter Property="FontSize" Value="{StaticResource DefaultFontSize}"/>
+                <Setter Property="Margin" Value="10,5"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="HorizontalAlignment" Value="Center"/>
             </Style>
