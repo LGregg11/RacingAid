@@ -1,10 +1,11 @@
-﻿<Window x:Class="RacingAidWpf.View.TelemetryWindow"
+﻿<overlays:Overlay x:Class="RacingAidWpf.View.TelemetryWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:converters="clr-namespace:RacingAidWpf.Converters"
         xmlns:viewModel="clr-namespace:RacingAidWpf.ViewModel"
+        xmlns:overlays="clr-namespace:RacingAidWpf.WindowManagement.Overlays"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModel:TelemetryWindowViewModel}"
         Title="Telemetry Tests"
@@ -13,13 +14,13 @@
         WindowStyle="None"
         Topmost="True"
         AllowsTransparency="True">
-    <Window.Resources>
+    <overlays:Overlay.Resources>
         <converters:SpeedConverter x:Key="SpeedConverter"/>
         <converters:GearConverter x:Key="GearConverter"/>
-    </Window.Resources>
-    <Window.Background>
+    </overlays:Overlay.Resources>
+    <overlays:Overlay.Background>
         <SolidColorBrush Color="Transparent"/>
-    </Window.Background>
+    </overlays:Overlay.Background>
     <Grid x:Name="TelemetryGrid" MouseDown="TelemetryGrid_OnMouseDown">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -53,4 +54,4 @@
             <TextBlock Grid.Row="1" Style="{StaticResource DefaultTextBlock}" TextAlignment="Center" FontWeight="ExtraBold" FontSize="40" Foreground="Goldenrod" Text="{Binding Gear, Converter={StaticResource GearConverter}}"/>
         </Grid>
     </Grid>
-</Window>
+</overlays:Overlay>

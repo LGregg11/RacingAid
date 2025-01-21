@@ -5,7 +5,7 @@ using RacingAidWpf.Resources;
 
 namespace RacingAidWpf.ViewModel;
 
-public class TelemetryWindowViewModel : NotifyPropertyChanged
+public class TelemetryOverlayViewModel : NotifyPropertyChanged
 {
     private const float FloatTolerance = 0.01f;
     
@@ -116,7 +116,7 @@ public class TelemetryWindowViewModel : NotifyPropertyChanged
 
     public BitmapImage SteeringWheelImage => new(Resource.SteeringWheelUri);
 
-    public TelemetryWindowViewModel()
+    public TelemetryOverlayViewModel()
     {
         RacingAidUpdateDispatch.Update += UpdateProperties;
         

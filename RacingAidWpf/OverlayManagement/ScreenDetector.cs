@@ -1,7 +1,7 @@
 ﻿using System.Windows.Forms;
 using RacingAidWpf.Configuration;
 
-namespace RacingAidWpf.WindowManagement;
+namespace RacingAidWpf.OverlayManagement;
 
 /// <summary>
 /// Use this class to determine which monitor to use and where to place windows
