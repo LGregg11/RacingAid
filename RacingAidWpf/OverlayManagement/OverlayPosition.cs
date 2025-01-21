@@ -2,12 +2,12 @@
 
 public class OverlayPosition(string name, Position position)
 {
-    public string Name { get; init; } = name;
-    public Position Position { get; init; } = position;
+    public string Name { get; } = name;
+    public Position Position { get; } = position;
 }
 
-public class Position(int top, int left)
+public class Position(double top, double left)
 {
-    public int Top { get; init; } = top;
-    public int Left { get; init; } = left;
+    public double Top { get; } = top;
+    public double Left { get; } = left;
 }

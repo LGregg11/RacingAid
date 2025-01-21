@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Windows.Input;
 using Newtonsoft.Json;
 using RacingAidWpf.Resources;
 
@@ -10,7 +9,7 @@ public class OverlayController
     private static readonly string OverlayPositionJsonPath =
         Path.Combine(Resource.ExecutingAssembly.Location, "Overlays", "OverlayPositions.json");
     
-    private readonly List<IOverlay> overlays = [];
+    private readonly List<Overlay> overlays = [];
     private bool isRepositionEnabled;
 
     public bool IsRepositioningEnabled
@@ -22,15 +21,18 @@ public class OverlayController
             
             foreach (var overlay in overlays)
                 overlay.IsRepositionEnabled = isRepositionEnabled;
+            
+            if (!isRepositionEnabled)
+                SaveOverlayPositions();
         }
     }
 
-    public void AddOverlay(IOverlay overlay)
+    public void AddOverlay(Overlay overlay)
     {
         overlays.Add(overlay);
     }
 
-    public void RemoveOverlay(IOverlay overlay)
+    public void RemoveOverlay(Overlay overlay)
     {
         overlay.Close();
         overlays.Remove(overlay);
@@ -47,7 +49,6 @@ public class OverlayController
     public void CloseAll()
     {
         IsRepositioningEnabled = false;
-        SaveOverlayPositions();
         
         foreach(var overlay in overlays)
             overlay.Close();
@@ -60,7 +61,7 @@ public class OverlayController
 
         foreach (var overlay in overlays)
         {
-            if (overlayPositions.FirstOrDefault(o => o.Name == overlay.Name) is not { } overlayPosition)
+            if (overlayPositions.FirstOrDefault(o => o.Name == overlay.OverlayName) is not { } overlayPosition)
                 continue;
             
             overlay.TopPosition = overlayPosition.Position.Top;
@@ -76,6 +77,6 @@ public class OverlayController
             File.WriteAllTextAsync(OverlayPositionJsonPath, overlayPositionsJsonString);
     }
 
-    private static OverlayPosition CreateOverlayPosition(IOverlay overlay) =>
-        new(overlay.Name, new Position(overlay.TopPosition, overlay.LeftPosition));
+    private static OverlayPosition CreateOverlayPosition(Overlay overlay) =>
+        new(overlay.OverlayName, new Position(overlay.TopPosition, overlay.LeftPosition));
 }

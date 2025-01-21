@@ -9,21 +9,16 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModel:TimesheetOverlayViewModel}"
         Title="Timesheet"
-        SizeToContent="WidthAndHeight"
         MaxWidth="800"
         MaxHeight="500"
-        WindowStartupLocation="CenterScreen"
+        SizeToContent="WidthAndHeight"
         WindowStyle="None"
         Topmost="True"
-        AllowsTransparency="True">
-    <overlayManagement:Overlay.Background>
-        <SolidColorBrush Color="Transparent"/>
-    </overlayManagement:Overlay.Background>
+        MouseLeftButtonDown="OnMouseLeftButtonDown">
     <overlayManagement:Overlay.Resources>
         <converters:LapTimeConverter x:Key="LapTimeConverter"/>
     </overlayManagement:Overlay.Resources>
-    
-    <Grid x:Name="DriversGrid" MouseDown="DriversGrid_OnMouseDown">
+    <Grid>
         
         <Canvas Style="{StaticResource DefaultCanvasStyle}"/>
         <FrameworkElement x:Name="dummyElement" Visibility="Collapsed"/>
