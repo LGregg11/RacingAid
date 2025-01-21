@@ -10,15 +10,15 @@ namespace RacingAidWpf.ViewModel;
 
 public sealed class MainWindowViewModel : NotifyPropertyChanged
 {
-    private TelemetryOverlay? telemetryWindow;
-    private TimesheetOverlay? driversWindow;
-    
     private readonly GeneralConfigSection generalConfigSection = ConfigSectionSingleton.GeneralSection;
     private readonly TimesheetConfigSection timesheetConfigSection = ConfigSectionSingleton.TimesheetSection;
     private readonly TelemetryConfigSection telemetryConfigSection = ConfigSectionSingleton.TelemetrySection;
     
+    private readonly OverlayController overlayController;
+    
     public ICommand StartCommand { get; }
     public ICommand StopCommand { get; }
+    public ICommand MoveOverlaysToggleCommand { get; }
 
     private bool isStarted;
     public bool IsStarted
@@ -189,6 +189,10 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
     
     public MainWindowViewModel()
     {
+        overlayController = new OverlayController();
+        overlayController.AddOverlay(new TelemetryOverlay());
+        overlayController.AddOverlay(new TimesheetOverlay());
+            
         var simulatorEntries = new List<SimulatorEntryModel>
         {
             new(Enum.GetName(Simulator.iRacing), Simulator.iRacing),
@@ -203,6 +207,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         
         StartCommand = new Command(Start);
         StopCommand = new Command(Stop);
+        MoveOverlaysToggleCommand = new Command(ToggleOverlayRepositioning);
     }
 
     private void Start()
@@ -214,21 +219,23 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
 
         RacingAidUpdateDispatch.Start();
         
-        telemetryWindow = new TelemetryOverlay();
-        telemetryWindow.Show();
-        
-        driversWindow = new TimesheetOverlay();
-        driversWindow.Show();
+        overlayController.ShowAll();
     }
 
     private void Stop()
     {
         RacingAidSingleton.Instance.Stop();
         RacingAidUpdateDispatch.Stop();
-        
-        telemetryWindow?.Close();
-        driversWindow?.Close();
+
+        overlayController.IsRepositioningEnabled = false;
+        overlayController.CloseAll();
 
         IsStarted = false;
+    }
+
+    private void ToggleOverlayRepositioning()
+    {
+        if (IsStarted)
+            overlayController.IsRepositioningEnabled = !overlayController.IsRepositioningEnabled;
     }
 }

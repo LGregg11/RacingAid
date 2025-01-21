@@ -16,8 +16,7 @@ public sealed partial class MainWindow
         
         DataContext = mainWindowViewModel;
     }
-
-
+    
     private void MainWindow_OnClosed(object? sender, EventArgs e)
     {
         StopButton.Command.Execute(sender);
