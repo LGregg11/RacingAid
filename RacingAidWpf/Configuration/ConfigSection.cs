@@ -17,7 +17,7 @@ public class ConfigSection(IConfig config, string section)
         return value;
     }
     
-    protected double GetInt(string key, int defaultValue = 0)
+    protected int GetInt(string key, int defaultValue = 0)
     {
         if (!config.TryGetInt(section, key, out var configValue))
         {
