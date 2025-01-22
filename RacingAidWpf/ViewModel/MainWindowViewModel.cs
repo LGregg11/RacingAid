@@ -54,21 +54,6 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
     #region Config properties
     
     #region General
-
-    public ObservableCollection<int> Screens { get; private set; }
-    
-    public int SelectedPrimaryScreen
-    {
-        get => ScreenDetector.PrimaryScreen;
-        set
-        {
-            if (ScreenDetector.PrimaryScreen == value)
-                return;
-
-            ScreenDetector.PrimaryScreen = value;
-            OnPropertyChanged();
-        }
-    }
     
     public int UpdateIntervalMs
     {
@@ -201,9 +186,6 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
 
         SimulatorEntryCollection = new ObservableCollection<SimulatorEntryModel>(simulatorEntries);
         SelectedSimulatorEntry = simulatorEntries.First();
-
-        Screens = new ObservableCollection<int>(ScreenDetector.ValidScreens);
-        SelectedPrimaryScreen = Screens.First();
         
         StartCommand = new Command(Start);
         StopCommand = new Command(Stop);
