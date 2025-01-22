@@ -6,8 +6,10 @@ namespace RacingAidWpf.OverlayManagement;
 
 public class OverlayController
 {
-    private static readonly string OverlayPositionJsonPath =
-        Path.Combine(Resource.ExecutingAssembly.Location, "Overlays", "OverlayPositions.json");
+    private static readonly string OverlayPositionsJsonDirectory =
+        Path.Combine(Resource.ExecutingDirectory, "Overlays");
+    private static readonly string OverlayPositionsJsonFullPath =
+        Path.Combine(OverlayPositionsJsonDirectory, "OverlayPositions.json");
     
     private readonly List<Overlay> overlays = [];
     private bool isRepositionEnabled;
@@ -17,8 +19,10 @@ public class OverlayController
         get => isRepositionEnabled;
         set
         {
-            isRepositionEnabled = value;
+            if (isRepositionEnabled == value)
+                return;
             
+            isRepositionEnabled = value;
             foreach (var overlay in overlays)
                 overlay.IsRepositionEnabled = isRepositionEnabled;
             
@@ -46,17 +50,32 @@ public class OverlayController
             overlay.Show();
     }
 
+    public void HideAll()
+    {
+        IsRepositioningEnabled = false;
+
+        foreach (var overlay in overlays)
+            overlay.Hide();
+    }
+
     public void CloseAll()
     {
         IsRepositioningEnabled = false;
-        
-        foreach(var overlay in overlays)
+
+        foreach (var overlay in overlays)
             overlay.Close();
+
+        overlays.Clear();
     }
 
     private void LoadOverlayPositions()
     {
-        if (JsonConvert.DeserializeObject<List<OverlayPosition>>(OverlayPositionJsonPath) is not { } overlayPositions)
+        if (!File.Exists(OverlayPositionsJsonFullPath))
+            return;
+
+        var overlayPositionsJsonString = File.ReadAllText(OverlayPositionsJsonFullPath);
+        
+        if (JsonConvert.DeserializeObject<List<OverlayPosition>>(overlayPositionsJsonString) is not { } overlayPositions)
             return;
 
         foreach (var overlay in overlays)
@@ -71,10 +90,15 @@ public class OverlayController
 
     private void SaveOverlayPositions()
     {
-        var overlayPositions = overlays.Select(CreateOverlayPosition).ToList();
+        List<OverlayPosition> overlayPositions = overlays.Select(CreateOverlayPosition).ToList();
 
-        if (JsonConvert.SerializeObject(overlayPositions) is { } overlayPositionsJsonString)
-            File.WriteAllTextAsync(OverlayPositionJsonPath, overlayPositionsJsonString);
+        if (JsonConvert.SerializeObject(overlayPositions, Formatting.Indented) is { } overlayPositionsJsonString)
+        {
+            if (!Directory.Exists(OverlayPositionsJsonDirectory))
+                Directory.CreateDirectory(OverlayPositionsJsonDirectory);
+            
+            File.WriteAllTextAsync(OverlayPositionsJsonFullPath, overlayPositionsJsonString);
+        }
     }
 
     private static OverlayPosition CreateOverlayPosition(Overlay overlay) =>
