@@ -49,7 +49,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Margin="2,0"
                                Text="Update Interval (ms)"/>
-                    <TextBox VerticalAlignment="Center" VerticalContentAlignment="Center" Height="20" Width="25" Margin="2,0"
+                    <TextBox VerticalAlignment="Center" VerticalContentAlignment="Center" Height="20" Width="40" Margin="2,0"
                              Text="{Binding UpdateIntervalMs}"/> 
                 </StackPanel>
             </StackPanel>

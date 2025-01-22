@@ -21,6 +21,7 @@
     </overlayManagement:Overlay.Background>
     <overlayManagement:Overlay.Resources>
         <converters:LapTimeConverter x:Key="LapTimeConverter"/>
+        <converters:GapConverter x:Key="GapConverter"/>
     </overlayManagement:Overlay.Resources>
     <Grid>
         
@@ -42,7 +43,7 @@
                 <DataGridTextColumn Header="Skill" Binding="{Binding SkillRating}" Width="1*" Visibility="{Binding DataContext.SkillColumnVisibility, Source={x:Reference DummyElement}}"/>
                 <DataGridTextColumn Header="Last Lap" Binding="{Binding LastLapTimeMs, Converter={StaticResource LapTimeConverter}}" Width="2*" Visibility="{Binding DataContext.LastLapColumnVisibility, Source={x:Reference DummyElement}}"/>
                 <DataGridTextColumn Header="Fastest Lap" Binding="{Binding FastestLapTimeMs, Converter={StaticResource LapTimeConverter}}" Width="2*" Visibility="{Binding DataContext.FastestLapColumnVisibility, Source={x:Reference DummyElement}}"/>
-                <DataGridTextColumn Header="Leader" Binding="{Binding DeltaToLeaderMs}" Width="1*" Visibility="{Binding DataContext.GapToLeaderColumnVisibility, Source={x:Reference DummyElement}}"/>
+                <DataGridTextColumn Header="Leader" Binding="{Binding DeltaToLeaderMs, Converter={StaticResource GapConverter}}" Width="1*" Visibility="{Binding DataContext.GapToLeaderColumnVisibility, Source={x:Reference DummyElement}}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

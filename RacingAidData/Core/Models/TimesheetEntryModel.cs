@@ -48,6 +48,11 @@ public class TimesheetEntryModel
     public int FastestLapMs { get; init; }
     
     /// <summary>
+    /// Gap to leader in milliseconds
+    /// </summary>
+    public int GapToLeaderMs { get; set; }
+    
+    /// <summary>
     /// Laps driven
     /// </summary>
     public int LapsDriven { get; init; }
