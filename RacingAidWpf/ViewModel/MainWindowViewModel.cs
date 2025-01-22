@@ -210,6 +210,12 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         MoveOverlaysToggleCommand = new Command(ToggleOverlayRepositioning);
     }
 
+    public void Close()
+    {
+        Stop();
+        overlayController.CloseAll();
+    }
+
     private void Start()
     {
         IsStarted = true;
@@ -228,7 +234,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         RacingAidUpdateDispatch.Stop();
 
         overlayController.IsRepositioningEnabled = false;
-        overlayController.CloseAll();
+        overlayController.HideAll();
 
         IsStarted = false;
     }

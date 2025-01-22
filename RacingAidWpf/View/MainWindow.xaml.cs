@@ -19,7 +19,7 @@ public sealed partial class MainWindow
     
     private void MainWindow_OnClosed(object? sender, EventArgs e)
     {
-        StopButton.Command.Execute(sender);
+        mainWindowViewModel.Close();
         Application.Current.Shutdown();
     }
 }
