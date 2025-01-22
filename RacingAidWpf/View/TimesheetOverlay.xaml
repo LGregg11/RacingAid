@@ -14,7 +14,11 @@
         SizeToContent="WidthAndHeight"
         WindowStyle="None"
         Topmost="True"
+        AllowsTransparency="True"
         MouseLeftButtonDown="OnMouseLeftButtonDown">
+    <overlayManagement:Overlay.Background>
+        <SolidColorBrush Color="Transparent"/>
+    </overlayManagement:Overlay.Background>
     <overlayManagement:Overlay.Resources>
         <converters:LapTimeConverter x:Key="LapTimeConverter"/>
     </overlayManagement:Overlay.Resources>
