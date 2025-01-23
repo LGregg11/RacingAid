@@ -14,9 +14,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
     private readonly TimesheetConfigSection timesheetConfigSection = ConfigSectionSingleton.TimesheetSection;
     private readonly RelativeConfigSection relativeConfigSection = ConfigSectionSingleton.RelativeSection;
     private readonly TelemetryConfigSection telemetryConfigSection = ConfigSectionSingleton.TelemetrySection;
-
-    // Exposing this as public for the Tests
-    public readonly OverlayController overlayController;
+    private readonly OverlayController overlayController;
 
     public ICommand StartCommand { get; }
     public ICommand StopCommand { get; }
