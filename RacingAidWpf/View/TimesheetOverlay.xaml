@@ -31,7 +31,6 @@
         <DataGrid ItemsSource="{Binding Timesheet}"
                   Style="{StaticResource DefaultDataGridStyle}"
                   ColumnHeaderStyle="{StaticResource DefaultDataGridColumnHeaderStyle}"
-                  RowStyle="{StaticResource DefaultDataGridRowStyle}"
                   AutoGenerateColumns="False"
                   VerticalScrollBarVisibility="Hidden"
                   HorizontalScrollBarVisibility="Hidden">
@@ -45,6 +44,15 @@
                 <DataGridTextColumn Header="Fastest Lap" Binding="{Binding FastestLapTimeMs, Converter={StaticResource LapTimeConverter}}" Width="2*" Visibility="{Binding DataContext.FastestLapColumnVisibility, Source={x:Reference DummyElement}}"/>
                 <DataGridTextColumn Header="Leader" Binding="{Binding DeltaToLeaderMs, Converter={StaticResource GapConverter}}" Width="1*" Visibility="{Binding DataContext.GapToLeaderColumnVisibility, Source={x:Reference DummyElement}}"/>
             </DataGrid.Columns>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow" BasedOn="{StaticResource DefaultDataGridRowStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsLocal}" Value="True">
+                            <Setter Property="Foreground" Value="Yellow"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
         </DataGrid>
     </Grid>
 </overlayManagement:Overlay>
