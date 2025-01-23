@@ -18,7 +18,7 @@ public class GapConverter : IValueConverter
         
         var time = TimeSpan.FromMilliseconds(timeMs);
         var timeStr = time.Minutes > 0
-            ? $"{time.Minutes * 60 + time.Seconds:D3}.{time.Milliseconds / 100}"
+            ? $"{time.Minutes}:{time.Seconds:D2}"
             : $"{time.Seconds}.{time.Milliseconds / 100}";
         
         return $"{signStr}{timeStr}";
