@@ -8,7 +8,7 @@ namespace RacingAidWpf.ViewModel;
 
 public class TimesheetOverlayViewModel : NotifyPropertyChanged
 {
-    private readonly TimesheetConfigSection TimesheetConfigSection = ConfigSectionSingleton.TimesheetSection;
+    private static readonly TimesheetConfigSection TimesheetConfigSection = ConfigSectionSingleton.TimesheetSection;
     
     private ObservableCollection<TimesheetGridRow> timesheet = [];
     public ObservableCollection<TimesheetGridRow> Timesheet
