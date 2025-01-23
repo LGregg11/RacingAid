@@ -11,11 +11,11 @@ public class TimesheetGridRow(
     int lastLapTimeMs = 0,
     int fastestLapTimeMs = 0,
     int deltaToLeaderMs = 0,
-    bool inPits = true) : IEquatable<TimesheetGridRow>
+    bool isLocal = false,
+    bool inPits = false) : IEquatable<TimesheetGridRow>
 {
     public string CarModel { get; } = carModel;
     public int CarNumber { get; } = carNumber;
-    
     public int PositionOverall { get; set; } = position;
     public int PositionInClass { get; set; } = positionInClass;
     public string FullName { get; set; } = name;
@@ -24,6 +24,7 @@ public class TimesheetGridRow(
     public int LastLapTimeMs { get; set; } = lastLapTimeMs;
     public int FastestLapTimeMs { get; set; } = fastestLapTimeMs;
     public int DeltaToLeaderMs { get; set; } = deltaToLeaderMs;
+    public bool IsLocal { get; set; } = isLocal;
 
     public bool InPits { get; set; } = inPits;
 

@@ -72,7 +72,8 @@ public class TimesheetOverlayViewModel : NotifyPropertyChanged
                     driver.CarNumber,
                     driver.LastLapMs,
                     driver.FastestLapMs,
-                    driver.GapToLeaderMs));
+                    driver.GapToLeaderMs,
+                    driver.IsLocal));
         }
 
         Timesheet = newTimesheet;

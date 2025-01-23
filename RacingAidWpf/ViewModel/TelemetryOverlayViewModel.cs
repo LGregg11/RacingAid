@@ -141,7 +141,7 @@ public class TelemetryOverlayViewModel : NotifyPropertyChanged
 
     private void OnConfigUpdated()
     {
-        // Force trigger a speed property change
+        // Force trigger a speed property change to update the units used in the view
         OnPropertyChanged(nameof(SpeedMetresPerSecond));
     }
 }
