@@ -2,6 +2,12 @@
 
 public class TimesheetConfigSection(IConfig config) : ConfigSection(config, "Timesheet")
 {
+    public int MaxPositions
+    {
+        get => GetInt(nameof(MaxPositions), 10);
+        set => SetValue(nameof(MaxPositions), value.ToString());
+    }
+    
     public bool DisplayCarNumber
     {
         get => GetBool(nameof(DisplayCarNumber));

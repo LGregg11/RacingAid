@@ -2,12 +2,15 @@
 using System.Windows;
 using RacingAidData.Core.Models;
 using RacingAidWpf.Configuration;
+using RacingAidWpf.Extensions;
 using RacingAidWpf.Model;
 
 namespace RacingAidWpf.ViewModel;
 
 public class RelativeOverlayViewModel : NotifyPropertyChanged
 {
+    private static readonly RelativeConfigSection RelativeConfigSection = ConfigSectionSingleton.RelativeSection;
+    
     private ObservableCollection<RelativeGridRow> relative = [];
     public ObservableCollection<RelativeGridRow> Relative
     {
@@ -24,12 +27,12 @@ public class RelativeOverlayViewModel : NotifyPropertyChanged
     
     #region Visibility properties
 
-    public Visibility CarNumberColumnVisibility => ConfigSectionSingleton.RelativeSection.DisplayCarNumber ? Visibility.Visible : Visibility.Hidden;
-    public Visibility SafetyColumnVisibility => ConfigSectionSingleton.RelativeSection.DisplaySafetyRating ? Visibility.Visible : Visibility.Hidden;
-    public Visibility SkillColumnVisibility => ConfigSectionSingleton.RelativeSection.DisplaySkillRating ? Visibility.Visible : Visibility.Hidden;
-    public Visibility LastLapColumnVisibility => ConfigSectionSingleton.RelativeSection.DisplayLastLap ? Visibility.Visible : Visibility.Hidden;
-    public Visibility FastestLapColumnVisibility => ConfigSectionSingleton.RelativeSection.DisplayFastestLap ? Visibility.Visible : Visibility.Hidden;
-    public Visibility DeltaToLocalColumnVisibility => ConfigSectionSingleton.RelativeSection.DisplayGapToLocal ? Visibility.Visible : Visibility.Hidden;
+    public Visibility CarNumberColumnVisibility => RelativeConfigSection.DisplayCarNumber.ToVisibility();
+    public Visibility SafetyColumnVisibility => RelativeConfigSection.DisplaySafetyRating.ToVisibility();
+    public Visibility SkillColumnVisibility => RelativeConfigSection.DisplaySkillRating.ToVisibility();
+    public Visibility LastLapColumnVisibility => RelativeConfigSection.DisplayLastLap.ToVisibility();
+    public Visibility FastestLapColumnVisibility => RelativeConfigSection.DisplayFastestLap.ToVisibility();
+    public Visibility DeltaToLocalColumnVisibility => RelativeConfigSection.DisplayGapToLocal.ToVisibility();
     
     #endregion
     
@@ -37,7 +40,7 @@ public class RelativeOverlayViewModel : NotifyPropertyChanged
     {
         RacingAidUpdateDispatch.Update += UpdateProperties;
 
-        ConfigSectionSingleton.RelativeSection.ConfigUpdated += OnConfigUpdated;
+        RelativeConfigSection.ConfigUpdated += OnConfigUpdated;
     }
 
     private void UpdateProperties()
@@ -63,11 +66,11 @@ public class RelativeOverlayViewModel : NotifyPropertyChanged
         
         var currentDriver = relativeModel.LocalEntry ?? relativeModelEntries.First();
         var newRelativeGridRows = CreateOrderedRelativeGridRowsByLapDistance(relativeModelEntries, currentDriver);
-        
-        const int maxEntriesToDisplayAheadOrBehind = 3;
+
+        var entriesAheadOrBehind = RelativeConfigSection.MaxPositionsAheadOrBehind;
         var currentDriverIndex = newRelativeGridRows.FindIndex(r => r.CarNumber == currentDriver.CarNumber);
-        var minEntryIndex = Math.Max(currentDriverIndex - maxEntriesToDisplayAheadOrBehind, 0);
-        var maxEntryIndex = Math.Min(currentDriverIndex + maxEntriesToDisplayAheadOrBehind, newRelativeGridRows.Count - 1);
+        var minEntryIndex = Math.Max(currentDriverIndex - entriesAheadOrBehind, 0);
+        var maxEntryIndex = Math.Min(currentDriverIndex + entriesAheadOrBehind + 1, newRelativeGridRows.Count - 1);
 
         var relativeGridRowsToDisplay = newRelativeGridRows.GetRange(minEntryIndex, maxEntryIndex - minEntryIndex);
 
