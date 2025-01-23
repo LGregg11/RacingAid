@@ -16,15 +16,27 @@ public class iRacingDataDeserializer : IDeserializeData
             return false;
 
         // Timesheet data
-        if (CreateTimesheetEntries(iRacingData) is { Count: > 0 } entries)
+        if (CreateTimesheetEntries(iRacingData) is { Count: > 0 } timesheetEntries)
         {
             var timesheetModel = new TimesheetModel
             {
-                Entries = entries,
-                LocalEntry = entries.FirstOrDefault(e => e.IsLocal)
+                Entries = timesheetEntries,
+                LocalEntry = timesheetEntries.FirstOrDefault(e => e.IsLocal)
             };
     
             models.Add(timesheetModel);
+        }
+
+        // Relative data
+        if (CreateRelativeEntries(iRacingData) is { Count: > 0 } relativeEntries)
+        {
+            var relativeModel = new RelativeModel
+            {
+                Entries = relativeEntries,
+                LocalEntry = relativeEntries.FirstOrDefault(e => e.IsLocal)
+            };
+                
+            models.Add(relativeModel);
         }
         
         // Telemetry data
@@ -89,6 +101,52 @@ public class iRacingDataDeserializer : IDeserializeData
         return timesheetEntries;
     }
 
+    private static List<RelativeEntryModel> CreateRelativeEntries(IRacingSdkData iRacingData)
+    {
+        var relativeEntries = new List<RelativeEntryModel>();
+        if (iRacingData.SessionInfo?.DriverInfo is not { Drivers: { Count: > 0 } drivers} driverInfo)
+            return relativeEntries;
+
+        var localCarIdx = driverInfo.DriverCarIdx;
+        var resultsPositions = iRacingData.SessionInfo.SessionInfo.Sessions.LastOrDefault()?.ResultsPositions;
+
+        // Loop through position results to ensure the position order is correct - can grab necessary driver info
+        foreach (var driver in drivers.OrderBy(d => GetOverallPosition(iRacingData, d.CarIdx)))
+        {
+            if (!int.TryParse(driver.CarNumber, out var carNumber))
+                carNumber = -1;
+
+            var carIdx = driver.CarIdx;
+
+            IRacingSdkSessionInfo.SessionInfoModel.SessionModel.PositionModel resultPosition = new();
+            var hasResult = false;
+            if (resultsPositions?.FirstOrDefault(t => t.CarIdx == carIdx) is { } position)
+            {
+                hasResult = true;
+                resultPosition = position;
+            }
+
+            relativeEntries.Add(new RelativeEntryModel
+            {
+                FullName = driver.UserName,
+                CarModel = driver.CarScreenName,
+                CarNumber = carNumber, 
+                SkillRating = driver.IRating.ToString(),
+                SafetyRating = driver.LicString,
+                OverallPosition = GetOverallPosition(iRacingData, carIdx), // might not have a 'result' yet
+                ClassPosition = GetClassPosition(iRacingData, carIdx), // might not have a 'result' yet
+                LapsDriven = hasResult ? resultPosition.LapsDriven : 0,
+                LastLapMs = hasResult ? (int)(resultPosition.LastTime * 1000) : 0,
+                FastestLapMs = hasResult ? (int)(resultPosition.FastestTime * 1000) : 0,
+                GapToLocalMs = GetGapToLocalMs(iRacingData, localCarIdx, carIdx),
+                LapDistancePercentage = GetLapDistancePercentage(iRacingData, carIdx),
+                IsLocal = carIdx == driverInfo.DriverCarIdx
+            });
+        }
+
+        return relativeEntries;
+    }
+
     private static RaceDataModel CreateTelemetryModel(IRacingSdkData iRacingData)
     {
         return new TelemetryModel
@@ -106,5 +164,31 @@ public class iRacingDataDeserializer : IDeserializeData
     private static int GetGapToLeaderMs(IRacingSdkData iRacingData, int carIdx)
     {
         return (int)(iRacingData.GetFloat("CarIdxF2Time", carIdx) * 1000f);
+    }
+
+    private static int GetGapToLocalMs(IRacingSdkData iRacingData, int localCarIdx, int carIdx)
+    {
+        return GetEstTimeToPositionOnTrackMs(iRacingData, localCarIdx) -
+               GetEstTimeToPositionOnTrackMs(iRacingData, carIdx);
+    }
+
+    private static int GetEstTimeToPositionOnTrackMs(IRacingSdkData iRacingData, int carIdx)
+    {
+        return (int)(iRacingData.GetFloat("CarIdxEstTime", carIdx) * 1000f);
+    }
+    
+    private static float GetLapDistancePercentage(IRacingSdkData iRacingData, int carIdx)
+    {
+        return iRacingData.GetFloat("CarIdxLapDistPct", carIdx);
+    }
+
+    private static int GetOverallPosition(IRacingSdkData iRacingData, int carIdx)
+    {
+        return iRacingData.GetInt("CarIdxPosition", carIdx);
+    }
+
+    private static int GetClassPosition(IRacingSdkData iRacingData, int carIdx)
+    {
+        return iRacingData.GetInt("CarIdxClassPosition", carIdx);
     }
 }

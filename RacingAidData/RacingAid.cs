@@ -51,6 +51,21 @@ public class RacingAid
             modelsHaveUpdated = true;
         }
     }
+
+    private RelativeModel relative = new();
+
+    public RelativeModel Relative
+    {
+        get => relative;
+        private set
+        {
+            if (relative == value)
+                return;
+            
+            relative = value;
+            modelsHaveUpdated = true;
+        }
+    }
     
     private TelemetryModel telemetry = new();
 
@@ -133,6 +148,9 @@ public class RacingAid
                 break;
             case TelemetryModel telemetryModel:
                 Telemetry = telemetryModel;
+                break;
+            case RelativeModel relativeModel:
+                Relative = relativeModel;
                 break;
         }
     }
