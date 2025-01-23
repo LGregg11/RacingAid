@@ -22,6 +22,7 @@
     <overlayManagement:Overlay.Resources>
         <converters:LapTimeConverter x:Key="LapTimeConverter"/>
         <converters:GapConverter x:Key="GapConverter"/>
+        <converters:PositionConverter x:Key="PositionConverter"/>
     </overlayManagement:Overlay.Resources>
     <Grid>
         
@@ -35,7 +36,7 @@
                   VerticalScrollBarVisibility="Hidden"
                   HorizontalScrollBarVisibility="Hidden">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Pos." Binding="{Binding PositionOverall}" Width="1*"/>
+                <DataGridTextColumn Header="Pos." Binding="{Binding PositionOverall, Converter={StaticResource PositionConverter}}" Width="1*"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="4*"/>
                 <DataGridTextColumn Header="No." Binding="{Binding CarNumber}" Width="1*" Visibility="{Binding DataContext.CarNumberColumnVisibility, Source={x:Reference DummyElement}}"/>
                 <DataGridTextColumn Header="Safety" Binding="{Binding SafetyRating}" Width="1*" Visibility="{Binding DataContext.SafetyColumnVisibility, Source={x:Reference DummyElement}}"/>
