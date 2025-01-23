@@ -17,8 +17,6 @@ namespace RacingAidWpf.Tests.ViewModel
         [SetUp]
         public void Setup()
         {
-
-
             // Mock the OverlayController
             _overlayControllerMock = new Mock<OverlayController>();
 
