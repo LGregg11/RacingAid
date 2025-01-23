@@ -14,9 +14,10 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
     private readonly TimesheetConfigSection timesheetConfigSection = ConfigSectionSingleton.TimesheetSection;
     private readonly RelativeConfigSection relativeConfigSection = ConfigSectionSingleton.RelativeSection;
     private readonly TelemetryConfigSection telemetryConfigSection = ConfigSectionSingleton.TelemetrySection;
-    
-    private readonly OverlayController overlayController;
-    
+
+    // Exposing this as public for the Tests
+    public readonly OverlayController overlayController;
+
     public ICommand StartCommand { get; }
     public ICommand StopCommand { get; }
     public ICommand MoveOverlaysToggleCommand { get; }
@@ -32,11 +33,11 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
             OnPropertyChanged(nameof(IsStopped));
         }
     }
-    
+
     public bool IsStopped => !IsStarted;
 
     public ObservableCollection<SimulatorEntryModel> SimulatorEntryCollection { get; private set; }
-    
+
     private SimulatorEntryModel selectedSimulatorEntry = new("N/A", Simulator.Unknown);
 
     public SimulatorEntryModel SelectedSimulatorEntry
@@ -51,11 +52,11 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-    
+
     #region Config properties
-    
+
     #region General
-    
+
     public int UpdateIntervalMs
     {
         get => generalConfigSection.UpdateIntervalMs;
@@ -68,11 +69,11 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-    
+
     #endregion
-    
+
     #region Timesheet
-    
+
     public bool DisplayCarNumber
     {
         get => timesheetConfigSection.DisplayCarNumber;
@@ -80,7 +81,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         {
             if (timesheetConfigSection.DisplayCarNumber == value)
                 return;
-            
+
             timesheetConfigSection.DisplayCarNumber = value;
             OnPropertyChanged();
         }
@@ -93,12 +94,12 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         {
             if (timesheetConfigSection.DisplaySafetyRating == value)
                 return;
-            
+
             timesheetConfigSection.DisplaySafetyRating = value;
             OnPropertyChanged();
         }
     }
-    
+
     public bool DisplaySkillRating
     {
         get => timesheetConfigSection.DisplaySkillRating;
@@ -106,12 +107,12 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         {
             if (timesheetConfigSection.DisplaySkillRating == value)
                 return;
-            
+
             timesheetConfigSection.DisplaySkillRating = value;
             OnPropertyChanged();
         }
     }
-    
+
     public bool DisplayLastLap
     {
         get => timesheetConfigSection.DisplayLastLap;
@@ -119,12 +120,12 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         {
             if (timesheetConfigSection.DisplayLastLap == value)
                 return;
-            
+
             timesheetConfigSection.DisplayLastLap = value;
             OnPropertyChanged();
         }
     }
-    
+
     public bool DisplayFastestLap
     {
         get => timesheetConfigSection.DisplayFastestLap;
@@ -132,12 +133,12 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         {
             if (timesheetConfigSection.DisplayFastestLap == value)
                 return;
-            
+
             timesheetConfigSection.DisplayFastestLap = value;
             OnPropertyChanged();
         }
     }
-    
+
     public bool DisplayGapToLeader
     {
         get => timesheetConfigSection.DisplayGapToLeader;
@@ -145,16 +146,16 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         {
             if (timesheetConfigSection.DisplayGapToLeader == value)
                 return;
-            
+
             timesheetConfigSection.DisplayGapToLeader = value;
             OnPropertyChanged();
         }
     }
-    
+
     #endregion
-    
+
     #region Relative
-    
+
     public bool DisplayRelativeCarNumber
     {
         get => relativeConfigSection.DisplayCarNumber;
@@ -162,7 +163,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         {
             if (relativeConfigSection.DisplayCarNumber == value)
                 return;
-            
+
             relativeConfigSection.DisplayCarNumber = value;
             OnPropertyChanged();
         }
@@ -175,12 +176,12 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         {
             if (relativeConfigSection.DisplaySafetyRating == value)
                 return;
-            
+
             relativeConfigSection.DisplaySafetyRating = value;
             OnPropertyChanged();
         }
     }
-    
+
     public bool DisplayRelativeSkillRating
     {
         get => relativeConfigSection.DisplaySkillRating;
@@ -188,12 +189,12 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         {
             if (relativeConfigSection.DisplaySkillRating == value)
                 return;
-            
+
             relativeConfigSection.DisplaySkillRating = value;
             OnPropertyChanged();
         }
     }
-    
+
     public bool DisplayRelativeLastLap
     {
         get => relativeConfigSection.DisplayLastLap;
@@ -201,12 +202,12 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         {
             if (relativeConfigSection.DisplayLastLap == value)
                 return;
-            
+
             relativeConfigSection.DisplayLastLap = value;
             OnPropertyChanged();
         }
     }
-    
+
     public bool DisplayRelativeFastestLap
     {
         get => relativeConfigSection.DisplayFastestLap;
@@ -214,12 +215,12 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         {
             if (relativeConfigSection.DisplayFastestLap == value)
                 return;
-            
+
             relativeConfigSection.DisplayFastestLap = value;
             OnPropertyChanged();
         }
     }
-    
+
     public bool DisplayRelativeDelta
     {
         get => relativeConfigSection.DisplayGapToLocal;
@@ -227,16 +228,16 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         {
             if (relativeConfigSection.DisplayGapToLocal == value)
                 return;
-            
+
             relativeConfigSection.DisplayGapToLocal = value;
             OnPropertyChanged();
         }
     }
-    
+
     #endregion
-    
+
     #region Telemetry
-    
+
     public bool UseMetricUnits
     {
         get => telemetryConfigSection.UseMetricUnits;
@@ -244,24 +245,40 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         {
             if (telemetryConfigSection.UseMetricUnits == value)
                 return;
-            
+
             telemetryConfigSection.UseMetricUnits = value;
             OnPropertyChanged();
         }
     }
-    
+
     #endregion
-    
+
     #endregion
-    
-    
-    public MainWindowViewModel()
+
+    #region Reposition Button Logic
+
+    public bool IsRepositionEnabled
     {
-        overlayController = new OverlayController();
+        get => overlayController.IsRepositioningEnabled;
+        set
+        {
+            if (overlayController.IsRepositioningEnabled != value)
+            {
+                overlayController.IsRepositioningEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    #endregion
+
+    public MainWindowViewModel(OverlayController? injectedOverlayController = null)
+    {
+        overlayController = injectedOverlayController ?? new OverlayController();
         overlayController.AddOverlay(new TelemetryOverlay());
         overlayController.AddOverlay(new TimesheetOverlay());
         overlayController.AddOverlay(new RelativeOverlay());
-            
+
         var simulatorEntries = new List<SimulatorEntryModel>
         {
             new(Enum.GetName(Simulator.iRacing), Simulator.iRacing),
@@ -270,7 +287,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
 
         SimulatorEntryCollection = new ObservableCollection<SimulatorEntryModel>(simulatorEntries);
         SelectedSimulatorEntry = simulatorEntries.First();
-        
+
         StartCommand = new Command(Start);
         StopCommand = new Command(Stop);
         MoveOverlaysToggleCommand = new Command(ToggleOverlayRepositioning);
@@ -282,32 +299,34 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         overlayController.CloseAll();
     }
 
-    private void Start()
+    public void Start()
     {
         IsStarted = true;
-        
+
         RacingAidSingleton.Instance.SetupSimulator(SelectedSimulatorEntry.SimulatorType);
         RacingAidSingleton.Instance.Start();
 
         RacingAidUpdateDispatch.Start();
-        
+
         overlayController.ShowAll();
     }
 
-    private void Stop()
+    public void Stop()
     {
         RacingAidSingleton.Instance.Stop();
         RacingAidUpdateDispatch.Stop();
 
-        overlayController.IsRepositioningEnabled = false;
+        IsRepositionEnabled = false;
         overlayController.HideAll();
 
         IsStarted = false;
     }
 
-    private void ToggleOverlayRepositioning()
+    public void ToggleOverlayRepositioning()
     {
         if (IsStarted)
-            overlayController.IsRepositioningEnabled = !overlayController.IsRepositioningEnabled;
+        {
+            IsRepositionEnabled = !IsRepositionEnabled;
+        }
     }
 }

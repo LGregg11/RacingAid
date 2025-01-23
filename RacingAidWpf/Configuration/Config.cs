@@ -12,16 +12,16 @@ public class Config : IConfig
     {
         if (!File.Exists(configFilePath))
             File.Create(configFilePath);
-        
+
         configParser = new ConfigParser(configFilePath);
     }
 
     public bool TryGetBool(string section, string key, out bool? value)
     {
         value = null;
-        if (configParser.GetValue(section, key, true) is {} configValue)
+        if (configParser.GetValue(section, key, true) is { } configValue)
             value = configValue;
-        
+
         return value != null;
     }
 
@@ -30,7 +30,7 @@ public class Config : IConfig
         value = null;
         if (configParser.GetValue(section, key, 0) is { } configValue)
             value = configValue;
-        
+
         return value.HasValue;
     }
 

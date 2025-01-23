@@ -38,11 +38,22 @@
                     Command="{Binding StopCommand}"
                     IsEnabled="{Binding IsStarted}"/>
             <ToggleButton x:Name="RepositionButton"
-                          Height="25" Width="120"
-                          Margin="10, 0, 0, 0"
-                          Content="Enable Reposition"
-                          Command="{Binding MoveOverlaysToggleCommand}"
-                          IsEnabled="{Binding IsStarted}"/>
+              Height="25" Width="120"
+              Margin="10, 0, 0, 0"
+              IsChecked="{Binding IsRepositionEnabled}" 
+              IsEnabled="{Binding IsStarted}">
+            <ToggleButton.Style>
+                <Style TargetType="ToggleButton">
+                    <Setter Property="Content" Value="Enable Reposition" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsRepositionEnabled}" Value="True">
+                            <Setter Property="Content" Value="Disable Reposition" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ToggleButton.Style>
+        </ToggleButton>
+
         </StackPanel>
         
         <GroupBox Grid.Row="1" Grid.Column="0" Header="General" MinHeight="100" MinWidth="165">
