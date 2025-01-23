@@ -9,7 +9,7 @@ public class PositionConverter : IValueConverter
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is not int position || position == 0)
-            return "-";
+            return string.Empty;
 
         return position.ToString();
     }
