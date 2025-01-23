@@ -1,6 +1,6 @@
 ﻿namespace RacingAidWpf.Configuration;
 
-public class TimesheetConfigSection(IConfig config) : ConfigSection(config, "Timesheet")
+public class RelativeConfigSection(IConfig config) : ConfigSection(config, "Relative")
 {
     public bool DisplayCarNumber
     {
@@ -32,9 +32,9 @@ public class TimesheetConfigSection(IConfig config) : ConfigSection(config, "Tim
         set => SetValue(nameof(DisplayFastestLap), value.ToString());
     }
     
-    public bool DisplayGapToLeader
+    public bool DisplayGapToLocal
     {
-        get => GetBool(nameof(DisplayGapToLeader));
-        set => SetValue(nameof(DisplayGapToLeader), value.ToString());
+        get => GetBool(nameof(DisplayGapToLocal));
+        set => SetValue(nameof(DisplayGapToLocal), value.ToString());
     }
 }

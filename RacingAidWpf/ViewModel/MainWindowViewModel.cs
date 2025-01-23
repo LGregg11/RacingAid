@@ -12,6 +12,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
 {
     private readonly GeneralConfigSection generalConfigSection = ConfigSectionSingleton.GeneralSection;
     private readonly TimesheetConfigSection timesheetConfigSection = ConfigSectionSingleton.TimesheetSection;
+    private readonly RelativeConfigSection relativeConfigSection = ConfigSectionSingleton.RelativeSection;
     private readonly TelemetryConfigSection telemetryConfigSection = ConfigSectionSingleton.TelemetrySection;
     
     private readonly OverlayController overlayController;
@@ -152,6 +153,88 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
     
     #endregion
     
+    #region Relative
+    
+    public bool DisplayRelativeCarNumber
+    {
+        get => relativeConfigSection.DisplayCarNumber;
+        set
+        {
+            if (relativeConfigSection.DisplayCarNumber == value)
+                return;
+            
+            relativeConfigSection.DisplayCarNumber = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool DisplayRelativeSafetyRating
+    {
+        get => relativeConfigSection.DisplaySafetyRating;
+        set
+        {
+            if (relativeConfigSection.DisplaySafetyRating == value)
+                return;
+            
+            relativeConfigSection.DisplaySafetyRating = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public bool DisplayRelativeSkillRating
+    {
+        get => relativeConfigSection.DisplaySkillRating;
+        set
+        {
+            if (relativeConfigSection.DisplaySkillRating == value)
+                return;
+            
+            relativeConfigSection.DisplaySkillRating = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public bool DisplayRelativeLastLap
+    {
+        get => relativeConfigSection.DisplayLastLap;
+        set
+        {
+            if (relativeConfigSection.DisplayLastLap == value)
+                return;
+            
+            relativeConfigSection.DisplayLastLap = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public bool DisplayRelativeFastestLap
+    {
+        get => relativeConfigSection.DisplayFastestLap;
+        set
+        {
+            if (relativeConfigSection.DisplayFastestLap == value)
+                return;
+            
+            relativeConfigSection.DisplayFastestLap = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public bool DisplayRelativeDelta
+    {
+        get => relativeConfigSection.DisplayGapToLocal;
+        set
+        {
+            if (relativeConfigSection.DisplayGapToLocal == value)
+                return;
+            
+            relativeConfigSection.DisplayGapToLocal = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    #endregion
+    
     #region Telemetry
     
     public bool UseMetricUnits
@@ -177,6 +260,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         overlayController = new OverlayController();
         overlayController.AddOverlay(new TelemetryOverlay());
         overlayController.AddOverlay(new TimesheetOverlay());
+        overlayController.AddOverlay(new RelativeOverlay());
             
         var simulatorEntries = new List<SimulatorEntryModel>
         {
