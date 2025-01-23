@@ -14,7 +14,7 @@ public class OverlayController
     private readonly List<Overlay> overlays = [];
     private bool isRepositionEnabled;
 
-    public bool IsRepositioningEnabled
+    public virtual bool IsRepositioningEnabled
     {
         get => isRepositionEnabled;
         set
@@ -31,7 +31,7 @@ public class OverlayController
         }
     }
 
-    public void AddOverlay(Overlay overlay)
+    public virtual void AddOverlay(Overlay overlay)
     {
         overlays.Add(overlay);
     }
