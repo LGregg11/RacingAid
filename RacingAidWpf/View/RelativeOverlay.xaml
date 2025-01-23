@@ -1,0 +1,58 @@
+﻿<overlayManagement:Overlay x:Class="RacingAidWpf.View.RelativeOverlay"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:overlayManagement="clr-namespace:RacingAidWpf.OverlayManagement"
+        xmlns:viewModel="clr-namespace:RacingAidWpf.ViewModel"
+        xmlns:converters="clr-namespace:RacingAidWpf.Converters"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance viewModel:RelativeOverlayViewModel}"
+        Title="Relative"
+        MaxWidth="800"
+        MaxHeight="500"
+        SizeToContent="WidthAndHeight"
+        WindowStyle="None"
+        Topmost="True"
+        AllowsTransparency="True"
+        MouseLeftButtonDown="OnMouseLeftButtonDown">
+    <overlayManagement:Overlay.Background>
+        <SolidColorBrush Color="Transparent"/>
+    </overlayManagement:Overlay.Background>
+    <overlayManagement:Overlay.Resources>
+        <converters:LapTimeConverter x:Key="LapTimeConverter"/>
+        <converters:GapConverter x:Key="GapConverter"/>
+    </overlayManagement:Overlay.Resources>
+    <Grid>
+        
+        <Canvas Style="{StaticResource DefaultCanvasStyle}"/>
+        <FrameworkElement x:Name="DummyElement" Visibility="Collapsed"/>
+        
+        <DataGrid ItemsSource="{Binding Relative}"
+                  Style="{StaticResource DefaultDataGridStyle}"
+                  ColumnHeaderStyle="{StaticResource DefaultDataGridColumnHeaderStyle}"
+                  AutoGenerateColumns="False"
+                  VerticalScrollBarVisibility="Hidden"
+                  HorizontalScrollBarVisibility="Hidden">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Pos." Binding="{Binding PositionOverall}" Width="1*"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="4*"/>
+                <DataGridTextColumn Header="No." Binding="{Binding CarNumber}" Width="1*" Visibility="{Binding DataContext.CarNumberColumnVisibility, Source={x:Reference DummyElement}}"/>
+                <DataGridTextColumn Header="Safety" Binding="{Binding SafetyRating}" Width="1*" Visibility="{Binding DataContext.SafetyColumnVisibility, Source={x:Reference DummyElement}}"/>
+                <DataGridTextColumn Header="Skill" Binding="{Binding SkillRating}" Width="1*" Visibility="{Binding DataContext.SkillColumnVisibility, Source={x:Reference DummyElement}}"/>
+                <DataGridTextColumn Header="Last Lap" Binding="{Binding LastLapTimeMs, Converter={StaticResource LapTimeConverter}}" Width="2*" Visibility="{Binding DataContext.LastLapColumnVisibility, Source={x:Reference DummyElement}}"/>
+                <DataGridTextColumn Header="Fastest Lap" Binding="{Binding FastestLapTimeMs, Converter={StaticResource LapTimeConverter}}" Width="2*" Visibility="{Binding DataContext.FastestLapColumnVisibility, Source={x:Reference DummyElement}}"/>
+                <DataGridTextColumn Header="Delta" Binding="{Binding DeltaToLocalMs, Converter={StaticResource GapConverter}}" Width="1*" Visibility="{Binding DataContext.DeltaToLocalColumnVisibility, Source={x:Reference DummyElement}}"/>
+            </DataGrid.Columns>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow" BasedOn="{StaticResource DefaultDataGridRowStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsLocal}" Value="True">
+                            <Setter Property="Foreground" Value="Yellow"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
+    </Grid>
+</overlayManagement:Overlay>
