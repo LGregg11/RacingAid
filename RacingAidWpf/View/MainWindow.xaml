@@ -58,6 +58,14 @@
         
         <GroupBox Grid.Row="1" Grid.Column="1" Header="Timesheet" MinHeight="100" MinWidth="165">
             <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Margin="2,0"
+                                   Text="Show positions:"/>
+                        <TextBox VerticalAlignment="Center" VerticalContentAlignment="Center" Height="20" Width="40" Margin="2,0"
+                                 Text="{Binding TimesheetPositions}"/> 
+                    </StackPanel>
+                </StackPanel>
                 <CheckBox Content="Display Car Number" IsChecked="{Binding DisplayCarNumber}"/>
                 <CheckBox Content="Display Safety Rating" IsChecked="{Binding DisplaySafetyRating}"/>
                 <CheckBox Content="Display Skill Rating" IsChecked="{Binding DisplaySkillRating}"/>
@@ -69,6 +77,14 @@
         
         <GroupBox Grid.Row="1" Grid.Column="2" Header="Relative" MinHeight="100" MinWidth="165">
             <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Margin="2,0"
+                                   Text="Show positions:"/>
+                        <TextBox VerticalAlignment="Center" VerticalContentAlignment="Center" Height="20" Width="40" Margin="2,0"
+                                 Text="{Binding RelativePositions}"/> 
+                    </StackPanel>
+                </StackPanel>
                 <CheckBox Content="Display Car Number" IsChecked="{Binding DisplayRelativeCarNumber}"/>
                 <CheckBox Content="Display Safety Rating" IsChecked="{Binding DisplayRelativeSafetyRating}"/>
                 <CheckBox Content="Display Skill Rating" IsChecked="{Binding DisplayRelativeSkillRating}"/>

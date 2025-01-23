@@ -59,7 +59,7 @@ public class TimesheetOverlayViewModel : NotifyPropertyChanged
         
         ObservableCollection<TimesheetGridRow> newTimesheet = [];
 
-        var entriesToDisplay = Math.Min(newDrivers.Count, 15);
+        var entriesToDisplay = Math.Min(newDrivers.Count, TimesheetConfigSection.MaxPositions);
         for (var i=0; i < entriesToDisplay; i++)
         {
             var driver = newDrivers[i];

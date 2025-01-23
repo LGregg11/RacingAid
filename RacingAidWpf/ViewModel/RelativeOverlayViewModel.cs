@@ -66,11 +66,11 @@ public class RelativeOverlayViewModel : NotifyPropertyChanged
         
         var currentDriver = relativeModel.LocalEntry ?? relativeModelEntries.First();
         var newRelativeGridRows = CreateOrderedRelativeGridRowsByLapDistance(relativeModelEntries, currentDriver);
-        
-        const int maxEntriesToDisplayAheadOrBehind = 3;
+
+        var entriesAheadOrBehind = RelativeConfigSection.MaxPositionsAheadOrBehind;
         var currentDriverIndex = newRelativeGridRows.FindIndex(r => r.CarNumber == currentDriver.CarNumber);
-        var minEntryIndex = Math.Max(currentDriverIndex - maxEntriesToDisplayAheadOrBehind, 0);
-        var maxEntryIndex = Math.Min(currentDriverIndex + maxEntriesToDisplayAheadOrBehind, newRelativeGridRows.Count - 1);
+        var minEntryIndex = Math.Max(currentDriverIndex - entriesAheadOrBehind, 0);
+        var maxEntryIndex = Math.Min(currentDriverIndex + entriesAheadOrBehind + 1, newRelativeGridRows.Count - 1);
 
         var relativeGridRowsToDisplay = newRelativeGridRows.GetRange(minEntryIndex, maxEntryIndex - minEntryIndex);
 

@@ -2,6 +2,12 @@
 
 public class RelativeConfigSection(IConfig config) : ConfigSection(config, "Relative")
 {
+    public int MaxPositionsAheadOrBehind
+    {
+        get => GetInt(nameof(MaxPositionsAheadOrBehind), 3);
+        set => SetValue(nameof(MaxPositionsAheadOrBehind), value.ToString());
+    }
+    
     public bool DisplayCarNumber
     {
         get => GetBool(nameof(DisplayCarNumber));

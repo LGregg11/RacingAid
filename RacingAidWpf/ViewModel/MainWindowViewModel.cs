@@ -73,6 +73,19 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
     
     #region Timesheet
     
+    public int TimesheetPositions
+    {
+        get => timesheetConfigSection.MaxPositions;
+        set
+        {
+            if (timesheetConfigSection.MaxPositions == value)
+                return;
+            
+            timesheetConfigSection.MaxPositions = value;
+            OnPropertyChanged();
+        }
+    }
+    
     public bool DisplayCarNumber
     {
         get => timesheetConfigSection.DisplayCarNumber;
@@ -154,6 +167,19 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
     #endregion
     
     #region Relative
+    
+    public int RelativePositions
+    {
+        get => relativeConfigSection.MaxPositionsAheadOrBehind;
+        set
+        {
+            if (relativeConfigSection.MaxPositionsAheadOrBehind == value)
+                return;
+            
+            relativeConfigSection.MaxPositionsAheadOrBehind = value;
+            OnPropertyChanged();
+        }
+    }
     
     public bool DisplayRelativeCarNumber
     {
