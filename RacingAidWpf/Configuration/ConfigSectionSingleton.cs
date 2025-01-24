@@ -1,12 +1,14 @@
 ﻿using System.IO;
-using System.Windows;
+using RacingAidWpf.Resources;
 
 namespace RacingAidWpf.Configuration;
 
 public static class ConfigSectionSingleton
 {
-    private static readonly string ConfigFilePath = Path.Combine(Path.GetDirectoryName(Application.ResourceAssembly.Location) ?? string.Empty, "config.ini");
-    private static Config Config => new(ConfigFilePath);
+    private static readonly string ConfigFilePath = Path.Combine(Resource.DataDirectory, "config.ini");
+    
+    private static Config? config;
+    private static Config Config => config ??= new Config(ConfigFilePath);
     
     private static GeneralConfigSection? generalSection;
     public static GeneralConfigSection GeneralSection =>
