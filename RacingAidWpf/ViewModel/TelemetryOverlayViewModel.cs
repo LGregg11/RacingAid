@@ -130,7 +130,7 @@ public class TelemetryOverlayViewModel : NotifyPropertyChanged
         ThrottlePercentage = telemetry.ThrottleInput;
         BrakePercentage = telemetry.BrakeInput;
         ClutchPercentage = 1f - telemetry.ClutchInput;
-        SpeedMetresPerSecond = telemetry.SpeedMetresPerSecond;
+        SpeedMetresPerSecond = telemetry.SpeedMs;
         Gear = telemetry.Gear;
         SteeringAngleDegrees = telemetry.SteeringAngleDegrees;
         

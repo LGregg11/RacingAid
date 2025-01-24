@@ -40,9 +40,14 @@ public class iRacingDataDeserializer : IDeserializeData
         }
         
         // Telemetry data
-        models.Add(CreateTelemetryModel(iRacingData));
-
-        return true;
+        if (CreateTelemetryModel(iRacingData) is { } raceDataModel)
+            models.Add(raceDataModel);
+        
+        // Driver data .. data
+        if (CreateDriverModel(iRacingData) is {} driverDataModel)
+            models.Add(driverDataModel);
+        
+        return models.Count > 0;
     }
 
     private static List<TimesheetEntryModel> CreateTimesheetEntries(IRacingSdkData iRacingData)
@@ -154,10 +159,19 @@ public class iRacingDataDeserializer : IDeserializeData
             ThrottleInput = iRacingData.GetFloat("Throttle"),
             BrakeInput = iRacingData.GetFloat("Brake"),
             ClutchInput = iRacingData.GetFloat("Clutch"),
-            SpeedMetresPerSecond = iRacingData.GetFloat("Speed"),
+            SpeedMs = iRacingData.GetFloat("Speed"),
             Gear = iRacingData.GetInt("Gear"),
             Rpm = iRacingData.GetFloat("RPM"),
             SteeringAngleDegrees = iRacingData.GetFloat("SteeringWheelAngle") * RadToDeg
+        };
+    }
+
+    private static DriverDataModel CreateDriverModel(IRacingSdkData iRacingData)
+    {
+        return new DriverDataModel
+        {
+            SpeedMs = iRacingData.GetFloat("Speed"),
+            ForwardDirectionDeg = iRacingData.GetFloat("YawNorth") * RadToDeg
         };
     }
 
