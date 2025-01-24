@@ -25,7 +25,7 @@ jobs:
       run: dotnet build --configuration Release
 
     - name: Publish the project
-      run: dotnet publish -c Release -o out
+      run: dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o out
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
