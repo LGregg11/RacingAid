@@ -6,10 +6,8 @@ namespace RacingAidWpf.OverlayManagement;
 
 public class OverlayController
 {
-    private static readonly string OverlayPositionsJsonDirectory =
-        Path.Combine(Resource.ExecutingDirectory, "Overlays");
     private static readonly string OverlayPositionsJsonFullPath =
-        Path.Combine(OverlayPositionsJsonDirectory, "OverlayPositions.json");
+        Path.Combine(Resource.DataDirectory, "OverlayPositions.json");
     
     private readonly List<Overlay> overlays = [];
     private bool isRepositionEnabled;
@@ -90,15 +88,10 @@ public class OverlayController
 
     private void SaveOverlayPositions()
     {
-        List<OverlayPosition> overlayPositions = overlays.Select(CreateOverlayPosition).ToList();
+        var overlayPositions = overlays.Select(CreateOverlayPosition).ToList();
 
         if (JsonConvert.SerializeObject(overlayPositions, Formatting.Indented) is { } overlayPositionsJsonString)
-        {
-            if (!Directory.Exists(OverlayPositionsJsonDirectory))
-                Directory.CreateDirectory(OverlayPositionsJsonDirectory);
-            
             File.WriteAllTextAsync(OverlayPositionsJsonFullPath, overlayPositionsJsonString);
-        }
     }
 
     private static OverlayPosition CreateOverlayPosition(Overlay overlay) =>

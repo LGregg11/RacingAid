@@ -1,6 +1,4 @@
-﻿using IRSDKSharper;
-
-namespace RacingAidTests;
+﻿namespace RacingAidTests;
 
 public class iRacingDataDeserializerTests
 {

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.IO;
+﻿using System.IO;
 using Salaros.Configuration;
 
 namespace RacingAidWpf.Configuration;
@@ -19,8 +18,8 @@ public class Config : IConfig
     public bool TryGetBool(string section, string key, out bool? value)
     {
         value = null;
-        if (configParser.GetValue(section, key, true) is { } configValue)
-            value = configValue;
+        if (TryGetString(section, key, out var strValue) && bool.TryParse(strValue, out var boolValue))
+            value = boolValue;
 
         return value != null;
     }
@@ -28,8 +27,8 @@ public class Config : IConfig
     public bool TryGetInt(string section, string key, out int? value)
     {
         value = null;
-        if (configParser.GetValue(section, key, 0) is { } configValue)
-            value = configValue;
+        if (TryGetString(section, key, out var strValue) && int.TryParse(strValue, out var intValue))
+            value = intValue;
 
         return value.HasValue;
     }
@@ -37,8 +36,8 @@ public class Config : IConfig
     public bool TryGetDouble(string section, string key, out double? value)
     {
         value = null;
-        if (configParser.GetValue(section, key, 0d) is { } configValue)
-            value = configValue;
+        if (TryGetString(section, key, out var strValue) && double.TryParse(strValue, out var doubleValue))
+            value = doubleValue;
 
         return value.HasValue;
     }

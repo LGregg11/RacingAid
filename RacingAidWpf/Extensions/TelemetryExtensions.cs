@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace RacingAidWpf.Extensions;
+﻿namespace RacingAidWpf.Extensions;
 
 public static class TelemetryExtensions
 {
