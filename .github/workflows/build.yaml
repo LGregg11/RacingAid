@@ -1,0 +1,34 @@
+name: Build Racing Aid
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build the project
+      run: dotnet build --configuration Release
+
+    - name: Publish the project
+      run: dotnet publish -c Release -o out
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: RacingAid-Exe
+        path: out/ # The path where the .exe is located
