@@ -154,7 +154,7 @@ public class iRacingDataDeserializer : IDeserializeData
             ThrottleInput = iRacingData.GetFloat("Throttle"),
             BrakeInput = iRacingData.GetFloat("Brake"),
             ClutchInput = iRacingData.GetFloat("Clutch"),
-            SpeedMetresPerSecond = iRacingData.GetFloat("Speed"),
+            SpeedMs = iRacingData.GetFloat("Speed"),
             Gear = iRacingData.GetInt("Gear"),
             Rpm = iRacingData.GetFloat("RPM"),
             SteeringAngleDegrees = iRacingData.GetFloat("SteeringWheelAngle") * RadToDeg

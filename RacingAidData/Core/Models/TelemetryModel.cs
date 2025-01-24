@@ -5,7 +5,7 @@
 /// </summary>
 public sealed class TelemetryModel : RaceDataModel
 {
-    public float SpeedMetresPerSecond { get; init; }
+    public float SpeedMs { get; init; }
     
     /// <remarks>
     /// 1 = 100%
