@@ -82,6 +82,21 @@ public class RacingAid
         }
     }
     
+    private DriverDataModel driverData = new();
+
+    public DriverDataModel DriverData
+    {
+        get => driverData;
+        private set
+        {
+            if (driverData == value)
+                return;
+            
+            driverData = value;
+            modelsHaveUpdated = true;
+        }
+    }
+    
     #endregion
 
     public RacingAid()
@@ -130,7 +145,7 @@ public class RacingAid
         if (!DataDeserializer.TryDeserializeData(DataSubscriber.LatestData, out var models))
             return;
 
-        foreach (RaceDataModel model in models)
+        foreach (var model in models)
             UpdateModel(model);
 
         if (modelsHaveUpdated)
@@ -151,6 +166,9 @@ public class RacingAid
                 break;
             case RelativeModel relativeModel:
                 Relative = relativeModel;
+                break;
+            case DriverDataModel driverDataModel:
+                DriverData = driverDataModel;
                 break;
         }
     }
