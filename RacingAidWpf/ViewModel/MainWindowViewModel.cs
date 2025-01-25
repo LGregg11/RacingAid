@@ -3,6 +3,7 @@ using System.Windows.Input;
 using RacingAidData.Simulators;
 using RacingAidWpf.Commands;
 using RacingAidWpf.Configuration;
+using RacingAidWpf.FileHandlers;
 using RacingAidWpf.Model;
 using RacingAidWpf.Overlays;
 using RacingAidWpf.View;
@@ -301,7 +302,7 @@ public sealed class MainWindowViewModel : ViewModel
 
     public MainWindowViewModel(OverlayController? injectedOverlayController = null, List<Overlay>? overlays = null)
     {
-        overlayController = injectedOverlayController ?? new OverlayController();
+        overlayController = injectedOverlayController ?? new OverlayController(new JsonHandler<OverlayPositions>());
         overlays ??=
         [
             new TelemetryOverlay(),
