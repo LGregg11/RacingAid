@@ -25,12 +25,19 @@ public class TrackMapController
         return trackMap != null;
     }
 
-    public void SaveTrackMap(TrackMap trackMap)
+    public void AddTrackMap(TrackMap trackMap, bool forceReplace = false)
     {
-        if (trackMaps.Any(m => m.Name == trackMap.Name))
-            return;
+        // We don't want to override unless force save is applied
+        if (trackMaps.FirstOrDefault(m => m.Name == trackMap.Name) is { } existingTrackMap)
+        {
+            if (forceReplace)
+                trackMaps.Remove(existingTrackMap);
+            else
+                return;
+        }
         
         trackMaps.Add(trackMap);
+        
         if (!trackMapDataHandler.TrySerializeToFile(TrackMapsJsonFullPath, new TrackMaps(trackMaps)))
         {
             // TODO: Add error log here
