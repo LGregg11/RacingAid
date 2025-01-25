@@ -1,0 +1,45 @@
+﻿<overlayManagement:Overlay x:Class="RacingAidWpf.View.TrackMapOverlay"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:overlayManagement="clr-namespace:RacingAidWpf.OverlayManagement"
+        xmlns:viewModel="clr-namespace:RacingAidWpf.ViewModel"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance viewModel:TrackMapOverlayViewModel}"
+        Title="Track Map"
+        SizeToContent="WidthAndHeight"
+        Height="200"
+        Width="200"
+        WindowStyle="None"
+        Topmost="True"
+        AllowsTransparency="True"
+        MouseLeftButtonDown="OnMouseLeftButtonDown">
+    <overlayManagement:Overlay.Background>
+        <SolidColorBrush Color="Transparent"/>
+    </overlayManagement:Overlay.Background>
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <StackPanel>
+            <!-- TODO: This is a Test button - remove once track map logic is implemented -->
+            <ToggleButton Content="Toggle Test"
+                          IsChecked="{Binding IsTrackMapAvailable}"
+                          Padding="5"
+                          HorizontalAlignment="Center"/>
+            
+            <TextBlock Text="Track Map unavailable - please complete valid lap" 
+                       Style="{StaticResource DefaultTextBlock}"
+                       TextWrapping="Wrap"
+                       Visibility="{Binding NoTrackMapTextVisibility}"/>
+            <Path Fill="LightBlue"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Visibility="{Binding TrackMapVisibility}">
+                <Path.Data>
+                    <EllipseGeometry Center="50,50" RadiusX="50" RadiusY="50"/>
+                </Path.Data>
+            </Path>
+
+            
+        </StackPanel>
+    </Grid>
+</overlayManagement:Overlay>
