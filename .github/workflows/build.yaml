@@ -22,10 +22,10 @@ jobs:
       run: dotnet restore
 
     - name: Build the project
-      run: dotnet build --configuration Release
+      run: dotnet build -c Release
 
     - name: Publish the project
-      run: dotnet publish -c Release -o out
+      run: dotnet publish ./RacingAidWpf/RacingAidWpf.csproj -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o out
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
