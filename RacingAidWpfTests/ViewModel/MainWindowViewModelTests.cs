@@ -1,5 +1,5 @@
 ﻿using Moq;
-using RacingAidWpf.OverlayManagement;
+using RacingAidWpf.Overlays;
 using RacingAidWpf.View;
 using RacingAidWpf.ViewModel;
 

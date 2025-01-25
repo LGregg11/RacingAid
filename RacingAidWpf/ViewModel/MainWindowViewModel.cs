@@ -4,7 +4,7 @@ using RacingAidData.Simulators;
 using RacingAidWpf.Commands;
 using RacingAidWpf.Configuration;
 using RacingAidWpf.Model;
-using RacingAidWpf.OverlayManagement;
+using RacingAidWpf.Overlays;
 using RacingAidWpf.View;
 
 namespace RacingAidWpf.ViewModel;

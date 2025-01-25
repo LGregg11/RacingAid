@@ -1,4 +1,9 @@
-﻿namespace RacingAidWpf.OverlayManagement;
+﻿namespace RacingAidWpf.Overlays;
+
+public class OverlayPositions(List<OverlayPosition> positions)
+{
+    public List<OverlayPosition> Positions { get; set; } = positions;
+}
 
 public class OverlayPosition(string name, ScreenPosition position)
 {
