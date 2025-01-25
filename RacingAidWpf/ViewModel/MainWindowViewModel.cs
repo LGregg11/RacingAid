@@ -303,8 +303,7 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
         [
             new TelemetryOverlay(),
             new TimesheetOverlay(),
-            new RelativeOverlay(),
-            new TrackMapOverlay()
+            new RelativeOverlay()
         ];
         
         foreach (var overlay in overlays)
