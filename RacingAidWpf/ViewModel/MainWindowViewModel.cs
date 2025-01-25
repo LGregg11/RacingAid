@@ -303,6 +303,7 @@ public sealed class MainWindowViewModel : ViewModel
         overlayController.AddOverlay(new TelemetryOverlay());
         overlayController.AddOverlay(new TimesheetOverlay());
         overlayController.AddOverlay(new RelativeOverlay());
+        overlayController.AddOverlay(new TrackMapOverlay());
 
         var simulatorEntries = new List<SimulatorEntryModel>
         {
