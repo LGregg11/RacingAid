@@ -296,12 +296,20 @@ public sealed class MainWindowViewModel : NotifyPropertyChanged
 
     #endregion
 
-    public MainWindowViewModel(OverlayController? injectedOverlayController = null)
+    public MainWindowViewModel(OverlayController? injectedOverlayController = null, List<Overlay>? overlays = null)
     {
         overlayController = injectedOverlayController ?? new OverlayController();
-        overlayController.AddOverlay(new TelemetryOverlay());
-        overlayController.AddOverlay(new TimesheetOverlay());
-        overlayController.AddOverlay(new RelativeOverlay());
+        overlays ??=
+        [
+            new TelemetryOverlay(),
+            new TimesheetOverlay(),
+            new RelativeOverlay(),
+            new TrackMapOverlay()
+        ];
+        
+        foreach (var overlay in overlays)
+            overlayController.AddOverlay(overlay);
+            
 
         var simulatorEntries = new List<SimulatorEntryModel>
         {
