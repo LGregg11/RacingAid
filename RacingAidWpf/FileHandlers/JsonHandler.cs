@@ -5,9 +5,9 @@ namespace RacingAidWpf.FileHandlers;
 
 public class JsonHandler<T> : IHandleData<T> where T : class
 {
-    public bool TryDeserializeFromFile(string filePath, out T? data)
+    public bool TryDeserializeFromFile(string filePath, out T data)
     {
-        data = null;
+        data = default;
 
         if (!File.Exists(filePath))
             return false;
