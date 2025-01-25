@@ -95,5 +95,5 @@ public class OverlayController
     }
 
     private static OverlayPosition CreateOverlayPosition(Overlay overlay) =>
-        new(overlay.OverlayName, new Position(overlay.TopPosition, overlay.LeftPosition));
+        new(overlay.OverlayName, new ScreenPosition(overlay.TopPosition, overlay.LeftPosition));
 }
