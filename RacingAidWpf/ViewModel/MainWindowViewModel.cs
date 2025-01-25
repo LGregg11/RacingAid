@@ -3,8 +3,9 @@ using System.Windows.Input;
 using RacingAidData.Simulators;
 using RacingAidWpf.Commands;
 using RacingAidWpf.Configuration;
+using RacingAidWpf.FileHandlers;
 using RacingAidWpf.Model;
-using RacingAidWpf.OverlayManagement;
+using RacingAidWpf.Overlays;
 using RacingAidWpf.View;
 
 namespace RacingAidWpf.ViewModel;
@@ -19,7 +20,6 @@ public sealed class MainWindowViewModel : ViewModel
 
     public ICommand StartCommand { get; }
     public ICommand StopCommand { get; }
-    public ICommand MoveOverlaysToggleCommand { get; }
 
     private bool isStarted;
     public bool IsStarted
@@ -27,6 +27,9 @@ public sealed class MainWindowViewModel : ViewModel
         get => isStarted;
         private set
         {
+            if (isStarted == value)
+                return;
+            
             isStarted = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(IsStopped));
@@ -287,11 +290,11 @@ public sealed class MainWindowViewModel : ViewModel
         get => overlayController.IsRepositioningEnabled;
         set
         {
-            if (overlayController.IsRepositioningEnabled != value)
-            {
-                overlayController.IsRepositioningEnabled = value;
-                OnPropertyChanged();
-            }
+            if (overlayController.IsRepositioningEnabled == value)
+                return;
+            
+            overlayController.IsRepositioningEnabled = value;
+            OnPropertyChanged();
         }
     }
 
@@ -299,7 +302,7 @@ public sealed class MainWindowViewModel : ViewModel
 
     public MainWindowViewModel(OverlayController? injectedOverlayController = null, List<Overlay>? overlays = null)
     {
-        overlayController = injectedOverlayController ?? new OverlayController();
+        overlayController = injectedOverlayController ?? new OverlayController(new JsonHandler<OverlayPositions>());
         overlays ??=
         [
             new TelemetryOverlay(),
@@ -322,7 +325,6 @@ public sealed class MainWindowViewModel : ViewModel
 
         StartCommand = new Command(Start);
         StopCommand = new Command(Stop);
-        MoveOverlaysToggleCommand = new Command(ToggleOverlayRepositioning);
     }
 
     public void Close()

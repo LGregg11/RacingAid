@@ -1,10 +1,10 @@
-﻿<overlayManagement:Overlay x:Class="RacingAidWpf.View.TrackMapOverlay"
+﻿<overlays:Overlay x:Class="RacingAidWpf.View.TrackMapOverlay"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:overlayManagement="clr-namespace:RacingAidWpf.OverlayManagement"
         xmlns:viewModel="clr-namespace:RacingAidWpf.ViewModel"
+        xmlns:overlays="clr-namespace:RacingAidWpf.Overlays"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModel:TrackMapOverlayViewModel}"
         Title="Track Map"
@@ -15,9 +15,9 @@
         Topmost="True"
         AllowsTransparency="True"
         MouseLeftButtonDown="OnMouseLeftButtonDown">
-    <overlayManagement:Overlay.Background>
+    <overlays:Overlay.Background>
         <SolidColorBrush Color="Transparent"/>
-    </overlayManagement:Overlay.Background>
+    </overlays:Overlay.Background>
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <StackPanel>
             <!-- TODO: This is a Test button - remove once track map logic is implemented -->
@@ -42,4 +42,4 @@
             
         </StackPanel>
     </Grid>
-</overlayManagement:Overlay>
+</overlays:Overlay>

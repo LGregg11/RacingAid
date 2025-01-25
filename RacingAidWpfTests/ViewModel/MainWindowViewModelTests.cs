@@ -1,5 +1,6 @@
 ﻿using Moq;
-using RacingAidWpf.OverlayManagement;
+using RacingAidWpf.FileHandlers;
+using RacingAidWpf.Overlays;
 using RacingAidWpf.View;
 using RacingAidWpf.ViewModel;
 
@@ -10,13 +11,17 @@ namespace RacingAidWpfTests.ViewModel
     public class MainWindowViewModelTests
     {
         private Mock<OverlayController> overlayControllerMock;
+        private Mock<IHandleData<OverlayPositions>> overlayPositionsHandlerMock;
         private MainWindowViewModel cut;
 
         [SetUp]
         public void Setup()
         {
+            // Mock IHandleData
+            overlayPositionsHandlerMock = new Mock<IHandleData<OverlayPositions>>();
+            
             // Mock the OverlayController
-            overlayControllerMock = new Mock<OverlayController>();
+            overlayControllerMock = new Mock<OverlayController>(overlayPositionsHandlerMock.Object);
             overlayControllerMock
                 .Setup(c => c.AddOverlay(It.IsAny<TelemetryOverlay>()))
                 .Verifiable();
