@@ -25,7 +25,7 @@ namespace RacingAidWpfTests.ViewModel
             overlayControllerMock.SetupProperty(o => o.IsRepositioningEnabled, false);
 
             // Create the ViewModel instance, injecting the mocked OverlayController
-            cut = new MainWindowViewModel(overlayControllerMock.Object);
+            cut = new MainWindowViewModel(overlayControllerMock.Object, []);
         }
 
         [Test]
