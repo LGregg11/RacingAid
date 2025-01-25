@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace RacingAidWpf.ViewModel;
 
-public abstract class NotifyPropertyChanged : INotifyPropertyChanged
+public abstract class ViewModel : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 

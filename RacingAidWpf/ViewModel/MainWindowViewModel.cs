@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using RacingAidData.Simulators;
+using RacingAidWpf.Commands;
 using RacingAidWpf.Configuration;
 using RacingAidWpf.Model;
 using RacingAidWpf.OverlayManagement;
@@ -8,7 +9,7 @@ using RacingAidWpf.View;
 
 namespace RacingAidWpf.ViewModel;
 
-public sealed class MainWindowViewModel : NotifyPropertyChanged
+public sealed class MainWindowViewModel : ViewModel
 {
     private readonly GeneralConfigSection generalConfigSection = ConfigSectionSingleton.GeneralSection;
     private readonly TimesheetConfigSection timesheetConfigSection = ConfigSectionSingleton.TimesheetSection;
