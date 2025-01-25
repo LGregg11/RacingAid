@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace RacingAidWpf.ViewModel;
+namespace RacingAidWpf.Commands;
 
 public class Command(Action action) : ICommand
 {
