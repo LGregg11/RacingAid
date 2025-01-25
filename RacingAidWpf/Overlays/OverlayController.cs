@@ -4,7 +4,7 @@ using RacingAidWpf.Resources;
 
 namespace RacingAidWpf.Overlays;
 
-public class OverlayController(IHandleData<OverlayPositions> dataHandler)
+public class OverlayController(IHandleData<OverlayPositions> overlayDataHandler)
 {
     private static readonly string OverlayPositionsJsonFullPath =
         Path.Combine(Resource.DataDirectory, "OverlayPositions.json");
@@ -68,7 +68,7 @@ public class OverlayController(IHandleData<OverlayPositions> dataHandler)
 
     private void LoadOverlayPositions()
     {
-        if (!dataHandler.TryDeserializeFromFile(OverlayPositionsJsonFullPath, out var overlayPositions))
+        if (!overlayDataHandler.TryDeserializeFromFile(OverlayPositionsJsonFullPath, out var overlayPositions))
             return;
 
         foreach (var overlay in overlays)
@@ -85,7 +85,7 @@ public class OverlayController(IHandleData<OverlayPositions> dataHandler)
     {
         var overlayPositions = CreateOverlayPositions();
 
-        if (!dataHandler.TrySerializeToFile(OverlayPositionsJsonFullPath, overlayPositions))
+        if (!overlayDataHandler.TrySerializeToFile(OverlayPositionsJsonFullPath, overlayPositions))
         {
             // TODO: Add logging here
         }
