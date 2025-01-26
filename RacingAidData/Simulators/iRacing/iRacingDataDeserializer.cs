@@ -177,10 +177,15 @@ public class iRacingDataDeserializer : IDeserializeData
         
         return new DriverDataModel
         {
-            SpeedMs = iRacingData.GetFloat("Speed"),
+            VelocityMs = GetVelocity(iRacingData),
             ForwardDirectionDeg = iRacingData.GetFloat("YawNorth") * RadToDeg,
             LapsDriven = lapsDriven
         };
+    }
+
+    private static Velocity GetVelocity(IRacingSdkData iRacingData)
+    {
+        return new Velocity(iRacingData.GetFloat("VelocityX"), iRacingData.GetFloat("VelocityY"));
     }
 
     private static TrackDataModel CreateTrackModel(IRacingSdkData iRacingData)
