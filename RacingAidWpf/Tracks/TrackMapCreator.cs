@@ -37,7 +37,7 @@ public class TrackMapCreator
 
     public TrackMapCreator()
     {
-        PositionCalculatorType = TrackMapPositionCalculatorType.SpeedAndDirection;
+        PositionCalculatorType = TrackMapPositionCalculatorType.VelocityAndDirection;
         OnTrackMapCalculatorTypeUpdated();
     }
 
@@ -120,7 +120,7 @@ public class TrackMapCreator
     {
         positionCalculator = positionCalculatorType switch
         {
-            TrackMapPositionCalculatorType.SpeedAndDirection => new VelocityAndDirectionTrackMapCalculator(),
+            TrackMapPositionCalculatorType.VelocityAndDirection => new VelocityAndDirectionTrackMapCalculator(),
             _ => throw new ArgumentOutOfRangeException()
         };
     }

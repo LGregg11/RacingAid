@@ -2,6 +2,6 @@
 
 public enum TrackMapPositionCalculatorType
 {
-    SpeedAndDirection
+    VelocityAndDirection
     // TODO: Add GPS
 }
