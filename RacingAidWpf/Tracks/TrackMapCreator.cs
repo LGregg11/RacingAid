@@ -120,15 +120,42 @@ public class TrackMapCreator
     {
         positionCalculator = positionCalculatorType switch
         {
-            TrackMapPositionCalculatorType.SpeedAndDirection => new SpeedAndDirectionTrackMapCalculator(),
+            TrackMapPositionCalculatorType.SpeedAndDirection => new VelocityAndDirectionTrackMapCalculator(),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
     
     private List<TrackMapPosition> NormalizeAndCenterPositions(List<TrackMapPosition> positions)
     {
-        // TODO
-        return positions;
+        var xMin = float.MaxValue;
+        var xMax = float.MinValue;
+        var yMin = float.MaxValue;
+        var yMax = float.MinValue;
+        foreach (var position in positions)
+        {
+            if (position.X < xMin)
+                xMin = position.X;
+            
+            if (position.X > xMax)
+                xMax = position.X;
+            
+            if (position.Y < yMin)
+                yMin = position.Y;
+            
+            if (position.Y > yMax)
+                yMax = position.Y;
+        }
+        
+        var normalizedAndCenteredPositions = new List<TrackMapPosition>();
+        foreach (var position in positions)
+        {
+            var normalisedX = (position.X - xMin) / (xMax - xMin);
+            var normalisedY = (position.Y - yMin) / (yMax - yMin);
+            
+            normalizedAndCenteredPositions.Add(new TrackMapPosition(normalisedX - 0.5f, normalisedY - 0.5f));
+        }
+        
+        return normalizedAndCenteredPositions;
     }
 
     private static List<TrackMapPosition> CreateNewTrackMapPositions()
