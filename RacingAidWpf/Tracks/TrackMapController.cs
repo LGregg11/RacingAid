@@ -2,7 +2,7 @@
 using RacingAidWpf.FileHandlers;
 using RacingAidWpf.Resources;
 
-namespace RacingAidWpf.TrackMaps;
+namespace RacingAidWpf.Tracks;
 
 public class TrackMapController
 {
@@ -19,7 +19,7 @@ public class TrackMapController
             trackMaps = trackMapData.Maps;
     }
     
-    public bool TryGetTrackMap(string trackName, out TrackMap? trackMap)
+    public bool TryGetTrackMap(string trackName, out TrackMap trackMap)
     {
         trackMap = trackMaps.FirstOrDefault(m => m.Name == trackName);
         return trackMap != null;
