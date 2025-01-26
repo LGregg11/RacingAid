@@ -146,13 +146,17 @@ public class TrackMapCreator
                 yMax = position.Y;
         }
         
+        var xyRatio = (xMax-xMin) / (yMax - yMin);
+        var xFactor = xyRatio < 1 ? 1 : xyRatio;
+        var yFactor = xyRatio > 1 ? 1 : xyRatio;
+        
         var normalizedAndCenteredPositions = new List<TrackMapPosition>();
         foreach (var position in positions)
         {
             var normalisedX = (position.X - xMin) / (xMax - xMin);
             var normalisedY = (position.Y - yMin) / (yMax - yMin);
             
-            normalizedAndCenteredPositions.Add(new TrackMapPosition(normalisedX - 0.5f, normalisedY - 0.5f));
+            normalizedAndCenteredPositions.Add(new TrackMapPosition(normalisedX * xFactor, normalisedY * yFactor));
         }
         
         return normalizedAndCenteredPositions;
