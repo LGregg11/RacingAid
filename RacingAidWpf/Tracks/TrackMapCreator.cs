@@ -13,6 +13,7 @@ public class TrackMapCreator
     private TrackMapPositionCalculator positionCalculator;
     
     private TrackMap trackMapBeingCreated;
+    private DateTime lastUpdateTime;
     private float previousLapsDriven;
     private bool isCurrentlyTrackingMap;
 
@@ -20,7 +21,7 @@ public class TrackMapCreator
     
     public bool IsStarted { get; private set; }
     
-    private TrackMapPositionCalculatorType positionCalculatorType = TrackMapPositionCalculatorType.SpeedAndDirection;
+    private TrackMapPositionCalculatorType positionCalculatorType;
     public TrackMapPositionCalculatorType PositionCalculatorType
     {
         get => positionCalculatorType;
@@ -34,11 +35,23 @@ public class TrackMapCreator
         }
     }
 
+    public TrackMapCreator()
+    {
+        PositionCalculatorType = TrackMapPositionCalculatorType.SpeedAndDirection;
+        OnTrackMapCalculatorTypeUpdated();
+    }
+
     public void Start(DriverDataModel driverDataModel, TrackDataModel trackDataModel)
     {
+        if (IsStarted)
+            Stop();
+        
+        Console.WriteLine($"Starting track map creation for: {trackDataModel.TrackName}");
+        
         trackMapBeingCreated = new TrackMap(trackDataModel.TrackName, CreateNewTrackMapPositions());
         
         previousLapsDriven = driverDataModel.LapsDriven;
+        lastUpdateTime = driverDataModel.Timestamp;
         IsStarted = true;
     }
 
@@ -53,6 +66,8 @@ public class TrackMapCreator
 
         if (lapNumberChanged)
         {
+            Console.WriteLine("Lap number changed - triggering update change");
+            
             // Lap number has updated - toggle map tracking
             isCurrentlyTrackingMap = !isCurrentlyTrackingMap;
 
@@ -66,11 +81,17 @@ public class TrackMapCreator
         if (isCurrentlyTrackingMap)
             UpdateTrack(driverDataModel);
         
+        lastUpdateTime = driverDataModel.Timestamp;
         previousLapsDriven = currentLapsDriven;
     }
 
     public void Stop()
     {
+        if (!IsStarted)
+            return;
+        
+        Console.WriteLine($"Stopping track map creation for: {trackMapBeingCreated.Name}");
+        
         IsStarted = false;
         previousLapsDriven = 0;
         trackMapBeingCreated = null;
@@ -79,12 +100,15 @@ public class TrackMapCreator
     private void UpdateTrack(DriverDataModel driverDataModel)
     {
         var previousPosition = trackMapBeingCreated.Positions.Last();
-        var newPosition = positionCalculator.CalculatePosition(previousPosition, driverDataModel);
+        var timeDeltaMs = (float)(driverDataModel.Timestamp - lastUpdateTime).TotalMilliseconds;
+        var newPosition = positionCalculator.CalculatePosition(previousPosition, driverDataModel, timeDeltaMs);
         trackMapBeingCreated.Positions.Add(newPosition);
     }
 
     private void End()
     {
+        Console.WriteLine($"Ending track map creation for: {trackMapBeingCreated.Name}");
+        
         IsStarted = false;
         trackMapBeingCreated.Positions = NormalizeAndCenterPositions(trackMapBeingCreated.Positions);
         TrackCreated?.Invoke(trackMapBeingCreated);

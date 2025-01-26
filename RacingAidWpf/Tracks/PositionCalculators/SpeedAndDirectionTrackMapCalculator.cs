@@ -4,12 +4,17 @@ namespace RacingAidWpf.Tracks.PositionCalculators;
 
 public class SpeedAndDirectionTrackMapCalculator : TrackMapPositionCalculator
 {
-    public override TrackMapPosition CalculatePosition(TrackMapPosition previousPosition, DriverDataModel driverDataModel)
+    private const float DegToRad = MathF.PI / 180f;
+    private const float OneMetreInMm = 1000f;
+    
+    public override TrackMapPosition CalculatePosition(TrackMapPosition previousPosition, DriverDataModel driverDataModel, float timeDeltaMs)
     {
         // Use euler-esque approximations to determine the driver's current whereabouts..
-        var approximateNewX = previousPosition.X + driverDataModel.SpeedMs * MathF.Sin(driverDataModel.ForwardDirectionDeg);
-        var approximateNewY = previousPosition.Y + driverDataModel.SpeedMs * MathF.Cos(driverDataModel.ForwardDirectionDeg);
-
+        var approxDistanceMetres = timeDeltaMs * driverDataModel.SpeedMs / OneMetreInMm;
+        
+        var directionRad = driverDataModel.ForwardDirectionDeg * DegToRad;
+        var approximateNewX = previousPosition.X + approxDistanceMetres * MathF.Sin(directionRad);
+        var approximateNewY = previousPosition.Y + approxDistanceMetres * MathF.Cos(directionRad);
         return new TrackMapPosition(approximateNewX, approximateNewY);
     }
 }
