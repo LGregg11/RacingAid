@@ -7,7 +7,7 @@ namespace RacingAidWpf.ViewModel;
 
 public class TelemetryOverlayViewModel : ViewModel
 {
-    private const float FloatTolerance = 0.01f;
+    private const float FloatTolerance = 1e-4f;
     
     private readonly RacingAid racingAid = RacingAidSingleton.Instance;
     private readonly TelemetryConfigSection telemetryConfigSection = ConfigSectionSingleton.TelemetrySection;

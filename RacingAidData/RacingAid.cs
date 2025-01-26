@@ -97,6 +97,21 @@ public class RacingAid
         }
     }
     
+    private TrackDataModel trackData = new();
+
+    public TrackDataModel TrackData
+    {
+        get => trackData;
+        private set
+        {
+            if (trackData == value)
+                return;
+            
+            trackData = value;
+            modelsHaveUpdated = true;
+        }
+    }
+    
     #endregion
 
     public RacingAid()
@@ -169,6 +184,9 @@ public class RacingAid
                 break;
             case DriverDataModel driverDataModel:
                 DriverData = driverDataModel;
+                break;
+            case TrackDataModel trackDataModel:
+                TrackData = trackDataModel;
                 break;
         }
     }

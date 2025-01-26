@@ -9,8 +9,6 @@
         d:DataContext="{d:DesignInstance viewModel:TrackMapOverlayViewModel}"
         Title="Track Map"
         SizeToContent="WidthAndHeight"
-        Height="200"
-        Width="200"
         WindowStyle="None"
         Topmost="True"
         AllowsTransparency="True"
@@ -19,27 +17,16 @@
         <SolidColorBrush Color="Transparent"/>
     </overlays:Overlay.Background>
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <StackPanel>
-            <!-- TODO: This is a Test button - remove once track map logic is implemented -->
-            <ToggleButton Content="Toggle Test"
-                          IsChecked="{Binding IsTrackMapAvailable}"
-                          Padding="5"
-                          HorizontalAlignment="Center"/>
-            
-            <TextBlock Text="Track Map unavailable - please complete valid lap" 
-                       Style="{StaticResource DefaultTextBlock}"
-                       TextWrapping="Wrap"
-                       Visibility="{Binding NoTrackMapTextVisibility}"/>
-            <Path Fill="LightBlue"
+        <TextBlock Text="Track Map unavailable - please complete valid lap" 
+                   Style="{StaticResource DefaultTextBlock}"
+                   TextWrapping="Wrap"
+                   Visibility="{Binding NoTrackMapTextVisibility}"/>
+            <Path Data="{Binding TrackMapPathData}"
+                  Stroke="DarkGray"
+                  StrokeThickness="5"
+                  Margin="10"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center"
-                  Visibility="{Binding TrackMapVisibility}">
-                <Path.Data>
-                    <EllipseGeometry Center="50,50" RadiusX="50" RadiusY="50"/>
-                </Path.Data>
-            </Path>
-
-            
-        </StackPanel>
+                  Visibility="{Binding TrackMapVisibility}"/>
     </Grid>
 </overlays:Overlay>

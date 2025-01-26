@@ -1,4 +1,4 @@
-﻿namespace RacingAidWpf.TrackMaps;
+﻿namespace RacingAidWpf.Tracks;
 
 public class TrackMaps(List<TrackMap> maps)
 {
