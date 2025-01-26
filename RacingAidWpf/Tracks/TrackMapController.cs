@@ -40,7 +40,12 @@ public class TrackMapController
         
         if (!trackMapDataHandler.TrySerializeToFile(TrackMapsJsonFullPath, new TrackMaps(trackMaps)))
         {
+            Console.WriteLine($"Failed to save json data for: {trackMap.Name}");
             // TODO: Add error log here
+        }
+        else
+        {
+            Console.WriteLine($"Saved {trackMap.Name} track data to file");
         }
     }
 }

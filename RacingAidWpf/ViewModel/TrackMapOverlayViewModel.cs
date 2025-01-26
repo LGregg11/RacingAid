@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using RacingAidData.Core.Models;
 using RacingAidWpf.FileHandlers;
 using RacingAidWpf.Tracks;
 
@@ -7,13 +6,8 @@ namespace RacingAidWpf.ViewModel;
 
 public class TrackMapOverlayViewModel : ViewModel
 {
-    private static readonly DriverDataModel RacingAidDriverData = RacingAidSingleton.Instance.DriverData;
-    private static readonly TrackDataModel RacingAidTrackData = RacingAidSingleton.Instance.TrackData;
-    
     private readonly TrackMapController trackMapController;
     private readonly TrackMapCreator trackMapCreator;
-    
-    private readonly List<TrackMapPosition> currentTrackMapPositions = [];
     
     private string currentTrackName;
     private string CurrentTrackName
@@ -57,25 +51,34 @@ public class TrackMapOverlayViewModel : ViewModel
         this.trackMapController = trackMapController ?? new TrackMapController(new JsonHandler<TrackMaps>());
         this.trackMapCreator = trackMapCreator ?? new TrackMapCreator();
 
-        trackMapCreator.TrackCreated += OnTrackCreated;
+        this.trackMapCreator.TrackCreated += OnTrackCreated;
         
         RacingAidUpdateDispatch.Update += OnUpdate;
     }
 
+    ~TrackMapOverlayViewModel()
+    {
+        RacingAidUpdateDispatch.Update -= OnUpdate;
+        trackMapCreator.TrackCreated -= OnTrackCreated;
+    }
+
     private void OnUpdate()
     {
-        CurrentTrackName = RacingAidTrackData.TrackName;
+        CurrentTrackName = RacingAidSingleton.Instance.TrackData.TrackName;
 
         if (CurrentTrackMap != null)
             UpdateDriverPositionsOnTrack();
 
         if (trackMapCreator.IsStarted)
-            trackMapCreator.Update(RacingAidDriverData);
+            trackMapCreator.Update(RacingAidSingleton.Instance.DriverData);
     }
 
     private void OnTrackChanged()
     {
         trackMapCreator.Stop();
+
+        if (string.IsNullOrEmpty(CurrentTrackName))
+            return;
         
         if (trackMapController.TryGetTrackMap(CurrentTrackName, out var trackMap))
         {
@@ -84,11 +87,13 @@ public class TrackMapOverlayViewModel : ViewModel
         }
         
         CurrentTrackMap = null;
-        trackMapCreator.Start(RacingAidDriverData, RacingAidTrackData);
+        trackMapCreator.Start(RacingAidSingleton.Instance.DriverData, RacingAidSingleton.Instance.TrackData);
     }
 
     private void OnTrackCreated(TrackMap trackMap)
     {
+        Console.WriteLine($"Track created: {trackMap.Name}");
+        
         trackMapController.AddTrackMap(trackMap);
         CurrentTrackMap = trackMap;
     }
