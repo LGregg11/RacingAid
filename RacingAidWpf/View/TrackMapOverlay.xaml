@@ -16,21 +16,16 @@
     <overlays:Overlay.Background>
         <SolidColorBrush Color="Transparent"/>
     </overlays:Overlay.Background>
-    <Grid>
-        <!-- For some reason I'm not sure about, adding this Canvas here is resolving some discrepancies in size between the track and driver visualizations -->
-        <Canvas Style="{StaticResource DefaultCanvasStyle}" Opacity="0.1"/>
-        
-        <TextBlock Text="Track Map unavailable - please complete valid lap" 
+    <Grid Margin="10">
+        <TextBlock Text="Track Map unavailable - please complete valid lap"
                    Style="{StaticResource DefaultTextBlock}"
                    TextWrapping="Wrap"
                    Visibility="{Binding NoTrackMapTextVisibility}"/>
-        
         <Path Data="{Binding TrackMapPathData}"
               Stroke="DarkGray"
               StrokeThickness="5"
-              Margin="10"
               Visibility="{Binding TrackMapVisibility}"/>
-            
+        
         <ItemsControl ItemsSource="{Binding DriverTrackVisualizations}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>

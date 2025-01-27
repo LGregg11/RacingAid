@@ -12,7 +12,7 @@ public class TrackMapOverlayViewModel : ViewModel
     
     private readonly TrackMapController trackMapController;
     private readonly TrackMapCreator trackMapCreator;
-    
+
     private string currentTrackName;
     private string CurrentTrackName
     {
@@ -122,25 +122,27 @@ public class TrackMapOverlayViewModel : ViewModel
     {
         var scaledPositions = TrackMapPathCreator.GetScaledTrackMapPositions(currentTrackMap, TargetSize);
         var nPositions = scaledPositions.Count;
-        
+
         var visualizations = new ObservableCollection<DriverTrackVisualization>();
         
         foreach (var driver in RacingAidSingleton.Instance.Relative.Entries)
         {
             var lapsDriven = driver.LapsDriven;
             var lapPercentage = lapsDriven - (int)lapsDriven;
-
+        
             var positionIndexRelativeToLapPercentage = (int)(lapPercentage * nPositions);
             var position = scaledPositions[positionIndexRelativeToLapPercentage];
-
+        
             var fillColor = driver.IsLocal ? Brushes.Red : Brushes.LightGray;
             var borderColor = driver.IsLocal ? Brushes.WhiteSmoke : Brushes.LightGray;   
             var size = driver.IsLocal ? 20d : 15d;
             
             // TODO: update number based on number display type (overall, class, car number)
             var number = driver.OverallPosition;
-
-            visualizations.Add(new DriverTrackVisualization(position.X, position.Y, size, number, fillColor, borderColor, 2d));
+        
+            // Canvas positions place visualizations based on top left not centre, so to get centre of ellipse subtract half size in x and y
+            var halfSize = size / 2d; 
+            visualizations.Add(new DriverTrackVisualization(position.X - halfSize, position.Y - halfSize, size, number, fillColor, borderColor, 2d));
         }
         
         DriverTrackVisualizations = visualizations;
