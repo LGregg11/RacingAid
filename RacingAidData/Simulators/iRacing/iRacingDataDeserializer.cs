@@ -98,7 +98,7 @@ public class iRacingDataDeserializer : IDeserializeData
                 SafetyRating = driver.LicString,
                 OverallPosition = resultPosition.Position,
                 ClassPosition = resultPosition.ClassPosition,
-                LapsDriven = (int)resultPosition.LapsDriven,
+                LapsDriven = GetLapsDriven(iRacingData, carIdx),
                 LastLapMs = (int)(resultPosition.LastTime * 1000),
                 FastestLapMs = (int)(resultPosition.FastestTime * 1000),
                 GapToLeaderMs = gapToLeaderMs,
@@ -143,7 +143,7 @@ public class iRacingDataDeserializer : IDeserializeData
                 SafetyRating = driver.LicString,
                 OverallPosition = GetOverallPosition(iRacingData, carIdx), // might not have a 'result' yet
                 ClassPosition = GetClassPosition(iRacingData, carIdx), // might not have a 'result' yet
-                LapsDriven = hasResult ? resultPosition.LapsDriven : 0,
+                LapsDriven = GetLapsDriven(iRacingData, carIdx),
                 LastLapMs = hasResult ? (int)(resultPosition.LastTime * 1000) : 0,
                 FastestLapMs = hasResult ? (int)(resultPosition.FastestTime * 1000) : 0,
                 GapToLocalMs = GetGapToLocalMs(iRacingData, localCarIdx, carIdx),

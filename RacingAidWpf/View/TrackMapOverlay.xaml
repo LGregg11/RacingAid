@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:viewModel="clr-namespace:RacingAidWpf.ViewModel"
         xmlns:overlays="clr-namespace:RacingAidWpf.Overlays"
+        xmlns:converters="clr-namespace:RacingAidWpf.Converters"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModel:TrackMapOverlayViewModel}"
         Title="Track Map"
@@ -13,20 +14,47 @@
         Topmost="True"
         AllowsTransparency="True"
         MouseLeftButtonDown="OnMouseLeftButtonDown">
-    <overlays:Overlay.Background>
+    <overlays:Overlay.Resources>
+        <converters:PositionConverter x:Key="PositionConverter"/>
+    </overlays:Overlay.Resources>
+        <overlays:Overlay.Background>
         <SolidColorBrush Color="Transparent"/>
     </overlays:Overlay.Background>
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <TextBlock Text="Track Map unavailable - please complete valid lap" 
+    <Grid Margin="10">
+        <TextBlock Text="Track Map unavailable - please complete valid lap"
                    Style="{StaticResource DefaultTextBlock}"
                    TextWrapping="Wrap"
                    Visibility="{Binding NoTrackMapTextVisibility}"/>
-            <Path Data="{Binding TrackMapPathData}"
-                  Stroke="DarkGray"
-                  StrokeThickness="5"
-                  Margin="10"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center"
-                  Visibility="{Binding TrackMapVisibility}"/>
+        <Path Data="{Binding TrackMapPathData}"
+              Stroke="DarkGray"
+              StrokeThickness="5"
+              Visibility="{Binding TrackMapVisibility}"/>
+        
+        <ItemsControl ItemsSource="{Binding DriverTrackVisualizations}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Ellipse Width="{Binding Radius}"
+                                 Height="{Binding Radius}"
+                                 StrokeThickness="{Binding BorderThickness}"
+                                 Stroke="{Binding Border}"
+                                 Fill="{Binding Fill}">
+                        </Ellipse>
+                        <TextBlock Text="{Binding Number, Converter={StaticResource PositionConverter}}" FontSize="10" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ContentPresenter">
+                    <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                    <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+        </ItemsControl>
     </Grid>
 </overlays:Overlay>
