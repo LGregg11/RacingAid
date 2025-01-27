@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Media;
 using RacingAidWpf.FileHandlers;
 using RacingAidWpf.Tracks;
@@ -25,23 +26,40 @@ public class TrackMapOverlayViewModel : ViewModel
             OnTrackChanged();
         }
     }
-
-    private GeometryGroup trackMapPathData;
-    public GeometryGroup TrackMapPathData
+    
+    private TrackMap currentTrackMap;
+    private TrackMap CurrentTrackMap
     {
-        get => trackMapPathData;
+        get => currentTrackMap;
         set
         {
-            if (trackMapPathData == value)
+            if (currentTrackMap == value)
                 return;
             
-            trackMapPathData = value;
+            currentTrackMap = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(TrackMapPathData));
             OnPropertyChanged(nameof(IsTrackMapAvailable));
             OnPropertyChanged(nameof(TrackMapVisibility));
             OnPropertyChanged(nameof(NoTrackMapTextVisibility));
         }
     }
+    
+    private ObservableCollection<DriverTrackVisualization> driverTrackVisualizations = [];
+    public ObservableCollection<DriverTrackVisualization> DriverTrackVisualizations
+    {
+        get => driverTrackVisualizations;
+        set
+        {
+            if (driverTrackVisualizations == value)
+                return;
+            
+            driverTrackVisualizations = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public GeometryGroup TrackMapPathData => CurrentTrackMap == null ? null : TrackMapPathCreator.CreateGeometryGroupFromTrackMap(CurrentTrackMap, TargetSize);
     
     public bool IsTrackMapAvailable => TrackMapPathData != null;
 
@@ -68,7 +86,7 @@ public class TrackMapOverlayViewModel : ViewModel
     {
         CurrentTrackName = RacingAidSingleton.Instance.TrackData.TrackName;
 
-        if (TrackMapPathData != null)
+        if (CurrentTrackMap != null)
             UpdateDriverPositionsOnTrack();
 
         if (trackMapCreator.IsStarted)
@@ -84,11 +102,11 @@ public class TrackMapOverlayViewModel : ViewModel
         
         if (trackMapController.TryGetTrackMap(CurrentTrackName, out var trackMap))
         {
-            UpdateTrackMapPathData(trackMap);
+            CurrentTrackMap = trackMap;
             return;
         }
         
-        TrackMapPathData = null;
+        CurrentTrackMap = null;
         trackMapCreator.Start(RacingAidSingleton.Instance.DriverData, RacingAidSingleton.Instance.TrackData);
     }
 
@@ -97,16 +115,34 @@ public class TrackMapOverlayViewModel : ViewModel
         Console.WriteLine($"Track created: {trackMap.Name}");
         
         trackMapController.AddTrackMap(trackMap);
-        UpdateTrackMapPathData(trackMap);
+        CurrentTrackMap = trackMap;
     }
 
     private void UpdateDriverPositionsOnTrack()
     {
-        // TODO
-    }
+        var scaledPositions = TrackMapPathCreator.GetScaledTrackMapPositions(currentTrackMap, TargetSize);
+        var nPositions = scaledPositions.Count;
+        
+        var visualizations = new ObservableCollection<DriverTrackVisualization>();
+        
+        foreach (var driver in RacingAidSingleton.Instance.Relative.Entries)
+        {
+            var lapsDriven = driver.LapsDriven;
+            var lapPercentage = lapsDriven - (int)lapsDriven;
 
-    private void UpdateTrackMapPathData(TrackMap trackMap)
-    {
-        TrackMapPathData = TrackMapPathCreator.CreateGeometryGroupFromTrackMap(trackMap, TargetSize);
+            var positionIndexRelativeToLapPercentage = (int)(lapPercentage * nPositions);
+            var position = scaledPositions[positionIndexRelativeToLapPercentage];
+
+            var fillColor = driver.IsLocal ? Brushes.Red : Brushes.LightGray;
+            var borderColor = driver.IsLocal ? Brushes.WhiteSmoke : Brushes.LightGray;   
+            var size = driver.IsLocal ? 20d : 15d;
+            
+            // TODO: update number based on number display type (overall, class, car number)
+            var number = driver.OverallPosition;
+
+            visualizations.Add(new DriverTrackVisualization(position.X, position.Y, size, number, fillColor, borderColor, 2d));
+        }
+        
+        DriverTrackVisualizations = visualizations;
     }
 }
