@@ -300,7 +300,7 @@ public sealed class MainWindowViewModel : ViewModel
 
     #endregion
 
-    public MainWindowViewModel(OverlayController? injectedOverlayController = null, List<Overlay>? overlays = null)
+    public MainWindowViewModel(OverlayController injectedOverlayController = null, List<Overlay> overlays = null)
     {
         overlayController = injectedOverlayController ?? new OverlayController(new JsonHandler<OverlayPositions>());
         overlays ??=

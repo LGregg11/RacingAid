@@ -6,7 +6,7 @@ namespace RacingAidWpf.Converters;
 [ValueConversion(typeof(int), typeof(string))]
 public class PositionConverter : IValueConverter
 {
-    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is not int position || position == 0)
             return string.Empty;
@@ -14,7 +14,7 @@ public class PositionConverter : IValueConverter
         return position.ToString();
     }
 
-    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
         return null;
     }

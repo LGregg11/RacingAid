@@ -2,8 +2,8 @@
 
 namespace RacingAidWpf.Model;
 
-public class SimulatorEntryModel(string? simulatorName, Simulator simulatorType)
+public class SimulatorEntryModel(string simulatorName, Simulator simulatorType)
 {
-    public string? SimulatorName { get; } = simulatorName;
+    public string SimulatorName { get; } = simulatorName;
     public Simulator SimulatorType { get; } = simulatorType;
 }

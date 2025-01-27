@@ -17,7 +17,7 @@ public sealed partial class MainWindow
         DataContext = mainWindowViewModel;
     }
     
-    private void MainWindow_OnClosed(object? sender, EventArgs e)
+    private void MainWindow_OnClosed(object sender, EventArgs e)
     {
         mainWindowViewModel.Close();
         Application.Current.Shutdown();

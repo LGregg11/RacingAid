@@ -4,7 +4,7 @@ namespace RacingAidWpf;
 
 public static class RacingAidSingleton
 {
-    private static RacingAid? racingAid;
+    private static RacingAid racingAid;
 
     public static RacingAid Instance => racingAid ??= new RacingAid();
 }
