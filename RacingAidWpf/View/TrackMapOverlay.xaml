@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:viewModel="clr-namespace:RacingAidWpf.ViewModel"
         xmlns:overlays="clr-namespace:RacingAidWpf.Overlays"
+        xmlns:converters="clr-namespace:RacingAidWpf.Converters"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModel:TrackMapOverlayViewModel}"
         Title="Track Map"
@@ -13,7 +14,10 @@
         Topmost="True"
         AllowsTransparency="True"
         MouseLeftButtonDown="OnMouseLeftButtonDown">
-    <overlays:Overlay.Background>
+    <overlays:Overlay.Resources>
+        <converters:PositionConverter x:Key="PositionConverter"/>
+    </overlays:Overlay.Resources>
+        <overlays:Overlay.Background>
         <SolidColorBrush Color="Transparent"/>
     </overlays:Overlay.Background>
     <Grid Margin="10">
@@ -41,7 +45,7 @@
                                  Stroke="{Binding Border}"
                                  Fill="{Binding Fill}">
                         </Ellipse>
-                        <TextBlock Text="{Binding Number}" FontSize="10" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding Number, Converter={StaticResource PositionConverter}}" FontSize="10" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
@@ -51,7 +55,6 @@
                     <Setter Property="Canvas.Top" Value="{Binding Y}"/>
                 </Style>
             </ItemsControl.ItemContainerStyle>
-            
         </ItemsControl>
     </Grid>
 </overlays:Overlay>
