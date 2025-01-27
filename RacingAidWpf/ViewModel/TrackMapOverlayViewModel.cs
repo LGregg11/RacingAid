@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Media;
+using RacingAidData.Core.Models;
+using RacingAidWpf.Configuration;
 using RacingAidWpf.FileHandlers;
 using RacingAidWpf.Tracks;
 
@@ -9,6 +11,8 @@ namespace RacingAidWpf.ViewModel;
 public class TrackMapOverlayViewModel : ViewModel
 {
     private const float TargetSize = 300f;
+    
+    private readonly TrackMapConfigSection trackMapConfigSection = ConfigSectionSingleton.TrackMapSection;
     
     private readonly TrackMapController trackMapController;
     private readonly TrackMapCreator trackMapCreator;
@@ -121,30 +125,56 @@ public class TrackMapOverlayViewModel : ViewModel
     private void UpdateDriverPositionsOnTrack()
     {
         var scaledPositions = TrackMapPathCreator.GetScaledTrackMapPositions(currentTrackMap, TargetSize);
-        var nPositions = scaledPositions.Count;
-
+        var driverNumberType = trackMapConfigSection.DriverNumberType;
+        
         var visualizations = new ObservableCollection<DriverTrackVisualization>();
-        
         foreach (var driver in RacingAidSingleton.Instance.Relative.Entries)
-        {
-            var lapsDriven = driver.LapsDriven;
-            var lapPercentage = lapsDriven - (int)lapsDriven;
-        
-            var positionIndexRelativeToLapPercentage = (int)(lapPercentage * nPositions);
-            var position = scaledPositions[positionIndexRelativeToLapPercentage];
-        
-            var fillColor = driver.IsLocal ? Brushes.Red : Brushes.LightGray;
-            var borderColor = driver.IsLocal ? Brushes.WhiteSmoke : Brushes.LightGray;   
-            var size = driver.IsLocal ? 20d : 15d;
-            
-            // TODO: update number based on number display type (overall, class, car number)
-            var number = driver.OverallPosition;
-        
-            // Canvas positions place visualizations based on top left not centre, so to get centre of ellipse subtract half size in x and y
-            var halfSize = size / 2d; 
-            visualizations.Add(new DriverTrackVisualization(position.X - halfSize, position.Y - halfSize, size, number, fillColor, borderColor, 2d));
-        }
+            visualizations.Add(CreateDriverTrackVisualization(scaledPositions, driver, driverNumberType));
         
         DriverTrackVisualizations = visualizations;
+    }
+
+    private static DriverTrackVisualization CreateDriverTrackVisualization(List<TrackMapPosition> positions, RelativeEntryModel relativeEntryModel, DriverNumberType driverNumberType)
+    {
+        const double borderThickness = 2.0d;
+        const double localSize = 20d;
+        const double otherSize = 15d;
+        
+        var localFill = Brushes.Red;
+        var otherFill = Brushes.LightGray;
+        var localBorder = Brushes.Red;
+        var otherBorder = Brushes.LightGray;
+            
+        var number = GetDriverNumber(relativeEntryModel, driverNumberType);
+        
+        var lapsDriven = relativeEntryModel.LapsDriven;
+        var lapPercentage = lapsDriven - (int)lapsDriven;
+        
+        var positionIndexRelativeToLapPercentage = (int)(lapPercentage * positions.Count);
+        var position = positions[positionIndexRelativeToLapPercentage];
+        
+        var fillColor = relativeEntryModel.IsLocal ? localFill : otherFill;
+        var borderColor = relativeEntryModel.IsLocal ? localBorder : otherBorder;   
+        var size = relativeEntryModel.IsLocal ? localSize : otherSize;
+        var halfSize = size / 2d;
+        
+        return new DriverTrackVisualization(position.X - halfSize,
+            position.Y - halfSize,
+            size,
+            number,
+            fillColor,
+            borderColor, 
+            borderThickness);
+    }
+
+    private static int GetDriverNumber(RelativeEntryModel relativeEntryModel, DriverNumberType driverNumberType)
+    {
+        return driverNumberType switch
+        {
+            DriverNumberType.OverallPosition => relativeEntryModel.OverallPosition,
+            DriverNumberType.ClassPosition => relativeEntryModel.ClassPosition,
+            DriverNumberType.CarNumber => relativeEntryModel.CarNumber,
+            _ => relativeEntryModel.CarNumber
+        };
     }
 }

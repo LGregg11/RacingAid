@@ -25,4 +25,8 @@ public static class ConfigSectionSingleton
     private static TelemetryConfigSection telemetrySection;
     public static TelemetryConfigSection TelemetrySection =>
         telemetrySection ??= new TelemetryConfigSection(Config);
+    
+    private static TrackMapConfigSection trackMapSection;
+    public static TrackMapConfigSection TrackMapSection =>
+        trackMapSection ??= new TrackMapConfigSection(Config);
 }
