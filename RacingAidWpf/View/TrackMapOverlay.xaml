@@ -34,17 +34,24 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Ellipse Width="{Binding Radius}"
-                             Height="{Binding Radius}"
-                             StrokeThickness="{Binding BorderThickness}"
-                             Stroke="{Binding Border}"
-                             Fill="{Binding Fill}">
-                        <Ellipse.RenderTransform>
-                            <TranslateTransform X="{Binding X}" Y="{Binding Y}"/>
-                        </Ellipse.RenderTransform>
-                    </Ellipse>
+                    <Grid>
+                        <Ellipse Width="{Binding Radius}"
+                                 Height="{Binding Radius}"
+                                 StrokeThickness="{Binding BorderThickness}"
+                                 Stroke="{Binding Border}"
+                                 Fill="{Binding Fill}">
+                        </Ellipse>
+                        <TextBlock Text="{Binding Number}" FontSize="10" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ContentPresenter">
+                    <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                    <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+            
         </ItemsControl>
     </Grid>
 </overlays:Overlay>
