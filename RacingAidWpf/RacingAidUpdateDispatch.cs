@@ -9,12 +9,12 @@ namespace RacingAidWpf;
 public static class RacingAidUpdateDispatch
 {
     private static readonly RacingAid RacingAid = RacingAidSingleton.Instance;
-    private static readonly SynchronizationContext? SynchronizationContext = SynchronizationContext.Current;
+    private static readonly SynchronizationContext SynchronizationContext = SynchronizationContext.Current;
 
     private static readonly GeneralConfigSection GeneralConfigSection = ConfigSectionSingleton.GeneralSection;
 
     private static readonly AutoResetEvent InvokeUpdateAutoResetEvent = new(false);
-    private static Thread? updateThread;
+    private static Thread updateThread;
     private static bool keepThreadAlive;
     private static bool modelsUpdated;
 
@@ -23,7 +23,7 @@ public static class RacingAidUpdateDispatch
     /// </remarks>
     private static int updateIntervalMs = GeneralConfigSection.UpdateIntervalMs;
 
-    public static event Action? Update;
+    public static event Action Update;
 
     public static void Start()
     {

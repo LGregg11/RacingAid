@@ -6,6 +6,7 @@ using RacingAidWpf.Configuration;
 using RacingAidWpf.FileHandlers;
 using RacingAidWpf.Model;
 using RacingAidWpf.Overlays;
+using RacingAidWpf.Tracks;
 using RacingAidWpf.View;
 
 namespace RacingAidWpf.ViewModel;
@@ -16,6 +17,7 @@ public sealed class MainWindowViewModel : ViewModel
     private readonly TimesheetConfigSection timesheetConfigSection = ConfigSectionSingleton.TimesheetSection;
     private readonly RelativeConfigSection relativeConfigSection = ConfigSectionSingleton.RelativeSection;
     private readonly TelemetryConfigSection telemetryConfigSection = ConfigSectionSingleton.TelemetrySection;
+    private readonly TrackMapConfigSection trackMapConfigSection = ConfigSectionSingleton.TrackMapSection;
     private readonly OverlayController overlayController;
 
     public ICommand StartCommand { get; }
@@ -38,11 +40,10 @@ public sealed class MainWindowViewModel : ViewModel
 
     public bool IsStopped => !IsStarted;
 
-    public ObservableCollection<SimulatorEntryModel> SimulatorEntryCollection { get; private set; }
+    public ObservableCollection<EnumEntryModel<Simulator>> SimulatorEntries { get; }
 
-    private SimulatorEntryModel selectedSimulatorEntry = new("N/A", Simulator.Unknown);
-
-    public SimulatorEntryModel SelectedSimulatorEntry
+    private EnumEntryModel<Simulator> selectedSimulatorEntry;
+    public EnumEntryModel<Simulator> SelectedSimulatorEntry
     {
         get => selectedSimulatorEntry;
         set
@@ -281,6 +282,27 @@ public sealed class MainWindowViewModel : ViewModel
 
     #endregion
 
+    #region Track Map
+    
+    public ObservableCollection<EnumEntryModel<DriverNumberType>> DriverNumberEntries { get; }
+
+    private EnumEntryModel<DriverNumberType> selectedDriverNumberEntry;
+    public EnumEntryModel<DriverNumberType> SelectedDriverNumberEntry
+    {
+        get => selectedDriverNumberEntry;
+        set
+        {
+            if (selectedDriverNumberEntry == value)
+                return;
+
+            selectedDriverNumberEntry = DriverNumberEntries.First(d => d == value);
+            trackMapConfigSection.DriverNumberType = value.Value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
+
     #endregion
 
     #region Reposition Button Logic
@@ -300,7 +322,7 @@ public sealed class MainWindowViewModel : ViewModel
 
     #endregion
 
-    public MainWindowViewModel(OverlayController? injectedOverlayController = null, List<Overlay>? overlays = null)
+    public MainWindowViewModel(OverlayController injectedOverlayController = null, List<Overlay> overlays = null)
     {
         overlayController = injectedOverlayController ?? new OverlayController(new JsonHandler<OverlayPositions>());
         overlays ??=
@@ -314,14 +336,11 @@ public sealed class MainWindowViewModel : ViewModel
         foreach (var overlay in overlays)
             overlayController.AddOverlay(overlay);
 
-        var simulatorEntries = new List<SimulatorEntryModel>
-        {
-            new(Enum.GetName(Simulator.iRacing), Simulator.iRacing),
-            new(Enum.GetName(Simulator.F1), Simulator.F1)
-        };
+        SimulatorEntries = CreateObservableEnumCollection<Simulator>();
+        SelectedSimulatorEntry = SimulatorEntries.First();
 
-        SimulatorEntryCollection = new ObservableCollection<SimulatorEntryModel>(simulatorEntries);
-        SelectedSimulatorEntry = simulatorEntries.First();
+        DriverNumberEntries = CreateObservableEnumCollection<DriverNumberType>();
+        SelectedDriverNumberEntry = DriverNumberEntries.First(d => d.Value == trackMapConfigSection.DriverNumberType);
 
         StartCommand = new Command(Start);
         StopCommand = new Command(Stop);
@@ -337,7 +356,7 @@ public sealed class MainWindowViewModel : ViewModel
     {
         IsStarted = true;
 
-        RacingAidSingleton.Instance.SetupSimulator(SelectedSimulatorEntry.SimulatorType);
+        RacingAidSingleton.Instance.SetupSimulator(SelectedSimulatorEntry.Value);
         RacingAidSingleton.Instance.Start();
 
         RacingAidUpdateDispatch.Start();
@@ -362,5 +381,13 @@ public sealed class MainWindowViewModel : ViewModel
         {
             IsRepositionEnabled = !IsRepositionEnabled;
         }
+    }
+
+    private ObservableCollection<EnumEntryModel<T>> CreateObservableEnumCollection<T>() where T : struct, Enum
+    {
+        var entries = new ObservableCollection<EnumEntryModel<T>>();
+        foreach (var entry in Enum.GetValues(typeof(T)).Cast<T>())
+            entries.Add(new EnumEntryModel<T>(entry));
+        return entries;
     }
 }
