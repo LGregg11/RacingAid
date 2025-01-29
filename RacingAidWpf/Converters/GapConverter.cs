@@ -6,7 +6,7 @@ namespace RacingAidWpf.Converters;
 [ValueConversion(typeof(int), typeof(string))]
 public class GapConverter : IValueConverter
 {
-    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         const int oneTenthMs = 100;
         
@@ -24,7 +24,7 @@ public class GapConverter : IValueConverter
         return $"{signStr}{timeStr}";
     }
 
-    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
         return null;
     }

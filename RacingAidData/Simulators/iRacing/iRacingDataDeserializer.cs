@@ -47,6 +47,9 @@ public class iRacingDataDeserializer : IDeserializeData
         if (CreateDriverModel(iRacingData) is {} driverDataModel)
             models.Add(driverDataModel);
         
+        if (CreateTrackModel(iRacingData) is {} trackDataModel)
+            models.Add(trackDataModel);
+        
         return models.Count > 0;
     }
 
@@ -95,7 +98,7 @@ public class iRacingDataDeserializer : IDeserializeData
                 SafetyRating = driver.LicString,
                 OverallPosition = resultPosition.Position,
                 ClassPosition = resultPosition.ClassPosition,
-                LapsDriven = (int)resultPosition.LapsDriven,
+                LapsDriven = GetLapsDriven(iRacingData, carIdx),
                 LastLapMs = (int)(resultPosition.LastTime * 1000),
                 FastestLapMs = (int)(resultPosition.FastestTime * 1000),
                 GapToLeaderMs = gapToLeaderMs,
@@ -140,7 +143,7 @@ public class iRacingDataDeserializer : IDeserializeData
                 SafetyRating = driver.LicString,
                 OverallPosition = GetOverallPosition(iRacingData, carIdx), // might not have a 'result' yet
                 ClassPosition = GetClassPosition(iRacingData, carIdx), // might not have a 'result' yet
-                LapsDriven = hasResult ? resultPosition.LapsDriven : 0,
+                LapsDriven = GetLapsDriven(iRacingData, carIdx),
                 LastLapMs = hasResult ? (int)(resultPosition.LastTime * 1000) : 0,
                 FastestLapMs = hasResult ? (int)(resultPosition.FastestTime * 1000) : 0,
                 GapToLocalMs = GetGapToLocalMs(iRacingData, localCarIdx, carIdx),
@@ -168,11 +171,31 @@ public class iRacingDataDeserializer : IDeserializeData
 
     private static DriverDataModel CreateDriverModel(IRacingSdkData iRacingData)
     {
+        var lapsDriven = 0f;
+        if (iRacingData.SessionInfo?.DriverInfo is { Drivers: { Count: > 0 }, DriverCarIdx: { } driverCarIdx })
+            lapsDriven = GetLapsDriven(iRacingData, driverCarIdx);
+        
         return new DriverDataModel
         {
-            SpeedMs = iRacingData.GetFloat("Speed"),
-            ForwardDirectionDeg = iRacingData.GetFloat("YawNorth") * RadToDeg
+            VelocityMs = GetVelocity(iRacingData),
+            ForwardDirectionDeg = iRacingData.GetFloat("YawNorth") * RadToDeg,
+            LapsDriven = lapsDriven
         };
+    }
+
+    private static Velocity GetVelocity(IRacingSdkData iRacingData)
+    {
+        return new Velocity(iRacingData.GetFloat("VelocityX"), iRacingData.GetFloat("VelocityY"));
+    }
+
+    private static TrackDataModel CreateTrackModel(IRacingSdkData iRacingData)
+    {
+        var trackDataModel = new TrackDataModel();
+        
+        if (iRacingData.SessionInfo?.WeekendInfo?.TrackName is {} trackName)
+            trackDataModel.TrackName = trackName;
+        
+        return trackDataModel;
     }
 
     private static int GetGapToLeaderMs(IRacingSdkData iRacingData, int carIdx)
@@ -190,10 +213,20 @@ public class iRacingDataDeserializer : IDeserializeData
     {
         return (int)(iRacingData.GetFloat("CarIdxEstTime", carIdx) * 1000f);
     }
+
+    private static float GetLap(IRacingSdkData iRacingData, int carIdx)
+    {
+        return iRacingData.GetInt("CarIdxLap", carIdx);
+    }
     
     private static float GetLapDistancePercentage(IRacingSdkData iRacingData, int carIdx)
     {
         return iRacingData.GetFloat("CarIdxLapDistPct", carIdx);
+    }
+    
+    private static float GetLapsDriven(IRacingSdkData iRacingData, int carIdx)
+    {
+        return GetLap(iRacingData, carIdx) + GetLapDistancePercentage(iRacingData, carIdx);
     }
 
     private static int GetOverallPosition(IRacingSdkData iRacingData, int carIdx)

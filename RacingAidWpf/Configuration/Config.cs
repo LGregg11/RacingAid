@@ -9,6 +9,9 @@ public class Config : IConfig
 
     public Config(string configFilePath)
     {
+        if (string.IsNullOrEmpty(configFilePath))
+            throw new NullReferenceException(nameof(configFilePath));
+        
         if (!File.Exists(configFilePath))
             File.Create(configFilePath);
 
@@ -42,7 +45,7 @@ public class Config : IConfig
         return value.HasValue;
     }
 
-    public bool TryGetString(string section, string key, out string? value)
+    public bool TryGetString(string section, string key, out string value)
     {
         value = null;
         if (configParser.GetValue(section, key) is { } configValue)

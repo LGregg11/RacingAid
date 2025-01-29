@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace RacingAidWpf.OverlayManagement;
+namespace RacingAidWpf.Overlays;
 
 public class Overlay : Window
 {

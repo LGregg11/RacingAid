@@ -7,7 +7,7 @@ using RacingAidWpf.Model;
 
 namespace RacingAidWpf.ViewModel;
 
-public class RelativeOverlayViewModel : NotifyPropertyChanged
+public class RelativeOverlayViewModel : ViewModel
 {
     private static readonly RelativeConfigSection RelativeConfigSection = ConfigSectionSingleton.RelativeSection;
     

@@ -39,14 +39,14 @@ public class RelativeGridRow(
         return !(left == right);
     }
 
-    public bool Equals(RelativeGridRow? other)
+    public bool Equals(RelativeGridRow other)
     {
         if (other is null) return false;
         if (ReferenceEquals(this, other)) return true;
         return CarModel == other.CarModel && CarNumber == other.CarNumber;
     }
 
-    public override bool Equals(object? obj)
+    public override bool Equals(object obj)
     {
         if (obj is null) return false;
         if (ReferenceEquals(this, obj)) return true;

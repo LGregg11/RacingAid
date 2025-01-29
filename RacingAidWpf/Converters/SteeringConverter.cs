@@ -6,7 +6,7 @@ namespace RacingAidWpf.Converters;
 [ValueConversion(typeof(float), typeof(string))]
 public class SteeringConverter : IValueConverter
 {
-    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is not float degrees)
             return "N/A";
@@ -17,7 +17,7 @@ public class SteeringConverter : IValueConverter
         return $"{degreesAbs:F1}{direction}";
     }
 
-    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
         return null;
     }

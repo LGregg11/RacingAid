@@ -6,7 +6,7 @@ namespace RacingAidWpf.Converters;
 [ValueConversion(typeof(float), typeof(string))]
 public class PercentageConverter : IValueConverter
 {
-    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is float f)
             return $"{f*100f:F1}";
@@ -14,7 +14,7 @@ public class PercentageConverter : IValueConverter
         return "N/A";
     }
 
-    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
         return null;
     }

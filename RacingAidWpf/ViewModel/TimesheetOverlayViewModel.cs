@@ -6,7 +6,7 @@ using RacingAidWpf.Model;
 
 namespace RacingAidWpf.ViewModel;
 
-public class TimesheetOverlayViewModel : NotifyPropertyChanged
+public class TimesheetOverlayViewModel : ViewModel
 {
     private static readonly TimesheetConfigSection TimesheetConfigSection = ConfigSectionSingleton.TimesheetSection;
     
