@@ -36,6 +36,8 @@ public sealed class MainWindowViewModel : ViewModel
             isStarted = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(IsStopped));
+
+            OnStartedOrConnectionUpdated();
         }
     }
 
@@ -53,10 +55,7 @@ public sealed class MainWindowViewModel : ViewModel
             isConnected = value;
             OnPropertyChanged();
             
-            if (IsStarted && isConnected)
-                StartAndDisplayOverlays();
-            else if (!IsStarted || !isConnected)
-                HideAndResetOverlays();
+            OnStartedOrConnectionUpdated();
         }
     }
 
@@ -391,8 +390,8 @@ public sealed class MainWindowViewModel : ViewModel
         racingAid.Stop();
         racingAid.ConnectionUpdated -= OnConnectionUpdated;
 
-        IsConnected = false;
         IsStarted = false;
+        IsConnected = false;
     }
 
     public void ToggleOverlayRepositioning()
@@ -408,6 +407,16 @@ public sealed class MainWindowViewModel : ViewModel
         {
             IsConnected = connected;
         });
+    }
+
+    private void OnStartedOrConnectionUpdated()
+    {
+        var startedAndConnected = IsStarted && IsConnected;
+        
+        if (startedAndConnected)
+            StartAndDisplayOverlays();
+        else
+            HideAndResetOverlays();
     }
 
     private void StartAndDisplayOverlays()
