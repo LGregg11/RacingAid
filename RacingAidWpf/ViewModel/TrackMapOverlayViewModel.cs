@@ -86,6 +86,11 @@ public class TrackMapOverlayViewModel : OverlayViewModel
         trackMapCreator.TrackCreated -= OnTrackCreated;
     }
 
+    public override void Reset()
+    {
+        CurrentTrackName = null;
+    }
+
     private void OnUpdate()
     {
         CurrentTrackName = RacingAidSingleton.Instance.TrackData.TrackName;
@@ -102,7 +107,10 @@ public class TrackMapOverlayViewModel : OverlayViewModel
         trackMapCreator.Stop();
 
         if (string.IsNullOrEmpty(CurrentTrackName))
+        {
+            CurrentTrackMap = null;
             return;
+        }
         
         if (trackMapController.TryGetTrackMap(CurrentTrackName, out var trackMap))
         {

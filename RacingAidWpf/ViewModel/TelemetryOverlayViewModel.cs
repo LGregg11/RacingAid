@@ -123,6 +123,11 @@ public class TelemetryOverlayViewModel : OverlayViewModel
         telemetryConfigSection.ConfigUpdated += OnConfigUpdated;
     }
 
+    public override void Reset()
+    {
+        // Do nothing
+    }
+
     private void UpdateProperties()
     {
         var telemetry = racingAid.Telemetry;

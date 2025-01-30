@@ -42,6 +42,11 @@ public class TimesheetOverlayViewModel : OverlayViewModel
         TimesheetConfigSection.ConfigUpdated += OnConfigUpdated;
     }
 
+    public override void Reset()
+    {
+        timesheet = [];
+    }
+
     private void UpdateProperties()
     {
         UpdateDriversDataGrid();

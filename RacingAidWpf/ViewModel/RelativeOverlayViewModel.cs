@@ -43,6 +43,11 @@ public class RelativeOverlayViewModel : OverlayViewModel
         RelativeConfigSection.ConfigUpdated += OnConfigUpdated;
     }
 
+    public override void Reset()
+    {
+        relative = [];
+    }
+
     private void UpdateProperties()
     {
         UpdateDriversDataGrid();
