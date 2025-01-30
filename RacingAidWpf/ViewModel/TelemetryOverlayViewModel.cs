@@ -22,7 +22,7 @@ public class TelemetryOverlayViewModel : OverlayViewModel
                 return;
             
             driverName = value;
-            OnPropertyChanged();
+            InvokeOnMainThread(() => OnPropertyChanged());
         }
     }
 
@@ -36,7 +36,7 @@ public class TelemetryOverlayViewModel : OverlayViewModel
                 return;
             
             speedMetresPerSecond = value;
-            OnPropertyChanged();
+            InvokeOnMainThread(() => OnPropertyChanged());
         }
     }
     
@@ -50,7 +50,7 @@ public class TelemetryOverlayViewModel : OverlayViewModel
                 return;
             
             brakePercentage = value;
-            OnPropertyChanged();
+            InvokeOnMainThread(() => OnPropertyChanged());
         }
     }
     
@@ -64,7 +64,7 @@ public class TelemetryOverlayViewModel : OverlayViewModel
                 return;
             
             throttlePercentage = value;
-            OnPropertyChanged();
+            InvokeOnMainThread(() => OnPropertyChanged());
         }
     }
     
@@ -78,7 +78,7 @@ public class TelemetryOverlayViewModel : OverlayViewModel
                 return;
             
             clutchPercentage = value;
-            OnPropertyChanged();
+            InvokeOnMainThread(() => OnPropertyChanged());
         }
     }
     
@@ -92,7 +92,7 @@ public class TelemetryOverlayViewModel : OverlayViewModel
                 return;
             
             gear = value;
-            OnPropertyChanged();
+            InvokeOnMainThread(() => OnPropertyChanged());
         }
     }
 
@@ -107,8 +107,11 @@ public class TelemetryOverlayViewModel : OverlayViewModel
                 return;
             
             steeringAngleDegrees = value;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(SteeringWheelAngle));
+            InvokeOnMainThread(() =>
+            {
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(SteeringWheelAngle));
+            });
         }
     }
 

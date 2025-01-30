@@ -20,7 +20,10 @@ public class TimesheetOverlayViewModel : OverlayViewModel
                 return;
             
             timesheet = value;
-            OnPropertyChanged();
+            InvokeOnMainThread(() =>
+            {
+                OnPropertyChanged();
+            });
         }
     }
     
@@ -89,11 +92,14 @@ public class TimesheetOverlayViewModel : OverlayViewModel
 
     private void OnConfigUpdated()
     {
-        OnPropertyChanged(nameof(CarNumberColumnVisibility));
-        OnPropertyChanged(nameof(SafetyColumnVisibility));
-        OnPropertyChanged(nameof(SkillColumnVisibility));
-        OnPropertyChanged(nameof(LastLapColumnVisibility));
-        OnPropertyChanged(nameof(FastestLapColumnVisibility));
-        OnPropertyChanged(nameof(GapToLeaderColumnVisibility));
+        InvokeOnMainThread(() =>
+        {
+            OnPropertyChanged(nameof(CarNumberColumnVisibility));
+            OnPropertyChanged(nameof(SafetyColumnVisibility));
+            OnPropertyChanged(nameof(SkillColumnVisibility));
+            OnPropertyChanged(nameof(LastLapColumnVisibility));
+            OnPropertyChanged(nameof(FastestLapColumnVisibility));
+            OnPropertyChanged(nameof(GapToLeaderColumnVisibility));
+        });
     }
 }
