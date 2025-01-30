@@ -6,7 +6,7 @@ using RacingAidWpf.Model;
 
 namespace RacingAidWpf.ViewModel;
 
-public class TimesheetOverlayViewModel : ViewModel
+public class TimesheetOverlayViewModel : OverlayViewModel
 {
     private static readonly TimesheetConfigSection TimesheetConfigSection = ConfigSectionSingleton.TimesheetSection;
     
@@ -40,6 +40,11 @@ public class TimesheetOverlayViewModel : ViewModel
         RacingAidUpdateDispatch.Update += UpdateProperties;
 
         TimesheetConfigSection.ConfigUpdated += OnConfigUpdated;
+    }
+
+    public override void Reset()
+    {
+        timesheet = [];
     }
 
     private void UpdateProperties()

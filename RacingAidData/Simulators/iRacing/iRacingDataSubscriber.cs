@@ -8,8 +8,12 @@ public class iRacingDataSubscriber : ISubscribeData
     private readonly IRacingSdk iRacingSdk;
     
     public event Action? DataReceived;
+    
+    public event Action<bool>? ConnectionUpdated;
 
-    public object LatestData { get; private set; }
+    public object? LatestData { get; private set; }
+    
+    public bool IsConnected => iRacingSdk.IsConnected;
 
     public bool IsSubscribed => iRacingSdk.IsStarted;
 
@@ -18,6 +22,18 @@ public class iRacingDataSubscriber : ISubscribeData
         iRacingSdk = new IRacingSdk();
 
         iRacingSdk.OnTelemetryData += OnTelemetryData;
+        iRacingSdk.OnConnected += OnConnected;
+        iRacingSdk.OnDisconnected += OnDisconnected;
+    }
+
+    private void OnConnected()
+    {
+        ConnectionUpdated?.Invoke(IsConnected);
+    }
+
+    private void OnDisconnected()
+    {
+        ConnectionUpdated?.Invoke(IsConnected);
     }
 
     public void Start()

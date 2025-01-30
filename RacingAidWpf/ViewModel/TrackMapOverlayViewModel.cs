@@ -8,7 +8,7 @@ using RacingAidWpf.Tracks;
 
 namespace RacingAidWpf.ViewModel;
 
-public class TrackMapOverlayViewModel : ViewModel
+public class TrackMapOverlayViewModel : OverlayViewModel
 {
     private const float TargetSize = 300f;
     
@@ -86,6 +86,11 @@ public class TrackMapOverlayViewModel : ViewModel
         trackMapCreator.TrackCreated -= OnTrackCreated;
     }
 
+    public override void Reset()
+    {
+        CurrentTrackName = null;
+    }
+
     private void OnUpdate()
     {
         CurrentTrackName = RacingAidSingleton.Instance.TrackData.TrackName;
@@ -102,7 +107,10 @@ public class TrackMapOverlayViewModel : ViewModel
         trackMapCreator.Stop();
 
         if (string.IsNullOrEmpty(CurrentTrackName))
+        {
+            CurrentTrackMap = null;
             return;
+        }
         
         if (trackMapController.TryGetTrackMap(CurrentTrackName, out var trackMap))
         {

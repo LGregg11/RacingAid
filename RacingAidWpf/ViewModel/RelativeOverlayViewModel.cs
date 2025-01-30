@@ -7,7 +7,7 @@ using RacingAidWpf.Model;
 
 namespace RacingAidWpf.ViewModel;
 
-public class RelativeOverlayViewModel : ViewModel
+public class RelativeOverlayViewModel : OverlayViewModel
 {
     private static readonly RelativeConfigSection RelativeConfigSection = ConfigSectionSingleton.RelativeSection;
     
@@ -41,6 +41,11 @@ public class RelativeOverlayViewModel : ViewModel
         RacingAidUpdateDispatch.Update += UpdateProperties;
 
         RelativeConfigSection.ConfigUpdated += OnConfigUpdated;
+    }
+
+    public override void Reset()
+    {
+        relative = [];
     }
 
     private void UpdateProperties()

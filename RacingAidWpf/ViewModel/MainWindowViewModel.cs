@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
 using RacingAidData.Simulators;
 using RacingAidWpf.Commands;
@@ -35,10 +36,28 @@ public sealed class MainWindowViewModel : ViewModel
             isStarted = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(IsStopped));
+
+            OnStartedOrSessionUpdate();
         }
     }
 
     public bool IsStopped => !IsStarted;
+
+    private bool inSession;
+    public bool InSession
+    {
+        get => inSession;
+        private set
+        {
+            if (inSession == value)
+                return;
+            
+            inSession = value;
+            OnPropertyChanged();
+            
+            OnStartedOrSessionUpdate();
+        }
+    }
 
     public ObservableCollection<EnumEntryModel<Simulator>> SimulatorEntries { get; }
 
@@ -356,31 +375,62 @@ public sealed class MainWindowViewModel : ViewModel
     {
         IsStarted = true;
 
-        RacingAidSingleton.Instance.SetupSimulator(SelectedSimulatorEntry.Value);
-        RacingAidSingleton.Instance.Start();
+        var racingAid = RacingAidSingleton.Instance;
 
-        RacingAidUpdateDispatch.Start();
-
-        overlayController.ShowAll();
+        racingAid.SetupSimulator(SelectedSimulatorEntry.Value);
+        racingAid.InSessionUpdated += OnSessionUpdated;
+        racingAid.Start();
+        
+        InSession = racingAid.InSession;
     }
 
     public void Stop()
     {
-        RacingAidSingleton.Instance.Stop();
-        RacingAidUpdateDispatch.Stop();
-
-        IsRepositionEnabled = false;
-        overlayController.HideAll();
+        var racingAid = RacingAidSingleton.Instance;
+        racingAid.Stop();
+        racingAid.InSessionUpdated -= OnSessionUpdated;
 
         IsStarted = false;
+        InSession = false;
     }
 
     public void ToggleOverlayRepositioning()
     {
         if (IsStarted)
-        {
             IsRepositionEnabled = !IsRepositionEnabled;
-        }
+    }
+
+    private void OnSessionUpdated(bool connected)
+    {
+        // Make sure this is done on the main thread
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+            InSession = connected;
+        });
+    }
+
+    private void OnStartedOrSessionUpdate()
+    {
+        var startedAndConnected = IsStarted && InSession;
+        
+        if (startedAndConnected)
+            StartAndDisplayOverlays();
+        else
+            HideAndResetOverlays();
+    }
+
+    private void StartAndDisplayOverlays()
+    {
+        RacingAidUpdateDispatch.Start();
+        overlayController.ShowAll();
+    }
+
+    private void HideAndResetOverlays()
+    {
+        RacingAidUpdateDispatch.Stop();
+        IsRepositionEnabled = false;
+        overlayController.HideAll();
+        overlayController.ResetAll();
     }
 
     private ObservableCollection<EnumEntryModel<T>> CreateObservableEnumCollection<T>() where T : struct, Enum

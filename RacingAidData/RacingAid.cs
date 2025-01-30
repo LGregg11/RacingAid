@@ -33,6 +33,8 @@ public class RacingAid
         }
     }
 
+    public event Action<bool> InSessionUpdated;
+
     public event Action ModelsUpdated;
     
     #region Model Properties
@@ -114,6 +116,8 @@ public class RacingAid
     
     #endregion
 
+    public bool InSession => DataSubscriber is { IsConnected: true };
+
     public RacingAid()
     {
         SetupSimulator(Simulator.iRacing);
@@ -129,6 +133,8 @@ public class RacingAid
                 DataDeserializer = new iRacingDataDeserializer();
                 DataSubscriber = new iRacingDataSubscriber();
                 break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(simulator), simulator, null);
         }
     }
 
@@ -138,6 +144,7 @@ public class RacingAid
             return;
         
         DataSubscriber.DataReceived += OnDataReceived;
+        DataSubscriber.ConnectionUpdated += OnConnectionUpdated;
         DataSubscriber?.Start();
         isRunning = true;
     }
@@ -148,8 +155,14 @@ public class RacingAid
             return;
         
         DataSubscriber.Stop();
+        DataSubscriber.ConnectionUpdated -= OnConnectionUpdated;
         DataSubscriber.DataReceived -= OnDataReceived;
         isRunning = false;
+    }
+
+    private void OnConnectionUpdated(bool connected)
+    {
+        InSessionUpdated?.Invoke(InSession);
     }
 
     private void OnDataReceived()

@@ -5,7 +5,7 @@ using RacingAidWpf.Resources;
 
 namespace RacingAidWpf.ViewModel;
 
-public class TelemetryOverlayViewModel : ViewModel
+public class TelemetryOverlayViewModel : OverlayViewModel
 {
     private const float FloatTolerance = 1e-4f;
     
@@ -121,6 +121,11 @@ public class TelemetryOverlayViewModel : ViewModel
         RacingAidUpdateDispatch.Update += UpdateProperties;
         
         telemetryConfigSection.ConfigUpdated += OnConfigUpdated;
+    }
+
+    public override void Reset()
+    {
+        // Do nothing
     }
 
     private void UpdateProperties()
