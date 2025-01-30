@@ -8,7 +8,7 @@ using RacingAidWpf.Tracks;
 
 namespace RacingAidWpf.ViewModel;
 
-public class TrackMapOverlayViewModel : ViewModel
+public class TrackMapOverlayViewModel : OverlayViewModel
 {
     private const float TargetSize = 300f;
     

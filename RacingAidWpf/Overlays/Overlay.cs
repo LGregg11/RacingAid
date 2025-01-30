@@ -1,10 +1,13 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using RacingAidWpf.ViewModel;
 
 namespace RacingAidWpf.Overlays;
 
 public class Overlay : Window
 {
+    private OverlayViewModel ViewModel => DataContext as OverlayViewModel; 
+    
     public string OverlayName => Title;
     
     public bool IsRepositionEnabled { get; set; }
@@ -19,6 +22,11 @@ public class Overlay : Window
     {
         get => Left;
         set => Left = value;
+    }
+
+    public void Reset()
+    {
+        ViewModel.Reset();
     }
 
     protected void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
