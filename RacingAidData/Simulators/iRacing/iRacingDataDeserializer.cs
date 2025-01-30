@@ -172,15 +172,29 @@ public class iRacingDataDeserializer : IDeserializeData
     private static DriverDataModel CreateDriverModel(IRacingSdkData iRacingData)
     {
         var lapsDriven = 0f;
-        if (iRacingData.SessionInfo?.DriverInfo is { Drivers: { Count: > 0 }, DriverCarIdx: { } driverCarIdx })
+        var inPits = false;
+        var incidents = 0;
+        if (iRacingData.SessionInfo?.DriverInfo is
+            { Drivers: { Count: > 0 }, DriverCarIdx: { } driverCarIdx } driverInfo)
+        {
             lapsDriven = GetLapsDriven(iRacingData, driverCarIdx);
+            inPits = GetInPits(iRacingData, driverCarIdx);
+            incidents = driverInfo.DriverIncidentCount;
+        }
         
         return new DriverDataModel
         {
             VelocityMs = GetVelocity(iRacingData),
             ForwardDirectionDeg = iRacingData.GetFloat("YawNorth") * RadToDeg,
-            LapsDriven = lapsDriven
+            LapsDriven = lapsDriven,
+            InPits = inPits,
+            Incidents = incidents
         };
+    }
+
+    private static bool GetInPits(IRacingSdkData iRacingData, int driverCarIdx)
+    {
+        return iRacingData.GetBool("CarIdxOnPitRoad", driverCarIdx);
     }
 
     private static Velocity GetVelocity(IRacingSdkData iRacingData)
