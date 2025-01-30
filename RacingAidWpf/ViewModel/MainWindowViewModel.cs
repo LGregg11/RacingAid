@@ -371,6 +371,7 @@ public sealed class MainWindowViewModel : ViewModel
 
         IsRepositionEnabled = false;
         overlayController.HideAll();
+        overlayController.ResetAll();
 
         IsStarted = false;
     }

@@ -66,6 +66,12 @@ public class OverlayController(IHandleData<OverlayPositions> overlayDataHandler)
         overlays.Clear();
     }
 
+    public void ResetAll()
+    {
+        foreach (var overlay in overlays)
+            overlay.Reset();
+    }
+
     private void LoadOverlayPositions()
     {
         if (!overlayDataHandler.TryDeserializeFromFile(OverlayPositionsJsonFullPath, out var overlayPositions))
