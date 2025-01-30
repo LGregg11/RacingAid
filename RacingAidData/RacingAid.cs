@@ -33,6 +33,8 @@ public class RacingAid
         }
     }
 
+    public event Action<bool> ConnectionUpdated;
+
     public event Action ModelsUpdated;
     
     #region Model Properties
@@ -114,6 +116,8 @@ public class RacingAid
     
     #endregion
 
+    public bool IsConnected => DataSubscriber is { IsConnected: true };
+
     public RacingAid()
     {
         SetupSimulator(Simulator.iRacing);
@@ -150,6 +154,11 @@ public class RacingAid
         DataSubscriber.Stop();
         DataSubscriber.DataReceived -= OnDataReceived;
         isRunning = false;
+    }
+
+    private void OnConnectionUpdated(bool connected)
+    {
+        ConnectionUpdated?.Invoke(connected);
     }
 
     private void OnDataReceived()

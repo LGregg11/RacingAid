@@ -3,20 +3,21 @@ using RacingAidData.Core.Client;
 
 namespace RacingAidData.Core.Subscribers;
 
-public class BroadcastDataSubscriber : ISubscribeData
+public class BroadcastDataSubscriber(IDataClient dataClient) : ISubscribeData
 {
-    private readonly IDataClient dataClient;
     private Thread? listenerThread;
     private bool keepThreadRunning;
 
-    public BroadcastDataSubscriber(IDataClient dataClient)
-    {
-        this.dataClient = dataClient;
-    }
-
     public event Action? DataReceived;
     
-    public object LatestData { get; private set; }
+    public event Action<bool>? ConnectionUpdated;
+    
+    public object? LatestData { get; private set; }
+
+    /// <remarks>
+    /// Just assume we are connected when we are subscribed - its hard to tell with UDP broadcasts
+    /// </remarks>
+    public bool IsConnected => IsSubscribed;
 
     public bool IsSubscribed => listenerThread is { IsAlive: true };
 
@@ -24,9 +25,12 @@ public class BroadcastDataSubscriber : ISubscribeData
     {
         if (IsSubscribed)
             return;
+        
 
         dataClient.Start();
         StartThread();
+        
+        ConnectionUpdated?.Invoke(IsConnected);
     }
 
     public void Stop()
@@ -36,6 +40,8 @@ public class BroadcastDataSubscriber : ISubscribeData
 
         dataClient.Stop();
         StopThread();
+        
+        ConnectionUpdated?.Invoke(IsConnected);
     }
 
     private void DataSubscriber()

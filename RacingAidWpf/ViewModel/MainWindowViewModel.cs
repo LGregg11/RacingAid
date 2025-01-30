@@ -356,32 +356,52 @@ public sealed class MainWindowViewModel : ViewModel
     {
         IsStarted = true;
 
-        RacingAidSingleton.Instance.SetupSimulator(SelectedSimulatorEntry.Value);
-        RacingAidSingleton.Instance.Start();
+        var racingAid = RacingAidSingleton.Instance;
 
-        RacingAidUpdateDispatch.Start();
+        racingAid.SetupSimulator(SelectedSimulatorEntry.Value);
+        racingAid.ConnectionUpdated += OnConnectionUpdated;
+        racingAid.Start();
 
-        overlayController.ShowAll();
+        if (racingAid.IsConnected)
+            StartAndDisplayOverlays();
     }
 
     public void Stop()
     {
-        RacingAidSingleton.Instance.Stop();
-        RacingAidUpdateDispatch.Stop();
+        var racingAid = RacingAidSingleton.Instance;
+        racingAid.Stop();
+        racingAid.ConnectionUpdated -= OnConnectionUpdated;
 
-        IsRepositionEnabled = false;
-        overlayController.HideAll();
-        overlayController.ResetAll();
-
+        HideAndResetOverlays();
         IsStarted = false;
     }
 
     public void ToggleOverlayRepositioning()
     {
         if (IsStarted)
-        {
             IsRepositionEnabled = !IsRepositionEnabled;
-        }
+    }
+
+    private void OnConnectionUpdated(bool isConnected)
+    {
+        if (RacingAidSingleton.Instance.IsConnected)
+            StartAndDisplayOverlays();
+        else
+            HideAndResetOverlays();
+    }
+
+    private void StartAndDisplayOverlays()
+    {
+        RacingAidUpdateDispatch.Start();
+        overlayController.ShowAll();
+    }
+
+    private void HideAndResetOverlays()
+    {
+        RacingAidUpdateDispatch.Stop();
+        IsRepositionEnabled = false;
+        overlayController.HideAll();
+        overlayController.ResetAll();
     }
 
     private ObservableCollection<EnumEntryModel<T>> CreateObservableEnumCollection<T>() where T : struct, Enum
