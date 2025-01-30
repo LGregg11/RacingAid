@@ -59,7 +59,8 @@ public class TrackMapOverlayViewModel : OverlayViewModel
                 return;
             
             driverTrackVisualizations = value;
-            OnPropertyChanged();
+
+            InvokeOnMainThread(() => OnPropertyChanged());
         }
     }
 
@@ -138,7 +139,7 @@ public class TrackMapOverlayViewModel : OverlayViewModel
         var visualizations = new ObservableCollection<DriverTrackVisualization>();
         foreach (var driver in RacingAidSingleton.Instance.Relative.Entries)
             visualizations.Add(CreateDriverTrackVisualization(scaledPositions, driver, driverNumberType));
-        
+
         DriverTrackVisualizations = visualizations;
     }
 

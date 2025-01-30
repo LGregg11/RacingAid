@@ -21,7 +21,7 @@ public class RelativeOverlayViewModel : OverlayViewModel
                 return;
             
             relative = value;
-            OnPropertyChanged();
+            InvokeOnMainThread(() => OnPropertyChanged());
         }
     }
     

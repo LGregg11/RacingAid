@@ -14,6 +14,8 @@ public static class RacingAidUpdateDispatch
     private static readonly GeneralConfigSection GeneralConfigSection = ConfigSectionSingleton.GeneralSection;
 
     private static readonly AutoResetEvent InvokeUpdateAutoResetEvent = new(false);
+    private static CancellationTokenSource updateThreadCancellationTokenSource;
+    private static CancellationToken updateThreadCancellationToken;
     private static Thread updateThread;
     private static bool keepThreadAlive;
     private static bool modelsUpdated;
@@ -30,6 +32,8 @@ public static class RacingAidUpdateDispatch
         if (updateThread != null || SynchronizationContext == null)
             return;
 
+        updateThreadCancellationTokenSource = new CancellationTokenSource();
+        updateThreadCancellationToken = updateThreadCancellationTokenSource.Token;
         updateThread = new Thread(UpdateLoop);
         RacingAid.ModelsUpdated += OnModelUpdated;
 
@@ -46,10 +50,16 @@ public static class RacingAidUpdateDispatch
 
     public static void Stop()
     {
+        if (updateThread == null)
+            return;
+        
         RacingAid.ModelsUpdated -= OnModelUpdated;
         
         keepThreadAlive = false;
+        
         InvokeUpdateAutoResetEvent.Set();
+        updateThreadCancellationTokenSource.Cancel();
+        
         updateThread?.Join();
         
         updateThread = null;
@@ -62,12 +72,17 @@ public static class RacingAidUpdateDispatch
             if (updateIntervalMs > 0)
                 Thread.Sleep(updateIntervalMs);
 
-            var invokeUpdate = modelsUpdated;
-            if (!invokeUpdate)
-                invokeUpdate = InvokeUpdateAutoResetEvent.WaitOne();
+            if (updateThreadCancellationToken.IsCancellationRequested)
+                return;
 
-            if (invokeUpdate)
-                InvokeUpdateOnMainThread();
+            var shouldInvokeUpdate = modelsUpdated;
+            if (!shouldInvokeUpdate)
+                shouldInvokeUpdate = InvokeUpdateAutoResetEvent.WaitOne(
+                    -1,
+                    updateThreadCancellationToken.IsCancellationRequested);
+
+            if (shouldInvokeUpdate)
+                InvokeUpdate();
         }
     }
 
@@ -77,10 +92,10 @@ public static class RacingAidUpdateDispatch
         InvokeUpdateAutoResetEvent.Set();
     }
 
-    private static void InvokeUpdateOnMainThread()
+    private static void InvokeUpdate()
     {
         InvokeUpdateAutoResetEvent.Reset();
         modelsUpdated = false;
-        SynchronizationContext?.Post(_ => Update?.Invoke(), null);
+        Update?.Invoke();
     }
 }
