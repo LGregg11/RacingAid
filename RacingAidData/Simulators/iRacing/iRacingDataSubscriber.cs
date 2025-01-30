@@ -23,9 +23,15 @@ public class iRacingDataSubscriber : ISubscribeData
 
         iRacingSdk.OnTelemetryData += OnTelemetryData;
         iRacingSdk.OnConnected += OnConnected;
+        iRacingSdk.OnDisconnected += OnDisconnected;
     }
 
     private void OnConnected()
+    {
+        ConnectionUpdated?.Invoke(IsConnected);
+    }
+
+    private void OnDisconnected()
     {
         ConnectionUpdated?.Invoke(IsConnected);
     }
