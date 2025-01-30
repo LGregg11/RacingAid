@@ -52,13 +52,10 @@ public sealed class MainWindowViewModel : ViewModel
             
             isConnected = value;
             OnPropertyChanged();
-
-            if (!IsStarted)
-                return;
             
-            if (isConnected)
+            if (IsStarted && isConnected)
                 StartAndDisplayOverlays();
-            else
+            else if (!IsStarted || !isConnected)
                 HideAndResetOverlays();
         }
     }
