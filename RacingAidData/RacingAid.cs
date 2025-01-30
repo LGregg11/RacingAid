@@ -33,7 +33,7 @@ public class RacingAid
         }
     }
 
-    public event Action<bool> ConnectionUpdated;
+    public event Action<bool> InSessionUpdated;
 
     public event Action ModelsUpdated;
     
@@ -116,7 +116,7 @@ public class RacingAid
     
     #endregion
 
-    public bool IsConnected => DataSubscriber is { IsConnected: true };
+    public bool InSession => DataSubscriber is { IsConnected: true };
 
     public RacingAid()
     {
@@ -162,7 +162,7 @@ public class RacingAid
 
     private void OnConnectionUpdated(bool connected)
     {
-        ConnectionUpdated?.Invoke(connected);
+        InSessionUpdated?.Invoke(InSession);
     }
 
     private void OnDataReceived()

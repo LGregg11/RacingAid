@@ -37,25 +37,25 @@ public sealed class MainWindowViewModel : ViewModel
             OnPropertyChanged();
             OnPropertyChanged(nameof(IsStopped));
 
-            OnStartedOrConnectionUpdated();
+            OnStartedOrSessionUpdate();
         }
     }
 
     public bool IsStopped => !IsStarted;
 
-    private bool isConnected;
-    public bool IsConnected
+    private bool inSession;
+    public bool InSession
     {
-        get => isConnected;
+        get => inSession;
         private set
         {
-            if (isConnected == value)
+            if (inSession == value)
                 return;
             
-            isConnected = value;
+            inSession = value;
             OnPropertyChanged();
             
-            OnStartedOrConnectionUpdated();
+            OnStartedOrSessionUpdate();
         }
     }
 
@@ -378,20 +378,20 @@ public sealed class MainWindowViewModel : ViewModel
         var racingAid = RacingAidSingleton.Instance;
 
         racingAid.SetupSimulator(SelectedSimulatorEntry.Value);
-        racingAid.ConnectionUpdated += OnConnectionUpdated;
+        racingAid.InSessionUpdated += OnSessionUpdated;
         racingAid.Start();
         
-        IsConnected = racingAid.IsConnected;
+        InSession = racingAid.InSession;
     }
 
     public void Stop()
     {
         var racingAid = RacingAidSingleton.Instance;
         racingAid.Stop();
-        racingAid.ConnectionUpdated -= OnConnectionUpdated;
+        racingAid.InSessionUpdated -= OnSessionUpdated;
 
         IsStarted = false;
-        IsConnected = false;
+        InSession = false;
     }
 
     public void ToggleOverlayRepositioning()
@@ -400,18 +400,18 @@ public sealed class MainWindowViewModel : ViewModel
             IsRepositionEnabled = !IsRepositionEnabled;
     }
 
-    private void OnConnectionUpdated(bool connected)
+    private void OnSessionUpdated(bool connected)
     {
         // Make sure this is done on the main thread
         Application.Current.Dispatcher.Invoke(() =>
         {
-            IsConnected = connected;
+            InSession = connected;
         });
     }
 
-    private void OnStartedOrConnectionUpdated()
+    private void OnStartedOrSessionUpdate()
     {
-        var startedAndConnected = IsStarted && IsConnected;
+        var startedAndConnected = IsStarted && InSession;
         
         if (startedAndConnected)
             StartAndDisplayOverlays();
