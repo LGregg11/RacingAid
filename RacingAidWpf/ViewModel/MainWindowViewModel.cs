@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
 using RacingAidData.Simulators;
 using RacingAidWpf.Commands;
@@ -39,6 +40,28 @@ public sealed class MainWindowViewModel : ViewModel
     }
 
     public bool IsStopped => !IsStarted;
+
+    private bool isConnected;
+    public bool IsConnected
+    {
+        get => isConnected;
+        private set
+        {
+            if (isConnected == value)
+                return;
+            
+            isConnected = value;
+            OnPropertyChanged();
+
+            if (!IsStarted)
+                return;
+            
+            if (isConnected)
+                StartAndDisplayOverlays();
+            else
+                HideAndResetOverlays();
+        }
+    }
 
     public ObservableCollection<EnumEntryModel<Simulator>> SimulatorEntries { get; }
 
@@ -361,9 +384,8 @@ public sealed class MainWindowViewModel : ViewModel
         racingAid.SetupSimulator(SelectedSimulatorEntry.Value);
         racingAid.ConnectionUpdated += OnConnectionUpdated;
         racingAid.Start();
-
-        if (racingAid.IsConnected)
-            StartAndDisplayOverlays();
+        
+        IsConnected = racingAid.IsConnected;
     }
 
     public void Stop()
@@ -372,7 +394,7 @@ public sealed class MainWindowViewModel : ViewModel
         racingAid.Stop();
         racingAid.ConnectionUpdated -= OnConnectionUpdated;
 
-        HideAndResetOverlays();
+        IsConnected = false;
         IsStarted = false;
     }
 
@@ -382,12 +404,13 @@ public sealed class MainWindowViewModel : ViewModel
             IsRepositionEnabled = !IsRepositionEnabled;
     }
 
-    private void OnConnectionUpdated(bool isConnected)
+    private void OnConnectionUpdated(bool connected)
     {
-        if (RacingAidSingleton.Instance.IsConnected)
-            StartAndDisplayOverlays();
-        else
-            HideAndResetOverlays();
+        // Make sure this is done on the main thread
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+            IsConnected = connected;
+        });
     }
 
     private void StartAndDisplayOverlays()

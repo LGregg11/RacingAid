@@ -42,7 +42,7 @@
               Height="25" Width="120"
               Margin="10, 0, 0, 0"
               IsChecked="{Binding IsRepositionEnabled}" 
-              IsEnabled="{Binding IsStarted}">
+              IsEnabled="{Binding IsConnected}">
             <ToggleButton.Style>
                 <Style TargetType="ToggleButton">
                     <Setter Property="Content" Value="Enable Reposition" />

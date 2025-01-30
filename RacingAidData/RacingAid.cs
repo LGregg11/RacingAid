@@ -133,6 +133,8 @@ public class RacingAid
                 DataDeserializer = new iRacingDataDeserializer();
                 DataSubscriber = new iRacingDataSubscriber();
                 break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(simulator), simulator, null);
         }
     }
 
@@ -142,6 +144,7 @@ public class RacingAid
             return;
         
         DataSubscriber.DataReceived += OnDataReceived;
+        DataSubscriber.ConnectionUpdated += OnConnectionUpdated;
         DataSubscriber?.Start();
         isRunning = true;
     }
@@ -152,6 +155,7 @@ public class RacingAid
             return;
         
         DataSubscriber.Stop();
+        DataSubscriber.ConnectionUpdated -= OnConnectionUpdated;
         DataSubscriber.DataReceived -= OnDataReceived;
         isRunning = false;
     }
