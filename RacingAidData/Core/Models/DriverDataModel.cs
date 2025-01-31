@@ -13,6 +13,11 @@ public class DriverDataModel : RaceDataModel
     public float ForwardDirectionDeg { get; init; }
     
     /// <summary>
+    /// The pitch angle of the car in degrees (Flat = 0, Upwards = 90)
+    /// </summary>
+    public float PitchDirectionDeg { get; init; }
+    
+    /// <summary>
     /// The number of laps driven (float to keep track of current lap progress)
     /// </summary>
     public float LapsDriven { get; init; }

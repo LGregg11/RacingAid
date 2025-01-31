@@ -186,6 +186,7 @@ public class iRacingDataDeserializer : IDeserializeData
         {
             VelocityMs = GetVelocity(iRacingData),
             ForwardDirectionDeg = iRacingData.GetFloat("YawNorth") * RadToDeg,
+            PitchDirectionDeg = iRacingData.GetFloat("Pitch") * RadToDeg,
             LapsDriven = lapsDriven,
             LapDistanceMetres  = iRacingData.GetFloat("LapDist"),
             InPits = inPits,

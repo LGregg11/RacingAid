@@ -64,7 +64,7 @@ public class TrackMapOverlayViewModel : OverlayViewModel
         }
     }
 
-    public GeometryGroup TrackMapPathData => CurrentTrackMap == null ? null : TrackMapPathCreator.CreateGeometryGroupFromTrackMap(CurrentTrackMap, TargetSize);
+    public GeometryGroup TrackMapPathData => CurrentTrackMap == null ? null : TrackMapPathCreator.Create2DGeometryGroupFromTrackMap(CurrentTrackMap, TargetSize);
     
     public bool IsTrackMapAvailable => TrackMapPathData != null;
 

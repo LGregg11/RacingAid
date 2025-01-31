@@ -146,7 +146,7 @@ public class TrackMapCreator
         Console.WriteLine($"Ending track map creation for: {trackMapBeingCreated.Name}");
         
         IsStarted = false;
-        trackMapBeingCreated.Positions = NormalizeAndCenterPositions(trackMapBeingCreated.Positions);
+        trackMapBeingCreated.Positions = CenterPositions(trackMapBeingCreated.Positions);
         TrackCreated?.Invoke(trackMapBeingCreated);
         
         trackMapBeingCreated = null;
@@ -161,46 +161,32 @@ public class TrackMapCreator
         };
     }
     
-    private List<TrackMapPosition> NormalizeAndCenterPositions(List<TrackMapPosition> positions)
+    private static List<TrackMapPosition> CenterPositions(List<TrackMapPosition> positions)
     {
-        var xMin = float.MaxValue;
-        var xMax = float.MinValue;
-        var yMin = float.MaxValue;
-        var yMax = float.MinValue;
+        var nPositions = positions.Count;
+        var xAvg = 0f;
+        var yAvg = 0f;
+        var zAvg = 0f;
+
         foreach (var position in positions)
         {
-            if (position.X < xMin)
-                xMin = position.X;
-            
-            if (position.X > xMax)
-                xMax = position.X;
-            
-            if (position.Y < yMin)
-                yMin = position.Y;
-            
-            if (position.Y > yMax)
-                yMax = position.Y;
+            xAvg += position.X;
+            yAvg += position.Y;
+            zAvg += position.Z;
         }
         
-        var xyRatio = (xMax-xMin) / (yMax - yMin);
-        var xFactor = xyRatio < 1 ? 1 : xyRatio;
-        var yFactor = xyRatio > 1 ? 1 : xyRatio;
-        
-        var normalizedAndCenteredPositions = new List<TrackMapPosition>();
-        foreach (var position in positions)
-        {
-            var normalisedX = (position.X - xMin) / (xMax - xMin);
-            var normalisedY = (position.Y - yMin) / (yMax - yMin);
-            
-            normalizedAndCenteredPositions.Add(new TrackMapPosition(normalisedX * xFactor, normalisedY * yFactor));
-        }
-        
-        return normalizedAndCenteredPositions;
+        xAvg /= nPositions;
+        yAvg /= nPositions;
+        zAvg /= nPositions;
+
+        return positions.Select(position =>
+                new TrackMapPosition(position.LapDistance, position.X - xAvg, position.Y - yAvg, position.Z - zAvg))
+            .ToList();
     }
 
     private static List<TrackMapPosition> CreateNewTrackMapPositions()
     {
         // Start with an origin position
-        return [ new TrackMapPosition(0f, 0f) ];
+        return [ new TrackMapPosition(0f ,0f, 0f, 0f) ];
     }
 }
