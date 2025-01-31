@@ -33,7 +33,7 @@ public class DriverDataModel : RaceDataModel
     public int Incidents { get; init; }
 }
 
-public class Velocity(float x, float y)
+public class Velocity(float x, float y, float z)
 {
     /// <summary>
     /// +ve X = forward
@@ -44,4 +44,9 @@ public class Velocity(float x, float y)
     /// +ve Y = left
     /// </summary>
     public float Y { get; set; } = y;
+    
+    /// <summary>
+    /// +ve Z = up
+    /// </summary>
+    public float Z { get; set; } = z;
 }

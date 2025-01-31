@@ -200,7 +200,7 @@ public class iRacingDataDeserializer : IDeserializeData
 
     private static Velocity GetVelocity(IRacingSdkData iRacingData)
     {
-        return new Velocity(iRacingData.GetFloat("VelocityX"), iRacingData.GetFloat("VelocityY"));
+        return new Velocity(iRacingData.GetFloat("VelocityX"), iRacingData.GetFloat("VelocityY"), iRacingData.GetFloat("VelocityZ"));
     }
 
     private static TrackDataModel CreateTrackModel(IRacingSdkData iRacingData)
