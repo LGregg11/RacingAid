@@ -50,7 +50,6 @@ public class TrackMapCreator
         Console.WriteLine($"Starting track map creation for: {trackDataModel.TrackName}");
         
         trackMapBeingCreated = new TrackMap(trackDataModel.TrackName, CreateNewTrackMapPositions());
-
         previousLapsDriven = driverDataModel.LapsDriven;
         lastUpdateTime = driverDataModel.Timestamp;
         isCurrentlyTrackingMap = false;
@@ -64,49 +63,16 @@ public class TrackMapCreator
 
         // When starting, we wait till the lap number changes to being tracking the position
         var currentLapsDriven = driverDataModel.LapsDriven;
-        var lapNumberChanged = (int)currentLapsDriven > (int)previousLapsDriven;
         
-        previousLapsDriven = currentLapsDriven;
-
-        if (lapNumberChanged)
-        {
-            Console.WriteLine("Lap number changed");
-            bool ignoreLapNumberChange = false;
-            
-            if (driverDataModel.InPits)
-            {
-                Console.WriteLine("In pits");
-                trackMapBeingCreated.Positions = CreateNewTrackMapPositions();
-                lastUpdateTime = driverDataModel.Timestamp;
-                isCurrentlyTrackingMap = false;
-                ignoreLapNumberChange = true;
-            }
-            
-            if (isCurrentlyTrackingMap && driverDataModel.Incidents > incidentsAtTrackingStart)
-            {
-                Console.WriteLine("Invalid lap - resetting position data");
-                trackMapBeingCreated.Positions = CreateNewTrackMapPositions();
-                lastUpdateTime = driverDataModel.Timestamp;
-                ignoreLapNumberChange = true;
-            }
-            
-            incidentsAtTrackingStart = driverDataModel.Incidents;
-            
-            if (ignoreLapNumberChange)
-                return;
-            
-            isCurrentlyTrackingMap = !isCurrentlyTrackingMap;
-            
-            if (!isCurrentlyTrackingMap)
-            {
-                End();
-                return;
-            }
-        }
+        var lapCompleted = (int)currentLapsDriven > (int)previousLapsDriven;
+        
+        if (lapCompleted)
+            OnLapCompleted(driverDataModel);
 
         if (isCurrentlyTrackingMap)
             UpdateTrack(driverDataModel);
         
+        previousLapsDriven = currentLapsDriven;
         lastUpdateTime = driverDataModel.Timestamp;
     }
 
@@ -128,8 +94,51 @@ public class TrackMapCreator
         var timeDeltaMs = (float)(driverDataModel.Timestamp - lastUpdateTime).TotalMilliseconds;
         var newPosition = positionCalculator.CalculatePosition(previousPosition, driverDataModel, timeDeltaMs);
         trackMapBeingCreated.Positions.Add(newPosition);
+    }
+
+    private void OnLapCompleted(DriverDataModel driverDataModel)
+    {
+        if (!isCurrentlyTrackingMap)
+        {
+            if (driverDataModel.InPits)
+                Console.WriteLine("Tracking has not started, but driver is currently in pits - ignore this lap");
+            else
+            {
+                isCurrentlyTrackingMap = true;
+                incidentsAtTrackingStart = driverDataModel.Incidents;
+            }
+            
+            return;
+        }
+
+        var currentIncidents = driverDataModel.Incidents;
+        var incidentsThisLap = currentIncidents - incidentsAtTrackingStart;
         
-        lastUpdateTime = driverDataModel.Timestamp;
+        // Tracking was already underway - was the lap valid (i.e. didn't end in pits & 0 incidents gained)
+        var inPits = driverDataModel.InPits;
+        var hadIncidentsOnLap = incidentsThisLap > 0;
+
+        if (inPits || hadIncidentsOnLap)
+        {
+            if (inPits)
+            {
+                Console.WriteLine("Invalid lap - Driver ended the lap in pits");
+                isCurrentlyTrackingMap = false;
+            }
+
+            if (hadIncidentsOnLap)
+            {
+                Console.WriteLine($"Invalid lap - Driver had {incidentsThisLap} incidents this lap");
+                incidentsAtTrackingStart = currentIncidents;
+            }
+            
+            Console.WriteLine("Resetting data");
+            trackMapBeingCreated.Positions = CreateNewTrackMapPositions();
+            return;
+        }
+
+        isCurrentlyTrackingMap = false;
+        End();
     }
 
     private void End()

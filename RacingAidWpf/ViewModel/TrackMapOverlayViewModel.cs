@@ -156,6 +156,7 @@ public class TrackMapOverlayViewModel : OverlayViewModel
             
         var number = GetDriverNumber(relativeEntryModel, driverNumberType);
         
+        // TODO: Change this so that it is relative to distance and not lap percentage
         var lapsDriven = relativeEntryModel.LapsDriven;
         var lapPercentage = lapsDriven - (int)lapsDriven;
         
