@@ -18,6 +18,11 @@ public class DriverDataModel : RaceDataModel
     public float LapsDriven { get; init; }
     
     /// <summary>
+    /// The lap distance covered in metres
+    /// </summary>
+    public float LapDistanceMetres { get; init; }
+    
+    /// <summary>
     /// Whether the driver is in the pits
     /// </summary>
     public bool InPits { get; init; }
