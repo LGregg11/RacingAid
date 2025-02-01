@@ -30,7 +30,7 @@ public class VelocityAndDirectionTrackMapCalculator : TrackMapPositionCalculator
         var upwardSpeedMs = driverDataModel.VelocityMs.Z;
         
         // MATRICES
-        var xAxisRotationMatrix = Matrix<float>.Build.DenseOfArray(new [,]
+        var yAxisRotationMatrix = Matrix<float>.Build.DenseOfArray(new [,]
         {
             { 1f , 0f, 0f },
             { 0f, cosPhi, -1f * sinPhi },
@@ -43,7 +43,7 @@ public class VelocityAndDirectionTrackMapCalculator : TrackMapPositionCalculator
             { 0f, 0f, 1f }
         });
 
-        var combinedMatrix = xAxisRotationMatrix * zAxisRotationMatrix;
+        var combinedMatrix = yAxisRotationMatrix * zAxisRotationMatrix;
         var velocityMatrix = Vector<float>.Build.Dense([forwardSpeedMs, leftSpeedMs, upwardSpeedMs]);
         var rotatedVelocityMatrix = combinedMatrix * velocityMatrix;
         
