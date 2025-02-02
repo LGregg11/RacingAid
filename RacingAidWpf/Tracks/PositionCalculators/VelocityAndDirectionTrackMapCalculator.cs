@@ -6,51 +6,56 @@ namespace RacingAidWpf.Tracks.PositionCalculators;
 public class VelocityAndDirectionTrackMapCalculator : TrackMapPositionCalculator
 {
     private const float DegToRad = MathF.PI / 180f;
-    private const float OneThousand = 1000f;
     
     public override TrackMapPosition CalculatePosition(TrackMapPosition previousPosition, DriverDataModel driverDataModel, float timeDeltaMs)
     {
+        // TODO: Confirm the Z calculations are as accurate as they can be
         // NOTE: Ms for speed = metres per second, Ms time = milliseconds.. Sorry its a bit awkward
 
         if (driverDataModel.VelocityMs == null)
             throw new ArgumentNullException($"{nameof(driverDataModel.VelocityMs)} is null");
         
-        // For the sake of formulas, lets just call the forward angle THETA and pitch angle PHI
         var timeDeltaS = timeDeltaMs / OneThousand;
-        var forwardRad = driverDataModel.ForwardDirectionDeg * DegToRad;
-        var pitchRad = driverDataModel.PitchDirectionDeg * DegToRad;
-
-        var cosTheta = MathF.Cos(forwardRad);
-        var sinTheta = MathF.Sin(forwardRad);
-        var cosPhi = MathF.Cos(pitchRad);
-        var sinPhi = MathF.Sin(pitchRad);
         
-        var forwardSpeedMs = driverDataModel.VelocityMs.X; // Yes, relative x is forward direction
-        var leftSpeedMs = driverDataModel.VelocityMs.Y;
-        var upwardSpeedMs = driverDataModel.VelocityMs.Z;
+        var vF = driverDataModel.VelocityMs.X;
+        var vL = driverDataModel.VelocityMs.Y;
+        var vU = driverDataModel.VelocityMs.Z;
         
-        // MATRICES
-        var yAxisRotationMatrix = Matrix<float>.Build.DenseOfArray(new [,]
-        {
-            { 1f , 0f, 0f },
-            { 0f, cosPhi, -1f * sinPhi },
-            { 0f, sinPhi, cosPhi }
-        });
-        var zAxisRotationMatrix = Matrix<float>.Build.DenseOfArray(new [,]
-        {
-            { cosTheta, -1f * sinTheta, 0f },
-            { sinTheta, cosTheta, 0f },
-            { 0f, 0f, 1f }
-        });
+        var yawNorthDeg = driverDataModel.ForwardDirectionDeg;
+        var pitchDeg = driverDataModel.PitchDeg;
+        var rollDeg = driverDataModel.RollDeg;
+        
+        var yawNorth = yawNorthDeg * DegToRad;
+        var pitch = pitchDeg * DegToRad;
+        var roll = rollDeg * DegToRad;
+        
+        var cosYaw = MathF.Cos(yawNorth);
+        var sinYaw = MathF.Sin(yawNorth);
+        var cosPitch = MathF.Cos(pitch);
+        var sinPitch = MathF.Sin(pitch);
+        var cosRoll = MathF.Cos(roll);
+        var sinRoll = MathF.Sin(roll);
+        
+        var vFx = vF * cosPitch * sinYaw;
+        var vFy = vF * cosPitch * cosYaw;
+        var vFz = vF * sinPitch;
 
-        var combinedMatrix = yAxisRotationMatrix * zAxisRotationMatrix;
-        var velocityMatrix = Vector<float>.Build.Dense([forwardSpeedMs, leftSpeedMs, upwardSpeedMs]);
-        var rotatedVelocityMatrix = combinedMatrix * velocityMatrix;
+        var vLx =  vL * (cosRoll * cosYaw - sinRoll * sinPitch * sinYaw);
+        var vLy =  vL * (cosRoll * sinYaw + sinRoll * sinPitch * cosYaw);
+        var vLz = -1f * vL * sinRoll * cosPitch;
+
+        var vUx = -1f * vU * (sinRoll * cosYaw + cosRoll * sinPitch * sinYaw);
+        var vUy = -1f * vU * (sinRoll * sinYaw - cosRoll * sinPitch * cosYaw);
+        var vUz = vU * cosRoll * cosPitch;
+
+        var vX = vFx + vLx + vUx;
+        var vY = vFy + vLy + vUy;
+        var vZ = vFz + vLz + vUz;
         
         // Use euler-esque approximations to determine the driver's current whereabouts..
-        var approxDistanceXMetres = timeDeltaS * rotatedVelocityMatrix[0];
-        var approxDistanceYMetres = timeDeltaS * rotatedVelocityMatrix[1];
-        var approxDistanceZMetres = timeDeltaS * rotatedVelocityMatrix[2];
+        var approxDistanceXMetres = timeDeltaS * vX;
+        var approxDistanceYMetres = timeDeltaS * vY;
+        var approxDistanceZMetres = timeDeltaS * vZ;
         
         var approximateNewX = previousPosition.X + approxDistanceXMetres;
         var approximateNewY = previousPosition.Y + approxDistanceYMetres;

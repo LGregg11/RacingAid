@@ -44,7 +44,7 @@ public class iRacingDataDeserializer : IDeserializeData
             models.Add(raceDataModel);
         
         // Driver data .. data
-        if (CreateDriverModel(iRacingData) is {} driverDataModel)
+        if (CreateDriverModel(iRacingData) is { } driverDataModel)
             models.Add(driverDataModel);
         
         if (CreateTrackModel(iRacingData) is {} trackDataModel)
@@ -186,7 +186,8 @@ public class iRacingDataDeserializer : IDeserializeData
         {
             VelocityMs = GetVelocity(iRacingData),
             ForwardDirectionDeg = iRacingData.GetFloat("YawNorth") * RadToDeg,
-            PitchDirectionDeg = -1f * iRacingData.GetFloat("Pitch") * RadToDeg, // iRacing pitch is negative..
+            PitchDeg = -1f * iRacingData.GetFloat("Pitch") * RadToDeg,
+            RollDeg = iRacingData.GetFloat("Roll") * RadToDeg,
             LapsDriven = lapsDriven,
             LapDistanceMetres  = iRacingData.GetFloat("LapDist"),
             InPits = inPits,
@@ -201,7 +202,10 @@ public class iRacingDataDeserializer : IDeserializeData
 
     private static Velocity GetVelocity(IRacingSdkData iRacingData)
     {
-        return new Velocity(iRacingData.GetFloat("VelocityX"), iRacingData.GetFloat("VelocityY"), iRacingData.GetFloat("VelocityZ"));
+        return new Velocity(
+            iRacingData.GetFloat("VelocityX"),
+            iRacingData.GetFloat("VelocityY"),
+            iRacingData.GetFloat("VelocityZ"));
     }
 
     private static TrackDataModel CreateTrackModel(IRacingSdkData iRacingData)
