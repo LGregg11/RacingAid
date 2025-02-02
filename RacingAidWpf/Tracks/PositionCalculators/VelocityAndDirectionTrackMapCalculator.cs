@@ -1,5 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-using RacingAidData.Core.Models;
+﻿using RacingAidData.Core.Models;
 
 namespace RacingAidWpf.Tracks.PositionCalculators;
 
