@@ -64,7 +64,7 @@ public class TrackMapOverlayViewModel : OverlayViewModel
         }
     }
 
-    public GeometryGroup TrackMapPathData => CurrentTrackMap == null ? null : TrackMapPathCreator.CreateGeometryGroupFromTrackMap(CurrentTrackMap, TargetSize);
+    public GeometryGroup TrackMapPathData => CurrentTrackMap == null ? null : TrackMapPathCreator.Create2DGeometryGroupFromTrackMap(CurrentTrackMap.Positions);
     
     public bool IsTrackMapAvailable => TrackMapPathData != null;
 
@@ -115,7 +115,7 @@ public class TrackMapOverlayViewModel : OverlayViewModel
         
         if (trackMapController.TryGetTrackMap(CurrentTrackName, out var trackMap))
         {
-            CurrentTrackMap = trackMap;
+            CurrentTrackMap = TransformTrackMap(trackMap);
             return;
         }
         
@@ -128,19 +128,31 @@ public class TrackMapOverlayViewModel : OverlayViewModel
         Console.WriteLine($"Track created: {trackMap.Name}");
         
         trackMapController.AddTrackMap(trackMap);
-        CurrentTrackMap = trackMap;
+        CurrentTrackMap = TransformTrackMap(trackMap);
     }
 
     private void UpdateDriverPositionsOnTrack()
     {
-        var scaledPositions = TrackMapPathCreator.GetScaledTrackMapPositions(currentTrackMap, TargetSize);
         var driverNumberType = trackMapConfigSection.DriverNumberType;
         
         var visualizations = new ObservableCollection<DriverTrackVisualization>();
         foreach (var driver in RacingAidSingleton.Instance.Relative.Entries)
-            visualizations.Add(CreateDriverTrackVisualization(scaledPositions, driver, driverNumberType));
+            if (CreateDriverTrackVisualization(currentTrackMap.Positions, driver, driverNumberType) is {} visualization)
+                visualizations.Add(visualization);
 
         DriverTrackVisualizations = visualizations;
+    }
+
+    private static TrackMap TransformTrackMap(TrackMap trackMap)
+    {
+        // 0.95 for padding
+        trackMap.Positions = TrackMapUtilities.UpdatePositions(
+            trackMap.Positions,
+            true,
+            true,
+            TargetSize * 0.95f);
+
+        return trackMap;
     }
 
     private static DriverTrackVisualization CreateDriverTrackVisualization(List<TrackMapPosition> positions, RelativeEntryModel relativeEntryModel, DriverNumberType driverNumberType)
@@ -155,12 +167,14 @@ public class TrackMapOverlayViewModel : OverlayViewModel
         var otherBorder = Brushes.LightGray;
             
         var number = GetDriverNumber(relativeEntryModel, driverNumberType);
-        
-        var lapsDriven = relativeEntryModel.LapsDriven;
-        var lapPercentage = lapsDriven - (int)lapsDriven;
-        
-        var positionIndexRelativeToLapPercentage = (int)(lapPercentage * positions.Count);
-        var position = positions[positionIndexRelativeToLapPercentage];
+
+        if (positions.LastOrDefault() is not { } lastPosition)
+            return null;
+
+        var maxTrackLength = lastPosition.LapDistance;
+        var trackDistance = maxTrackLength * relativeEntryModel.LapDistancePercentage;
+        if (GetPositionOnTrack(positions, trackDistance) is not { } position)
+            return null;
         
         var fillColor = relativeEntryModel.IsLocal ? localFill : otherFill;
         var borderColor = relativeEntryModel.IsLocal ? localBorder : otherBorder;   
@@ -168,7 +182,7 @@ public class TrackMapOverlayViewModel : OverlayViewModel
         var halfSize = size / 2d;
         
         return new DriverTrackVisualization(position.X - halfSize,
-            position.Y - halfSize,
+            position.Y  - halfSize,
             size,
             number,
             fillColor,
@@ -185,5 +199,24 @@ public class TrackMapOverlayViewModel : OverlayViewModel
             DriverNumberType.CarNumber => relativeEntryModel.CarNumber,
             _ => relativeEntryModel.CarNumber
         };
+    }
+
+    private static TrackMapPosition GetPositionOnTrack(List<TrackMapPosition> positions, float currentLapDistance)
+    {
+        TrackMapPosition positionOnTrack = null;
+        
+        foreach (var position in positions)
+        {
+            if (position.LapDistance > currentLapDistance)
+                return positionOnTrack;
+
+            positionOnTrack = new TrackMapPosition(
+                position.LapDistance,
+                position.X,
+                position.Y,
+                position.Z);
+        }
+
+        return positionOnTrack;
     }
 }

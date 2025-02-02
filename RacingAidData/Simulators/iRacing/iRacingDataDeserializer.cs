@@ -44,7 +44,7 @@ public class iRacingDataDeserializer : IDeserializeData
             models.Add(raceDataModel);
         
         // Driver data .. data
-        if (CreateDriverModel(iRacingData) is {} driverDataModel)
+        if (CreateDriverModel(iRacingData) is { } driverDataModel)
             models.Add(driverDataModel);
         
         if (CreateTrackModel(iRacingData) is {} trackDataModel)
@@ -172,20 +172,40 @@ public class iRacingDataDeserializer : IDeserializeData
     private static DriverDataModel CreateDriverModel(IRacingSdkData iRacingData)
     {
         var lapsDriven = 0f;
-        if (iRacingData.SessionInfo?.DriverInfo is { Drivers: { Count: > 0 }, DriverCarIdx: { } driverCarIdx })
+        var inPits = false;
+        var incidents = 0;
+        if (iRacingData.SessionInfo?.DriverInfo is
+            { Drivers: { Count: > 0 }, DriverCarIdx: { } driverCarIdx } driverInfo)
+        {
             lapsDriven = GetLapsDriven(iRacingData, driverCarIdx);
+            inPits = GetInPits(iRacingData, driverCarIdx);
+            incidents = driverInfo.DriverIncidentCount;
+        }
         
         return new DriverDataModel
         {
             VelocityMs = GetVelocity(iRacingData),
             ForwardDirectionDeg = iRacingData.GetFloat("YawNorth") * RadToDeg,
-            LapsDriven = lapsDriven
+            PitchDeg = -1f * iRacingData.GetFloat("Pitch") * RadToDeg,
+            RollDeg = iRacingData.GetFloat("Roll") * RadToDeg,
+            LapsDriven = lapsDriven,
+            LapDistanceMetres  = iRacingData.GetFloat("LapDist"),
+            InPits = inPits,
+            Incidents = incidents
         };
+    }
+
+    private static bool GetInPits(IRacingSdkData iRacingData, int driverCarIdx)
+    {
+        return iRacingData.GetBool("CarIdxOnPitRoad", driverCarIdx);
     }
 
     private static Velocity GetVelocity(IRacingSdkData iRacingData)
     {
-        return new Velocity(iRacingData.GetFloat("VelocityX"), iRacingData.GetFloat("VelocityY"));
+        return new Velocity(
+            iRacingData.GetFloat("VelocityX"),
+            iRacingData.GetFloat("VelocityY"),
+            iRacingData.GetFloat("VelocityZ"));
     }
 
     private static TrackDataModel CreateTrackModel(IRacingSdkData iRacingData)

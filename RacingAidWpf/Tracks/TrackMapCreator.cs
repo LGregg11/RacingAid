@@ -16,6 +16,7 @@ public class TrackMapCreator
     private DateTime lastUpdateTime;
     private float previousLapsDriven;
     private bool isCurrentlyTrackingMap;
+    private int incidentsAtTrackingStart = 0;
 
     public event Action<TrackMap> TrackCreated;
     
@@ -49,9 +50,9 @@ public class TrackMapCreator
         Console.WriteLine($"Starting track map creation for: {trackDataModel.TrackName}");
         
         trackMapBeingCreated = new TrackMap(trackDataModel.TrackName, CreateNewTrackMapPositions());
-        
         previousLapsDriven = driverDataModel.LapsDriven;
         lastUpdateTime = driverDataModel.Timestamp;
+        isCurrentlyTrackingMap = false;
         IsStarted = true;
     }
 
@@ -62,27 +63,17 @@ public class TrackMapCreator
 
         // When starting, we wait till the lap number changes to being tracking the position
         var currentLapsDriven = driverDataModel.LapsDriven;
-        var lapNumberChanged = (int)currentLapsDriven > (int)previousLapsDriven;
-
-        if (lapNumberChanged)
-        {
-            Console.WriteLine("Lap number changed - triggering update change");
-            
-            // Lap number has updated - toggle map tracking
-            isCurrentlyTrackingMap = !isCurrentlyTrackingMap;
-
-            if (!isCurrentlyTrackingMap)
-            {
-                End();
-                return;
-            }
-        }
+        
+        var lapCompleted = (int)currentLapsDriven > (int)previousLapsDriven;
+        
+        if (lapCompleted)
+            OnLapCompleted(driverDataModel);
 
         if (isCurrentlyTrackingMap)
             UpdateTrack(driverDataModel);
         
-        lastUpdateTime = driverDataModel.Timestamp;
         previousLapsDriven = currentLapsDriven;
+        lastUpdateTime = driverDataModel.Timestamp;
     }
 
     public void Stop()
@@ -105,12 +96,57 @@ public class TrackMapCreator
         trackMapBeingCreated.Positions.Add(newPosition);
     }
 
+    private void OnLapCompleted(DriverDataModel driverDataModel)
+    {
+        if (!isCurrentlyTrackingMap)
+        {
+            if (driverDataModel.InPits)
+                Console.WriteLine("Tracking has not started, but driver is currently in pits - ignore this lap");
+            else
+            {
+                isCurrentlyTrackingMap = true;
+                incidentsAtTrackingStart = driverDataModel.Incidents;
+            }
+            
+            return;
+        }
+
+        var currentIncidents = driverDataModel.Incidents;
+        var incidentsThisLap = currentIncidents - incidentsAtTrackingStart;
+        
+        // Tracking was already underway - was the lap valid (i.e. didn't end in pits & 0 incidents gained)
+        var inPits = driverDataModel.InPits;
+        var hadIncidentsOnLap = incidentsThisLap > 0;
+
+        if (inPits || hadIncidentsOnLap)
+        {
+            if (inPits)
+            {
+                Console.WriteLine("Invalid lap - Driver ended the lap in pits");
+                isCurrentlyTrackingMap = false;
+            }
+
+            if (hadIncidentsOnLap)
+            {
+                Console.WriteLine($"Invalid lap - Driver had {incidentsThisLap} incidents this lap");
+                incidentsAtTrackingStart = currentIncidents;
+            }
+            
+            Console.WriteLine("Resetting data");
+            trackMapBeingCreated.Positions = CreateNewTrackMapPositions();
+            return;
+        }
+
+        isCurrentlyTrackingMap = false;
+        End();
+    }
+
     private void End()
     {
         Console.WriteLine($"Ending track map creation for: {trackMapBeingCreated.Name}");
         
         IsStarted = false;
-        trackMapBeingCreated.Positions = NormalizeAndCenterPositions(trackMapBeingCreated.Positions);
+        trackMapBeingCreated.Positions = CenterPositions(trackMapBeingCreated.Positions);
         TrackCreated?.Invoke(trackMapBeingCreated);
         
         trackMapBeingCreated = null;
@@ -125,46 +161,49 @@ public class TrackMapCreator
         };
     }
     
-    private List<TrackMapPosition> NormalizeAndCenterPositions(List<TrackMapPosition> positions)
+    private static List<TrackMapPosition> CenterPositions(List<TrackMapPosition> positions)
     {
         var xMin = float.MaxValue;
         var xMax = float.MinValue;
         var yMin = float.MaxValue;
         var yMax = float.MinValue;
+        var zMin = float.MaxValue;
+        var zMax = float.MinValue;
+        
         foreach (var position in positions)
         {
             if (position.X < xMin)
                 xMin = position.X;
-            
             if (position.X > xMax)
                 xMax = position.X;
             
             if (position.Y < yMin)
                 yMin = position.Y;
-            
             if (position.Y > yMax)
                 yMax = position.Y;
-        }
-        
-        var xyRatio = (xMax-xMin) / (yMax - yMin);
-        var xFactor = xyRatio < 1 ? 1 : xyRatio;
-        var yFactor = xyRatio > 1 ? 1 : xyRatio;
-        
-        var normalizedAndCenteredPositions = new List<TrackMapPosition>();
-        foreach (var position in positions)
-        {
-            var normalisedX = (position.X - xMin) / (xMax - xMin);
-            var normalisedY = (position.Y - yMin) / (yMax - yMin);
             
-            normalizedAndCenteredPositions.Add(new TrackMapPosition(normalisedX * xFactor, normalisedY * yFactor));
+            if (position.Z < zMin)
+                zMin = position.Z;
+            if (position.Z > zMax)
+                zMax = position.Z;
         }
-        
-        return normalizedAndCenteredPositions;
+
+        var xMid = (xMax + xMin) / 2f;
+        var yMid = (yMax + yMin) / 2f;
+        var zMid = (zMax + zMin) / 2f;
+
+        return positions.Select(position =>
+                new TrackMapPosition(
+                    position.LapDistance,
+                    position.X - xMid,
+                    position.Y - yMid,
+                    position.Z - zMid))
+            .ToList();
     }
 
     private static List<TrackMapPosition> CreateNewTrackMapPositions()
     {
         // Start with an origin position
-        return [ new TrackMapPosition(0f, 0f) ];
+        return [ new TrackMapPosition(0f ,0f, 0f, 0f) ];
     }
 }
