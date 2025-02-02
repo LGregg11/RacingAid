@@ -163,24 +163,41 @@ public class TrackMapCreator
     
     private static List<TrackMapPosition> CenterPositions(List<TrackMapPosition> positions)
     {
-        var nPositions = positions.Count;
-        var xAvg = 0f;
-        var yAvg = 0f;
-        var zAvg = 0f;
-
+        var xMin = float.MaxValue;
+        var xMax = float.MinValue;
+        var yMin = float.MaxValue;
+        var yMax = float.MinValue;
+        var zMin = float.MaxValue;
+        var zMax = float.MinValue;
+        
         foreach (var position in positions)
         {
-            xAvg += position.X;
-            yAvg += position.Y;
-            zAvg += position.Z;
+            if (position.X < xMin)
+                xMin = position.X;
+            if (position.X > xMax)
+                xMax = position.X;
+            
+            if (position.Y < yMin)
+                yMin = position.Y;
+            if (position.Y > yMax)
+                yMax = position.Y;
+            
+            if (position.Z < zMin)
+                zMin = position.Z;
+            if (position.Z > zMax)
+                zMax = position.Z;
         }
-        
-        xAvg /= nPositions;
-        yAvg /= nPositions;
-        zAvg /= nPositions;
+
+        var xMid = (xMax + xMin) / 2f;
+        var yMid = (yMax + yMin) / 2f;
+        var zMid = (zMax + zMin) / 2f;
 
         return positions.Select(position =>
-                new TrackMapPosition(position.LapDistance, position.X - xAvg, position.Y - yAvg, position.Z - zAvg))
+                new TrackMapPosition(
+                    position.LapDistance,
+                    position.X - xMid,
+                    position.Y - yMid,
+                    position.Z - zMid))
             .ToList();
     }
 
