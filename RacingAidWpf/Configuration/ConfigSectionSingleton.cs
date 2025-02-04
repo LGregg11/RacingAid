@@ -5,7 +5,7 @@ namespace RacingAidWpf.Configuration;
 
 public static class ConfigSectionSingleton
 {
-    private static readonly string ConfigFilePath = Path.Combine(Resource.DataDirectory, "config.ini");
+    private static readonly string ConfigFilePath = Path.Combine(Resource.ConfigDirectory, "config.ini");
     
     private static Config config;
     private static Config Config => config ??= new Config(ConfigFilePath);
