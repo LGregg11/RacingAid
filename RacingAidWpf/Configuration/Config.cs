@@ -11,9 +11,12 @@ public class Config : IConfig
     {
         if (string.IsNullOrEmpty(configFilePath))
             throw new NullReferenceException(nameof(configFilePath));
-        
+
         if (!File.Exists(configFilePath))
-            File.Create(configFilePath);
+        {
+            // Create but immediately close
+            using (File.Create(configFilePath)) { }
+        }
 
         configParser = new ConfigParser(configFilePath);
     }
