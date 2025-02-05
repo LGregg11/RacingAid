@@ -5,12 +5,27 @@ namespace RacingAidWpf.Resources;
 
 public static class Resource
 {
-    private const string SubDirectoryName = "RacingAid";
+    private const string ApplicationDirectoryName = "RacingAid";
+    private const string ConfigDirectoryName = "Config";
+    public static string ConfigDirectory
+    {
+        get
+        {
+            var configDirectory = Path.Combine(AppDataDirectory, ApplicationDirectoryName, ConfigDirectoryName);
+            
+            if (!Directory.Exists(configDirectory))
+                Directory.CreateDirectory(configDirectory);
+            
+            return configDirectory;
+        }
+    }
+    
+    private const string DataDirectoryName = "Data";
     public static string DataDirectory
     {
         get
         {
-            var dataDirectory = Path.Combine(AppDataDirectory, SubDirectoryName);
+            var dataDirectory = Path.Combine(AppDataDirectory, ApplicationDirectoryName, DataDirectoryName);
             
             if (!Directory.Exists(dataDirectory))
                 Directory.CreateDirectory(dataDirectory);
@@ -18,6 +33,8 @@ public static class Resource
             return dataDirectory;
         }
     }
+    
+    
     public static Uri SteeringWheelUri => GetImageUri("SteeringWheel.png");
     
     private static Assembly ExecutingAssembly => Assembly.GetExecutingAssembly();

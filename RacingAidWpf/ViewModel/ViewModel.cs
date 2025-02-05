@@ -2,12 +2,15 @@
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Threading;
+using RacingAidWpf.Logging;
 
 namespace RacingAidWpf.ViewModel;
 
 public abstract class ViewModel : INotifyPropertyChanged
 {
     private Dispatcher Dispatcher => Application.Current.Dispatcher;
+
+    protected ILogger Logger { get; set; }
     
     public event PropertyChangedEventHandler PropertyChanged;
     

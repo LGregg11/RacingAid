@@ -4,6 +4,7 @@ using System.Windows.Media;
 using RacingAidData.Core.Models;
 using RacingAidWpf.Configuration;
 using RacingAidWpf.FileHandlers;
+using RacingAidWpf.Logging;
 using RacingAidWpf.Tracks;
 
 namespace RacingAidWpf.ViewModel;
@@ -71,8 +72,10 @@ public class TrackMapOverlayViewModel : OverlayViewModel
     public Visibility TrackMapVisibility => IsTrackMapAvailable ? Visibility.Visible : Visibility.Collapsed;
     public Visibility NoTrackMapTextVisibility => !IsTrackMapAvailable ? Visibility.Visible : Visibility.Collapsed;
 
-    public TrackMapOverlayViewModel(TrackMapController trackMapController = null, TrackMapCreator trackMapCreator = null)
+    public TrackMapOverlayViewModel(TrackMapController trackMapController = null, TrackMapCreator trackMapCreator = null, ILogger logger = null)
     {
+        Logger = logger ?? LoggerFactory.GetLogger<TrackMapOverlayViewModel>();
+        
         this.trackMapController = trackMapController ?? new TrackMapController(new JsonHandler<TrackMaps>());
         this.trackMapCreator = trackMapCreator ?? new TrackMapCreator();
 
@@ -89,6 +92,7 @@ public class TrackMapOverlayViewModel : OverlayViewModel
 
     public override void Reset()
     {
+        Logger?.LogDebug($"Resetting {nameof(CurrentTrackName)}");
         CurrentTrackName = null;
     }
 
@@ -105,27 +109,32 @@ public class TrackMapOverlayViewModel : OverlayViewModel
 
     private void OnTrackChanged()
     {
+        Logger?.LogDebug("Track changed");
+        
         trackMapCreator.Stop();
 
         if (string.IsNullOrEmpty(CurrentTrackName))
         {
+            Logger?.LogDebug($"{nameof(CurrentTrackName)} is null");
             CurrentTrackMap = null;
             return;
         }
         
         if (trackMapController.TryGetTrackMap(CurrentTrackName, out var trackMap))
         {
+            Logger?.LogDebug($"Found existing track map data for '{CurrentTrackName}'");
             CurrentTrackMap = TransformTrackMap(trackMap);
             return;
         }
         
+        Logger?.LogDebug($"No existing track map data for '{CurrentTrackName}' - start creation");
         CurrentTrackMap = null;
         trackMapCreator.Start(RacingAidSingleton.Instance.DriverData, RacingAidSingleton.Instance.TrackData);
     }
 
     private void OnTrackCreated(TrackMap trackMap)
     {
-        Console.WriteLine($"Track created: {trackMap.Name}");
+        Logger?.LogInformation($"Track map created for '{trackMap.Name}'");
         
         trackMapController.AddTrackMap(trackMap);
         CurrentTrackMap = TransformTrackMap(trackMap);
@@ -137,8 +146,10 @@ public class TrackMapOverlayViewModel : OverlayViewModel
         
         var visualizations = new ObservableCollection<DriverTrackVisualization>();
         foreach (var driver in RacingAidSingleton.Instance.Relative.Entries)
+        {
             if (CreateDriverTrackVisualization(currentTrackMap.Positions, driver, driverNumberType) is {} visualization)
                 visualizations.Add(visualization);
+        }
 
         DriverTrackVisualizations = visualizations;
     }
@@ -155,7 +166,7 @@ public class TrackMapOverlayViewModel : OverlayViewModel
         return trackMap;
     }
 
-    private static DriverTrackVisualization CreateDriverTrackVisualization(List<TrackMapPosition> positions, RelativeEntryModel relativeEntryModel, DriverNumberType driverNumberType)
+    private DriverTrackVisualization CreateDriverTrackVisualization(List<TrackMapPosition> positions, RelativeEntryModel relativeEntryModel, DriverNumberType driverNumberType)
     {
         const double borderThickness = 2.0d;
         const double localSize = 20d;
@@ -169,12 +180,18 @@ public class TrackMapOverlayViewModel : OverlayViewModel
         var number = GetDriverNumber(relativeEntryModel, driverNumberType);
 
         if (positions.LastOrDefault() is not { } lastPosition)
+        {
+            Logger?.LogError($"Failed to find last position in track map data for '{CurrentTrackName}'");
             return null;
+        }
 
         var maxTrackLength = lastPosition.LapDistance;
         var trackDistance = maxTrackLength * relativeEntryModel.LapDistancePercentage;
         if (GetPositionOnTrack(positions, trackDistance) is not { } position)
+        {
+            Logger?.LogError($"Failed to calculate track map position for '{CurrentTrackName}'");
             return null;
+        }
         
         var fillColor = relativeEntryModel.IsLocal ? localFill : otherFill;
         var borderColor = relativeEntryModel.IsLocal ? localBorder : otherBorder;   

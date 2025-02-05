@@ -1,4 +1,5 @@
 ﻿using RacingAidData.Core.Models;
+using RacingAidWpf.Logging;
 using RacingAidWpf.Tracks.PositionCalculators;
 
 namespace RacingAidWpf.Tracks;
@@ -10,6 +11,8 @@ namespace RacingAidWpf.Tracks;
 /// </summary>
 public class TrackMapCreator
 {
+    private readonly ILogger logger;
+    
     private TrackMapPositionCalculator positionCalculator;
     
     private TrackMap trackMapBeingCreated;
@@ -36,8 +39,10 @@ public class TrackMapCreator
         }
     }
 
-    public TrackMapCreator()
+    public TrackMapCreator(ILogger logger = null)
     {
+        this.logger = logger ?? LoggerFactory.GetLogger<TrackMapCreator>();
+        
         PositionCalculatorType = TrackMapPositionCalculatorType.VelocityAndDirection;
         OnTrackMapCalculatorTypeUpdated();
     }
@@ -81,7 +86,7 @@ public class TrackMapCreator
         if (!IsStarted)
             return;
         
-        Console.WriteLine($"Stopping track map creation for: {trackMapBeingCreated.Name}");
+        logger?.LogInformation($"Stopping track map creation for: {trackMapBeingCreated.Name}");
         
         IsStarted = false;
         previousLapsDriven = 0;
@@ -98,10 +103,12 @@ public class TrackMapCreator
 
     private void OnLapCompleted(DriverDataModel driverDataModel)
     {
+        logger?.LogDebug("Lap completed");
+        
         if (!isCurrentlyTrackingMap)
         {
             if (driverDataModel.InPits)
-                Console.WriteLine("Tracking has not started, but driver is currently in pits - ignore this lap");
+                logger?.LogDebug("Tracking has not started, but driver is currently in pits - ignore this lap");
             else
             {
                 isCurrentlyTrackingMap = true;
@@ -122,17 +129,17 @@ public class TrackMapCreator
         {
             if (inPits)
             {
-                Console.WriteLine("Invalid lap - Driver ended the lap in pits");
+                logger?.LogDebug("Invalid lap - Driver ended the lap in pits");
                 isCurrentlyTrackingMap = false;
             }
 
             if (hadIncidentsOnLap)
             {
-                Console.WriteLine($"Invalid lap - Driver had {incidentsThisLap} incidents this lap");
+                logger?.LogDebug($"Invalid lap - Driver had {incidentsThisLap} incidents this lap");
                 incidentsAtTrackingStart = currentIncidents;
             }
             
-            Console.WriteLine("Resetting data");
+            logger?.LogDebug("Resetting data");
             trackMapBeingCreated.Positions = CreateNewTrackMapPositions();
             return;
         }
@@ -143,7 +150,7 @@ public class TrackMapCreator
 
     private void End()
     {
-        Console.WriteLine($"Ending track map creation for: {trackMapBeingCreated.Name}");
+        logger?.LogInformation($"Ending track map creation for: {trackMapBeingCreated.Name}");
         
         IsStarted = false;
         trackMapBeingCreated.Positions = CenterPositions(trackMapBeingCreated.Positions);
@@ -159,6 +166,8 @@ public class TrackMapCreator
             TrackMapPositionCalculatorType.VelocityAndDirection => new VelocityAndDirectionTrackMapCalculator(),
             _ => throw new ArgumentOutOfRangeException()
         };
+        
+        logger?.LogInformation($"Track map calculation type changed to {positionCalculatorType}");
     }
     
     private static List<TrackMapPosition> CenterPositions(List<TrackMapPosition> positions)
