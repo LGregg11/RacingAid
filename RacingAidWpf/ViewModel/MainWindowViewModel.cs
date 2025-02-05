@@ -354,15 +354,15 @@ public sealed class MainWindowViewModel : ViewModel
             new TrackMapOverlay()
         ];
 
-        Logger.LogDebug("Creating overlays");
+        Logger?.LogDebug("Creating overlays");
         foreach (var overlay in overlays)
             overlayController.AddOverlay(overlay);
 
-        Logger.LogDebug("Creating simulator entries");
+        Logger?.LogDebug("Creating simulator entries");
         SimulatorEntries = CreateObservableEnumCollection<Simulator>();
         SelectedSimulatorEntry = SimulatorEntries.First();
         
-        Logger.LogDebug("Creating track map driver number entries");
+        Logger?.LogDebug("Creating track map driver number entries");
         DriverNumberEntries = CreateObservableEnumCollection<DriverNumberType>();
         SelectedDriverNumberEntry = DriverNumberEntries.First(d => d.Value == trackMapConfigSection.DriverNumberType);
 
@@ -372,15 +372,15 @@ public sealed class MainWindowViewModel : ViewModel
 
     public void Close()
     {
-        Logger.LogDebug("Stopping and closing overlays");
+        Logger?.LogDebug("Stopping and closing overlays");
         Stop();
         overlayController.CloseAll();
-        Logger.LogDebug("Overlays closed");
+        Logger?.LogDebug("Overlays closed");
     }
 
     public void Start()
     {
-        Logger.LogDebug("Starting racing aid");
+        Logger?.LogDebug("Starting racing aid");
         IsStarted = true;
 
         var racingAid = RacingAidSingleton.Instance;
@@ -390,26 +390,26 @@ public sealed class MainWindowViewModel : ViewModel
         racingAid.Start();
         
         InSession = racingAid.InSession;
-        Logger.LogInformation("Started racing aid");
+        Logger?.LogInformation("Started racing aid");
     }
 
     public void Stop()
     {
-        Logger.LogDebug("Stopping racing aid");
+        Logger?.LogDebug("Stopping racing aid");
         var racingAid = RacingAidSingleton.Instance;
         racingAid.Stop();
         racingAid.InSessionUpdated -= OnSessionUpdated;
 
         IsStarted = false;
         InSession = false;
-        Logger.LogInformation("Stopped racing aid");
+        Logger?.LogInformation("Stopped racing aid");
     }
 
     public void ToggleOverlayRepositioning()
     {
         if (!IsStarted)
         {
-            Logger.LogWarning($"Tried to toggle {nameof(IsRepositionEnabled)} when app has not started");
+            Logger?.LogWarning($"Tried to toggle {nameof(IsRepositionEnabled)} when app has not started");
             return;
         }
         
@@ -419,7 +419,7 @@ public sealed class MainWindowViewModel : ViewModel
     private void OnSessionUpdated(bool connected)
     {
         var sessionStatus = connected ? "Started" : "Left";
-        Logger.LogDebug($"Session {sessionStatus}");
+        Logger?.LogDebug($"Session {sessionStatus}");
         
         // Make sure this is done on the main thread
         Application.Current.Dispatcher.Invoke(() =>
@@ -440,18 +440,18 @@ public sealed class MainWindowViewModel : ViewModel
 
     private void StartAndDisplayOverlays()
     {
-        Logger.LogDebug("Enabling updates and displaying overlays");
+        Logger?.LogDebug("Enabling updates and displaying overlays");
         RacingAidUpdateDispatch.Start();
         overlayController.ShowAll();
     }
 
     private void HideAndResetOverlays()
     {
-        Logger.LogDebug("Stopping updates & disabling repositioning");
+        Logger?.LogDebug("Stopping updates & disabling repositioning");
         RacingAidUpdateDispatch.Stop();
         IsRepositionEnabled = false;
         
-        Logger.LogDebug("Hiding and Resetting updates");
+        Logger?.LogDebug("Hiding and Resetting updates");
         overlayController.HideAll();
         overlayController.ResetAll();
     }

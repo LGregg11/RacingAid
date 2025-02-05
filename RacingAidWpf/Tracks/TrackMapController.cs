@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using RacingAidWpf.FileHandlers;
+using RacingAidWpf.Logging;
 using RacingAidWpf.Resources;
 
 namespace RacingAidWpf.Tracks;
@@ -12,11 +13,20 @@ public class TrackMapController
     private readonly IHandleData<TrackMaps> trackMapDataHandler;
     private readonly List<TrackMap> trackMaps = [];
 
-    public TrackMapController(IHandleData<TrackMaps> trackMapDataHandler)
+    private readonly ILogger logger;
+
+    public TrackMapController(IHandleData<TrackMaps> trackMapDataHandler, ILogger logger = null)
     {
+        this.logger = logger ?? LoggerFactory.GetLogger<TrackMapController>();
+        
         this.trackMapDataHandler = trackMapDataHandler;
-        if (trackMapDataHandler.TryDeserializeFromFile(TrackMapsJsonFullPath, out var trackMapData))
-            trackMaps = trackMapData.Maps;
+        if (!trackMapDataHandler.TryDeserializeFromFile(TrackMapsJsonFullPath, out var trackMapData))
+        {
+            this.logger?.LogError($"No track map data found at '{TrackMapsJsonFullPath}'");
+            return;
+        }
+        
+        trackMaps = trackMapData.Maps;
     }
     
     public bool TryGetTrackMap(string trackName, out TrackMap trackMap)
@@ -31,21 +41,20 @@ public class TrackMapController
         if (trackMaps.FirstOrDefault(m => m.Name == trackMap.Name) is { } existingTrackMap)
         {
             if (forceReplace)
+            {
+                logger?.LogInformation($"Replacing existing track map data for '{trackMap.Name}'");
                 trackMaps.Remove(existingTrackMap);
+            }
             else
                 return;
         }
         
+        logger?.LogInformation($"Added track map data for '{trackMap.Name}'");
         trackMaps.Add(trackMap);
         
         if (!trackMapDataHandler.TrySerializeToFile(TrackMapsJsonFullPath, new TrackMaps(trackMaps)))
-        {
-            Console.WriteLine($"Failed to save json data for: {trackMap.Name}");
-            // TODO: Add error log here
-        }
+            logger?.LogError($"Failed to serialize track map data for '{trackMap.Name}' to {TrackMapsJsonFullPath}");
         else
-        {
-            Console.WriteLine($"Saved {trackMap.Name} track data to file");
-        }
+            logger?.LogInformation($"Saved {trackMap.Name} track data to {TrackMapsJsonFullPath}");
     }
 }

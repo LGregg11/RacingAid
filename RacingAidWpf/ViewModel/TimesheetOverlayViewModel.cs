@@ -2,6 +2,7 @@
 using System.Windows;
 using RacingAidWpf.Configuration;
 using RacingAidWpf.Extensions;
+using RacingAidWpf.Logging;
 using RacingAidWpf.Model;
 
 namespace RacingAidWpf.ViewModel;
@@ -38,8 +39,10 @@ public class TimesheetOverlayViewModel : OverlayViewModel
     
     #endregion
     
-    public TimesheetOverlayViewModel()
+    public TimesheetOverlayViewModel(ILogger logger = null)
     {
+        Logger = logger ?? LoggerFactory.GetLogger<TimesheetOverlayViewModel>();
+        
         RacingAidUpdateDispatch.Update += UpdateProperties;
 
         TimesheetConfigSection.ConfigUpdated += OnConfigUpdated;
@@ -47,6 +50,7 @@ public class TimesheetOverlayViewModel : OverlayViewModel
 
     public override void Reset()
     {
+        Logger?.LogDebug($"Resetting {nameof(timesheet)}");
         timesheet = [];
     }
 

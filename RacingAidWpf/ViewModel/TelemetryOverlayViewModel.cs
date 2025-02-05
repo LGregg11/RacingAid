@@ -1,6 +1,7 @@
 ﻿using System.Windows.Media.Imaging;
 using RacingAidData;
 using RacingAidWpf.Configuration;
+using RacingAidWpf.Logging;
 using RacingAidWpf.Resources;
 
 namespace RacingAidWpf.ViewModel;
@@ -119,8 +120,10 @@ public class TelemetryOverlayViewModel : OverlayViewModel
 
     public BitmapImage SteeringWheelImage => new(Resource.SteeringWheelUri);
 
-    public TelemetryOverlayViewModel()
+    public TelemetryOverlayViewModel(ILogger logger = null)
     {
+        Logger = logger ?? LoggerFactory.GetLogger<TelemetryOverlayViewModel>();
+        
         RacingAidUpdateDispatch.Update += UpdateProperties;
         
         telemetryConfigSection.ConfigUpdated += OnConfigUpdated;

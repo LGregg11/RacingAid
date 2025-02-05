@@ -3,6 +3,7 @@ using System.Windows;
 using RacingAidData.Core.Models;
 using RacingAidWpf.Configuration;
 using RacingAidWpf.Extensions;
+using RacingAidWpf.Logging;
 using RacingAidWpf.Model;
 
 namespace RacingAidWpf.ViewModel;
@@ -36,8 +37,10 @@ public class RelativeOverlayViewModel : OverlayViewModel
     
     #endregion
     
-    public RelativeOverlayViewModel()
+    public RelativeOverlayViewModel(ILogger logger = null)
     {
+        Logger = logger ?? LoggerFactory.GetLogger<RelativeOverlayViewModel>();
+        
         RacingAidUpdateDispatch.Update += UpdateProperties;
 
         RelativeConfigSection.ConfigUpdated += OnConfigUpdated;
@@ -92,7 +95,7 @@ public class RelativeOverlayViewModel : OverlayViewModel
         OnPropertyChanged(nameof(DeltaToLocalColumnVisibility));
     }
 
-    private List<RelativeGridRow> CreateOrderedRelativeGridRowsByLapDistance(List<RelativeEntryModel> relativeModelEntries, RelativeEntryModel currentDriver)
+    private static List<RelativeGridRow> CreateOrderedRelativeGridRowsByLapDistance(List<RelativeEntryModel> relativeModelEntries, RelativeEntryModel currentDriver)
     {
         const float centerPercentage = 0.5f;
         var lapDistancePercentageDelta = currentDriver.LapDistancePercentage - centerPercentage;
@@ -104,11 +107,11 @@ public class RelativeOverlayViewModel : OverlayViewModel
             var updatedLapDistancePercentage = relativeModelEntry.LapDistancePercentage - lapDistancePercentageDelta;
             switch (updatedLapDistancePercentage)
             {
-                case < 0:
-                    updatedLapDistancePercentage += 1;
+                case < 0f:
+                    updatedLapDistancePercentage += 1f;
                     break;
-                case > 1:
-                    updatedLapDistancePercentage -= 1;
+                case > 1f:
+                    updatedLapDistancePercentage -= 1f;
                     break;
             }
 
