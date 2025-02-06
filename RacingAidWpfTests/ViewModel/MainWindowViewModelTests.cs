@@ -3,7 +3,6 @@ using RacingAidWpf.AppEntry;
 using RacingAidWpf.FileHandlers;
 using RacingAidWpf.Overlays;
 using RacingAidWpf.Telemetry;
-using RacingAidWpf.View;
 
 namespace RacingAidWpfTests.ViewModel
 {
