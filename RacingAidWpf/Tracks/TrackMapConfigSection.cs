@@ -1,6 +1,6 @@
-﻿using RacingAidWpf.Tracks;
+﻿using RacingAidWpf.Configuration;
 
-namespace RacingAidWpf.Configuration;
+namespace RacingAidWpf.Tracks;
 
 public class TrackMapConfigSection(IConfig config) : ConfigSection(config, "TrackMap")
 {

@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using RacingAidWpf.ViewModel;
 
 namespace RacingAidWpf.Overlays;
 
@@ -9,6 +8,8 @@ public class Overlay : Window
     private OverlayViewModel ViewModel => DataContext as OverlayViewModel; 
     
     public string OverlayName => Title;
+
+    public bool IsOverlayEnabled { get; set; } = true;
     
     public bool IsRepositionEnabled { get; set; }
 

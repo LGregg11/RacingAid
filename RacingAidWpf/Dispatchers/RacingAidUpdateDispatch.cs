@@ -1,7 +1,8 @@
 ﻿using RacingAidData;
 using RacingAidWpf.Configuration;
+using RacingAidWpf.Singleton;
 
-namespace RacingAidWpf;
+namespace RacingAidWpf.Dispatchers;
 
 /// <summary>
 /// Dispatch that triggers event updates on a timer depending on a refresh limit

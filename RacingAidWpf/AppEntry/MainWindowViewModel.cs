@@ -4,19 +4,23 @@ using System.Windows.Input;
 using RacingAidData.Simulators;
 using RacingAidWpf.Commands;
 using RacingAidWpf.Configuration;
+using RacingAidWpf.Dispatchers;
 using RacingAidWpf.FileHandlers;
 using RacingAidWpf.Logging;
 using RacingAidWpf.Model;
 using RacingAidWpf.Overlays;
+using RacingAidWpf.Singleton;
+using RacingAidWpf.Telemetry;
+using RacingAidWpf.Timesheets.Leaderboard;
+using RacingAidWpf.Timesheets.Relative;
 using RacingAidWpf.Tracks;
-using RacingAidWpf.View;
 
-namespace RacingAidWpf.ViewModel;
+namespace RacingAidWpf.AppEntry;
 
 public sealed class MainWindowViewModel : ViewModel
 {
     private readonly GeneralConfigSection generalConfigSection = ConfigSectionSingleton.GeneralSection;
-    private readonly TimesheetConfigSection timesheetConfigSection = ConfigSectionSingleton.TimesheetSection;
+    private readonly LeaderboardConfigSection leaderboardConfigSection = ConfigSectionSingleton.LeaderboardSection;
     private readonly RelativeConfigSection relativeConfigSection = ConfigSectionSingleton.RelativeSection;
     private readonly TelemetryConfigSection telemetryConfigSection = ConfigSectionSingleton.TelemetrySection;
     private readonly TrackMapConfigSection trackMapConfigSection = ConfigSectionSingleton.TrackMapSection;
@@ -99,91 +103,91 @@ public sealed class MainWindowViewModel : ViewModel
     
     public int TimesheetPositions
     {
-        get => timesheetConfigSection.MaxPositions;
+        get => leaderboardConfigSection.MaxPositions;
         set
         {
-            if (timesheetConfigSection.MaxPositions == value)
+            if (leaderboardConfigSection.MaxPositions == value)
                 return;
             
-            timesheetConfigSection.MaxPositions = value;
+            leaderboardConfigSection.MaxPositions = value;
             OnPropertyChanged();
         }
     }
     
     public bool DisplayCarNumber
     {
-        get => timesheetConfigSection.DisplayCarNumber;
+        get => leaderboardConfigSection.DisplayCarNumber;
         set
         {
-            if (timesheetConfigSection.DisplayCarNumber == value)
+            if (leaderboardConfigSection.DisplayCarNumber == value)
                 return;
 
-            timesheetConfigSection.DisplayCarNumber = value;
+            leaderboardConfigSection.DisplayCarNumber = value;
             OnPropertyChanged();
         }
     }
 
     public bool DisplaySafetyRating
     {
-        get => timesheetConfigSection.DisplaySafetyRating;
+        get => leaderboardConfigSection.DisplaySafetyRating;
         set
         {
-            if (timesheetConfigSection.DisplaySafetyRating == value)
+            if (leaderboardConfigSection.DisplaySafetyRating == value)
                 return;
 
-            timesheetConfigSection.DisplaySafetyRating = value;
+            leaderboardConfigSection.DisplaySafetyRating = value;
             OnPropertyChanged();
         }
     }
 
     public bool DisplaySkillRating
     {
-        get => timesheetConfigSection.DisplaySkillRating;
+        get => leaderboardConfigSection.DisplaySkillRating;
         set
         {
-            if (timesheetConfigSection.DisplaySkillRating == value)
+            if (leaderboardConfigSection.DisplaySkillRating == value)
                 return;
 
-            timesheetConfigSection.DisplaySkillRating = value;
+            leaderboardConfigSection.DisplaySkillRating = value;
             OnPropertyChanged();
         }
     }
 
     public bool DisplayLastLap
     {
-        get => timesheetConfigSection.DisplayLastLap;
+        get => leaderboardConfigSection.DisplayLastLap;
         set
         {
-            if (timesheetConfigSection.DisplayLastLap == value)
+            if (leaderboardConfigSection.DisplayLastLap == value)
                 return;
 
-            timesheetConfigSection.DisplayLastLap = value;
+            leaderboardConfigSection.DisplayLastLap = value;
             OnPropertyChanged();
         }
     }
 
     public bool DisplayFastestLap
     {
-        get => timesheetConfigSection.DisplayFastestLap;
+        get => leaderboardConfigSection.DisplayFastestLap;
         set
         {
-            if (timesheetConfigSection.DisplayFastestLap == value)
+            if (leaderboardConfigSection.DisplayFastestLap == value)
                 return;
 
-            timesheetConfigSection.DisplayFastestLap = value;
+            leaderboardConfigSection.DisplayFastestLap = value;
             OnPropertyChanged();
         }
     }
 
     public bool DisplayGapToLeader
     {
-        get => timesheetConfigSection.DisplayGapToLeader;
+        get => leaderboardConfigSection.DisplayGapToLeader;
         set
         {
-            if (timesheetConfigSection.DisplayGapToLeader == value)
+            if (leaderboardConfigSection.DisplayGapToLeader == value)
                 return;
 
-            timesheetConfigSection.DisplayGapToLeader = value;
+            leaderboardConfigSection.DisplayGapToLeader = value;
             OnPropertyChanged();
         }
     }
@@ -349,7 +353,7 @@ public sealed class MainWindowViewModel : ViewModel
         overlays ??=
         [
             new TelemetryOverlay(),
-            new TimesheetOverlay(),
+            new LeaderboardOverlay(),
             new RelativeOverlay(),
             new TrackMapOverlay()
         ];

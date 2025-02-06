@@ -1,4 +1,6 @@
-﻿namespace RacingAidWpf.ViewModel;
+﻿using RacingAidWpf.AppEntry;
+
+namespace RacingAidWpf.Overlays;
 
 public abstract class OverlayViewModel : ViewModel
 {

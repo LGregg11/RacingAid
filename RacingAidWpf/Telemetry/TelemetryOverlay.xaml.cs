@@ -1,6 +1,4 @@
-﻿using RacingAidWpf.ViewModel;
-
-namespace RacingAidWpf.View;
+﻿namespace RacingAidWpf.Telemetry;
 
 public partial class TelemetryOverlay
 {

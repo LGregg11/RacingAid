@@ -3,11 +3,13 @@ using System.Windows;
 using System.Windows.Media;
 using RacingAidData.Core.Models;
 using RacingAidWpf.Configuration;
+using RacingAidWpf.Dispatchers;
 using RacingAidWpf.FileHandlers;
 using RacingAidWpf.Logging;
-using RacingAidWpf.Tracks;
+using RacingAidWpf.Overlays;
+using RacingAidWpf.Singleton;
 
-namespace RacingAidWpf.ViewModel;
+namespace RacingAidWpf.Tracks;
 
 public class TrackMapOverlayViewModel : OverlayViewModel
 {

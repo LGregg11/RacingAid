@@ -1,6 +1,8 @@
-﻿namespace RacingAidWpf.Configuration;
+﻿using RacingAidWpf.Configuration;
 
-public class TimesheetConfigSection(IConfig config) : ConfigSection(config, "Timesheet")
+namespace RacingAidWpf.Timesheets.Leaderboard;
+
+public class LeaderboardConfigSection(IConfig config) : ConfigSection(config, "Leaderboard")
 {
     public int MaxPositions
     {

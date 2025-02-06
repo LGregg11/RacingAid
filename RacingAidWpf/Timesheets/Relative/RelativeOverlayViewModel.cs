@@ -2,11 +2,14 @@
 using System.Windows;
 using RacingAidData.Core.Models;
 using RacingAidWpf.Configuration;
+using RacingAidWpf.Dispatchers;
 using RacingAidWpf.Extensions;
 using RacingAidWpf.Logging;
 using RacingAidWpf.Model;
+using RacingAidWpf.Overlays;
+using RacingAidWpf.Singleton;
 
-namespace RacingAidWpf.ViewModel;
+namespace RacingAidWpf.Timesheets.Relative;
 
 public class RelativeOverlayViewModel : OverlayViewModel
 {

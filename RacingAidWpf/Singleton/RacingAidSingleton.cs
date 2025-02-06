@@ -1,6 +1,6 @@
 ﻿using RacingAidData;
 
-namespace RacingAidWpf;
+namespace RacingAidWpf.Singleton;
 
 public static class RacingAidSingleton
 {

@@ -1,10 +1,13 @@
 ﻿using System.Windows.Media.Imaging;
 using RacingAidData;
 using RacingAidWpf.Configuration;
+using RacingAidWpf.Dispatchers;
 using RacingAidWpf.Logging;
+using RacingAidWpf.Overlays;
 using RacingAidWpf.Resources;
+using RacingAidWpf.Singleton;
 
-namespace RacingAidWpf.ViewModel;
+namespace RacingAidWpf.Telemetry;
 
 public class TelemetryOverlayViewModel : OverlayViewModel
 {

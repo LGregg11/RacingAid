@@ -1,8 +1,9 @@
 ﻿using Moq;
+using RacingAidWpf.AppEntry;
 using RacingAidWpf.FileHandlers;
 using RacingAidWpf.Overlays;
+using RacingAidWpf.Telemetry;
 using RacingAidWpf.View;
-using RacingAidWpf.ViewModel;
 
 namespace RacingAidWpfTests.ViewModel
 {

@@ -51,6 +51,10 @@ public class OverlayController(IHandleData<OverlayPositions> overlayDataHandler,
         logger?.LogDebug("Showing all overlays");
         foreach (var overlay in overlays)
             overlay.Show();
+        
+        // But hide any overlays that are disabled
+        foreach (var overlay in overlays.Where(o => !o.IsOverlayEnabled))
+            overlay.Hide();
     }
 
     public void HideAll()

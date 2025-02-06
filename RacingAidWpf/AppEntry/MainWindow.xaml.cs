@@ -1,7 +1,6 @@
 ﻿using System.Windows;
-using RacingAidWpf.ViewModel;
 
-namespace RacingAidWpf.View;
+namespace RacingAidWpf.AppEntry;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml

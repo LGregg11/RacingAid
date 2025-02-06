@@ -1,6 +1,4 @@
-﻿using RacingAidWpf.ViewModel;
-
-namespace RacingAidWpf.View;
+﻿namespace RacingAidWpf.Tracks;
 
 public partial class TrackMapOverlay
 {

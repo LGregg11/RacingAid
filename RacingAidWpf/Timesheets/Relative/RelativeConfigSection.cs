@@ -1,4 +1,6 @@
-﻿namespace RacingAidWpf.Configuration;
+﻿using RacingAidWpf.Configuration;
+
+namespace RacingAidWpf.Timesheets.Relative;
 
 public class RelativeConfigSection(IConfig config) : ConfigSection(config, "Relative")
 {
