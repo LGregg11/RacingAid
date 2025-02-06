@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using RacingAidWpf.Resources;
+using RacingAidWpf.Telemetry;
 using RacingAidWpf.Timesheets.Leaderboard;
 using RacingAidWpf.Timesheets.Relative;
 using RacingAidWpf.Tracks;

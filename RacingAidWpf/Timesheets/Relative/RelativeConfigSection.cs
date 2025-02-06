@@ -1,8 +1,9 @@
 ﻿using RacingAidWpf.Configuration;
+using RacingAidWpf.Overlays;
 
 namespace RacingAidWpf.Timesheets.Relative;
 
-public class RelativeConfigSection(IConfig config) : ConfigSection(config, "Relative")
+public class RelativeConfigSection(IConfig config) : OverlayConfigSection(config, "Relative")
 {
     public int MaxPositionsAheadOrBehind
     {

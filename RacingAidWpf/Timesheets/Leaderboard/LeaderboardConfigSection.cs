@@ -1,8 +1,9 @@
 ﻿using RacingAidWpf.Configuration;
+using RacingAidWpf.Overlays;
 
 namespace RacingAidWpf.Timesheets.Leaderboard;
 
-public class LeaderboardConfigSection(IConfig config) : ConfigSection(config, "Leaderboard")
+public class LeaderboardConfigSection(IConfig config) : OverlayConfigSection(config, "Leaderboard")
 {
     public int MaxPositions
     {
