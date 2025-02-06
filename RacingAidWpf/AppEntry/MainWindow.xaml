@@ -71,59 +71,82 @@
             </StackPanel>
         </GroupBox>
         
-        <GroupBox Grid.Row="1" Grid.Column="1" Header="Timesheet" MinHeight="100" MinWidth="165">
+        <GroupBox Grid.Row="1" Grid.Column="1" Header="Leaderboard" MinHeight="100" MinWidth="165">
             <StackPanel Orientation="Vertical">
+                <CheckBox Content="Enable leaderboard" IsChecked="{Binding IsLeaderboardOverlayEnabled}"/>
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock VerticalAlignment="Center" Margin="2,0"
-                                   Text="Show positions:"/>
-                        <TextBox VerticalAlignment="Center" VerticalContentAlignment="Center" Height="20" Width="40" Margin="2,0"
-                                 Text="{Binding TimesheetPositions}"/> 
+                        <TextBlock VerticalAlignment="Center" Margin="2"
+                                   Text="Show positions:"
+                                   IsEnabled="{Binding IsLeaderboardOverlayEnabled}"/>
+                        <TextBox VerticalAlignment="Center" VerticalContentAlignment="Center" Height="20" Width="40" Margin="2"
+                                 Text="{Binding LeaderboardPositions}"
+                                 IsEnabled="{Binding IsLeaderboardOverlayEnabled}"/> 
                     </StackPanel>
                 </StackPanel>
-                <CheckBox Content="Display Car Number" IsChecked="{Binding DisplayCarNumber}"/>
-                <CheckBox Content="Display Safety Rating" IsChecked="{Binding DisplaySafetyRating}"/>
-                <CheckBox Content="Display Skill Rating" IsChecked="{Binding DisplaySkillRating}"/>
-                <CheckBox Content="Display Fastest Lap" IsChecked="{Binding DisplayFastestLap}"/>
-                <CheckBox Content="Display Last Lap" IsChecked="{Binding DisplayLastLap}"/>
-                <CheckBox Content="Display Gap To Leader" IsChecked="{Binding DisplayGapToLeader}"/>
+                <CheckBox Content="Display Car Number" IsChecked="{Binding DisplayCarNumber}"
+                          IsEnabled="{Binding IsLeaderboardOverlayEnabled}"/>
+                <CheckBox Content="Display Safety Rating" IsChecked="{Binding DisplaySafetyRating}"
+                          IsEnabled="{Binding IsLeaderboardOverlayEnabled}"/>
+                <CheckBox Content="Display Skill Rating" IsChecked="{Binding DisplaySkillRating}"
+                          IsEnabled="{Binding IsLeaderboardOverlayEnabled}"/>
+                <CheckBox Content="Display Fastest Lap" IsChecked="{Binding DisplayFastestLap}"
+                          IsEnabled="{Binding IsLeaderboardOverlayEnabled}"/>
+                <CheckBox Content="Display Last Lap" IsChecked="{Binding DisplayLastLap}"
+                          IsEnabled="{Binding IsLeaderboardOverlayEnabled}"/>
+                <CheckBox Content="Display Gap To Leader" IsChecked="{Binding DisplayGapToLeader}"
+                          IsEnabled="{Binding IsLeaderboardOverlayEnabled}"/>
             </StackPanel>
         </GroupBox>
         
         <GroupBox Grid.Row="1" Grid.Column="2" Header="Relative" MinHeight="100" MinWidth="165">
             <StackPanel Orientation="Vertical">
+                <CheckBox Content="Enable Relative" IsChecked="{Binding IsRelativeOverlayEnabled}"/>
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock VerticalAlignment="Center" Margin="2,0"
-                                   Text="Show positions:"/>
-                        <TextBox VerticalAlignment="Center" VerticalContentAlignment="Center" Height="20" Width="40" Margin="2,0"
-                                 Text="{Binding RelativePositions}"/> 
+                        <TextBlock VerticalAlignment="Center" Margin="2"
+                                   Text="Show positions:"
+                                   IsEnabled="{Binding IsRelativeOverlayEnabled}"/>
+                        <TextBox VerticalAlignment="Center" VerticalContentAlignment="Center" Height="20" Width="40" Margin="2"
+                                 Text="{Binding RelativePositions}"
+                                 IsEnabled="{Binding IsRelativeOverlayEnabled}"/> 
                     </StackPanel>
                 </StackPanel>
-                <CheckBox Content="Display Car Number" IsChecked="{Binding DisplayRelativeCarNumber}"/>
-                <CheckBox Content="Display Safety Rating" IsChecked="{Binding DisplayRelativeSafetyRating}"/>
-                <CheckBox Content="Display Skill Rating" IsChecked="{Binding DisplayRelativeSkillRating}"/>
-                <CheckBox Content="Display Fastest Lap" IsChecked="{Binding DisplayRelativeFastestLap}"/>
-                <CheckBox Content="Display Last Lap" IsChecked="{Binding DisplayRelativeLastLap}"/>
-                <CheckBox Content="Display Delta" IsChecked="{Binding DisplayRelativeDelta}"/>
+                <CheckBox Content="Display Car Number" IsChecked="{Binding DisplayRelativeCarNumber}"
+                          IsEnabled="{Binding IsRelativeOverlayEnabled}"/>
+                <CheckBox Content="Display Safety Rating" IsChecked="{Binding DisplayRelativeSafetyRating}"
+                          IsEnabled="{Binding IsRelativeOverlayEnabled}"/>
+                <CheckBox Content="Display Skill Rating" IsChecked="{Binding DisplayRelativeSkillRating}"
+                          IsEnabled="{Binding IsRelativeOverlayEnabled}"/>
+                <CheckBox Content="Display Fastest Lap" IsChecked="{Binding DisplayRelativeFastestLap}"
+                          IsEnabled="{Binding IsRelativeOverlayEnabled}"/>
+                <CheckBox Content="Display Last Lap" IsChecked="{Binding DisplayRelativeLastLap}"
+                          IsEnabled="{Binding IsRelativeOverlayEnabled}"/>
+                <CheckBox Content="Display Delta" IsChecked="{Binding DisplayRelativeDelta}"
+                          IsEnabled="{Binding IsRelativeOverlayEnabled}"/>
             </StackPanel>
         </GroupBox>
         
         <GroupBox Grid.Row="1" Grid.Column="3" Header="Telemetry" MinHeight="100" MinWidth="165">
             <StackPanel Orientation="Vertical" MinHeight="100">
-                <CheckBox Content="Use Metric Units" IsChecked="{Binding UseMetricUnits}"/>
+                <CheckBox Content="Enable Telemetry" IsChecked="{Binding IsTelemetryOverlayEnabled}"/>
+                <CheckBox Content="Use Metric Units" IsChecked="{Binding UseMetricUnits}"
+                          IsEnabled="{Binding IsTelemetryOverlayEnabled}"/>
             </StackPanel>
         </GroupBox>
         
         <GroupBox Grid.Row="1" Grid.Column="4" Header="Track Map" MinHeight="100" MinWidth="165">
             <StackPanel Orientation="Vertical" MinHeight="100">
+                <CheckBox Content="Enable Track Map" IsChecked="{Binding IsTrackMapOverlayEnabled}"/>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Margin="2,0"
-                               Text="Display Number"/>
+                               Text="Display Number"
+                               IsEnabled="{Binding IsTrackMapOverlayEnabled}"/>
                     <ComboBox Height="25" Width="150" Margin="2,0"
                               ItemsSource="{Binding DriverNumberEntries}"
                               SelectedValue="{Binding SelectedDriverNumberEntry}"
-                              DisplayMemberPath="Name"/>
+                              DisplayMemberPath="Name"
+                              IsEnabled="{Binding IsTrackMapOverlayEnabled}"/>
                 </StackPanel>
             </StackPanel>
         </GroupBox>

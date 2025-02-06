@@ -99,9 +99,22 @@ public sealed class MainWindowViewModel : ViewModel
 
     #endregion
 
-    #region Timesheet
+    #region Leaderboard
+
+    public bool IsLeaderboardOverlayEnabled
+    {
+        get => leaderboardConfigSection.IsEnabled;
+        set
+        {
+            if (leaderboardConfigSection.IsEnabled == value)
+                return;
+
+            leaderboardConfigSection.IsEnabled = value;
+            OnPropertyChanged();
+        }
+    }
     
-    public int TimesheetPositions
+    public int LeaderboardPositions
     {
         get => leaderboardConfigSection.MaxPositions;
         set
@@ -195,6 +208,19 @@ public sealed class MainWindowViewModel : ViewModel
     #endregion
 
     #region Relative
+
+    public bool IsRelativeOverlayEnabled
+    {
+        get => relativeConfigSection.IsEnabled;
+        set
+        {
+            if (relativeConfigSection.IsEnabled == value)
+                return;
+
+            relativeConfigSection.IsEnabled = value;
+            OnPropertyChanged();
+        }
+    }
     
     public int RelativePositions
     {
@@ -291,6 +317,19 @@ public sealed class MainWindowViewModel : ViewModel
 
     #region Telemetry
 
+    public bool IsTelemetryOverlayEnabled
+    {
+        get => telemetryConfigSection.IsEnabled;
+        set
+        {
+            if (telemetryConfigSection.IsEnabled == value)
+                return;
+
+            telemetryConfigSection.IsEnabled = value;
+            OnPropertyChanged();
+        }
+    }
+
     public bool UseMetricUnits
     {
         get => telemetryConfigSection.UseMetricUnits;
@@ -307,6 +346,19 @@ public sealed class MainWindowViewModel : ViewModel
     #endregion
 
     #region Track Map
+
+    public bool IsTrackMapOverlayEnabled
+    {
+        get => trackMapConfigSection.IsEnabled;
+        set
+        {
+            if (trackMapConfigSection.IsEnabled == value)
+                return;
+
+            trackMapConfigSection.IsEnabled = value;
+            OnPropertyChanged();
+        }
+    }
     
     public ObservableCollection<EnumEntryModel<DriverNumberType>> DriverNumberEntries { get; }
 

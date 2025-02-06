@@ -51,8 +51,6 @@
 
     <ItemGroup>
         <Folder Include="Resources\Images\" />
-        <Folder Include="ViewModels\" />
-        <Folder Include="View\" />
     </ItemGroup>
 
     <ItemGroup>
