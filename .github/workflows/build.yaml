@@ -28,7 +28,7 @@ jobs:
       run: dotnet publish ./RacingAidWpf/RacingAidWpf.csproj -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o out
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: RacingAid-Exe
         path: out/ # The path where the .exe is located
