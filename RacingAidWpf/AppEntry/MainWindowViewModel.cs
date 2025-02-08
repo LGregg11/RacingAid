@@ -29,6 +29,22 @@ public sealed class MainWindowViewModel : ViewModel
     public ICommand StartCommand { get; }
     public ICommand StopCommand { get; }
 
+    private bool inSession;
+    public bool InSession
+    {
+        get => inSession;
+        private set
+        {
+            if (inSession == value)
+                return;
+            
+            inSession = value;
+            OnPropertyChanged();
+            
+            OnStartedOrSessionUpdate();
+        }
+    }
+
     private bool isStarted;
     public bool IsStarted
     {
@@ -47,22 +63,6 @@ public sealed class MainWindowViewModel : ViewModel
     }
 
     public bool IsStopped => !IsStarted;
-
-    private bool inSession;
-    public bool InSession
-    {
-        get => inSession;
-        private set
-        {
-            if (inSession == value)
-                return;
-            
-            inSession = value;
-            OnPropertyChanged();
-            
-            OnStartedOrSessionUpdate();
-        }
-    }
 
     public ObservableCollection<EnumEntryModel<Simulator>> SimulatorEntries { get; }
 
@@ -111,6 +111,14 @@ public sealed class MainWindowViewModel : ViewModel
 
             leaderboardConfigSection.IsEnabled = value;
             OnPropertyChanged();
+
+            if (!overlayController.Exists<LeaderboardOverlay>())
+                return;
+            
+            if (leaderboardConfigSection.IsEnabled)
+                overlayController.EnableOverlayOfType<LeaderboardOverlay>();
+            else
+                overlayController.DisableOverlayOfType<LeaderboardOverlay>();
         }
     }
     
@@ -219,6 +227,14 @@ public sealed class MainWindowViewModel : ViewModel
 
             relativeConfigSection.IsEnabled = value;
             OnPropertyChanged();
+
+            if (!overlayController.Exists<RelativeOverlay>())
+                return;
+            
+            if (relativeConfigSection.IsEnabled)
+                overlayController.EnableOverlayOfType<RelativeOverlay>();
+            else
+                overlayController.DisableOverlayOfType<RelativeOverlay>();
         }
     }
     
@@ -327,6 +343,14 @@ public sealed class MainWindowViewModel : ViewModel
 
             telemetryConfigSection.IsEnabled = value;
             OnPropertyChanged();
+
+            if (!overlayController.Exists<TelemetryOverlay>())
+                return;
+            
+            if (telemetryConfigSection.IsEnabled)
+                overlayController.EnableOverlayOfType<TelemetryOverlay>();
+            else
+                overlayController.DisableOverlayOfType<TelemetryOverlay>();
         }
     }
 
@@ -357,6 +381,14 @@ public sealed class MainWindowViewModel : ViewModel
 
             trackMapConfigSection.IsEnabled = value;
             OnPropertyChanged();
+
+            if (!overlayController.Exists<TrackMapOverlay>())
+                return;
+            
+            if (trackMapConfigSection.IsEnabled)
+                overlayController.EnableOverlayOfType<TrackMapOverlay>();
+            else
+                overlayController.DisableOverlayOfType<TrackMapOverlay>();
         }
     }
     
@@ -496,9 +528,9 @@ public sealed class MainWindowViewModel : ViewModel
 
     private void StartAndDisplayOverlays()
     {
-        Logger?.LogDebug("Enabling updates and displaying overlays");
+        Logger?.LogDebug("Enabling updates and displaying enabled overlays");
         RacingAidUpdateDispatch.Start();
-        overlayController.ShowAll();
+        overlayController.AreOverlaysActive = true;
     }
 
     private void HideAndResetOverlays()
@@ -508,7 +540,7 @@ public sealed class MainWindowViewModel : ViewModel
         IsRepositionEnabled = false;
         
         Logger?.LogDebug("Hiding and Resetting updates");
-        overlayController.HideAll();
+        overlayController.AreOverlaysActive = false;
         overlayController.ResetAll();
     }
 
