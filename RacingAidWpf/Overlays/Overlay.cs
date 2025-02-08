@@ -9,7 +9,23 @@ public class Overlay : Window
     
     public string OverlayName => Title;
 
-    public bool IsOverlayEnabled { get; set; } = true;
+    public event Action<Overlay, bool> IsOverlayEnabledToggled;
+
+
+    private bool isOverlayEnabled = true;
+
+    public bool IsOverlayEnabled
+    {
+        get => isOverlayEnabled;
+        set
+        {
+            if (isOverlayEnabled == value)
+                return;
+            
+            isOverlayEnabled = value;
+            IsOverlayEnabledToggled?.Invoke(this, isOverlayEnabled);
+        }
+    }
     
     public bool IsRepositionEnabled { get; set; }
 
