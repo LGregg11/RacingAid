@@ -169,6 +169,8 @@ public class OverlayController(IHandleData<OverlayPositions> overlayDataHandler,
         if (!AreOverlaysActive)
             return;
         
+        logger?.LogDebug($"{nameof(overlay)} enabled status updated to {isEnabled}");
+        
         if (isEnabled)
             overlay.Show();
         else
