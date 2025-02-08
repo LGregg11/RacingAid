@@ -398,10 +398,10 @@ public sealed class MainWindowViewModel : ViewModel
 
     #endregion
 
-    public MainWindowViewModel(OverlayController injectedOverlayController = null, List<Overlay> overlays = null, ILogger logger = null)
+    public MainWindowViewModel(OverlayController overlayController = null, List<Overlay> overlays = null, ILogger logger = null)
     {
         Logger = logger ?? LoggerFactory.GetLogger<MainWindowViewModel>();
-        overlayController = injectedOverlayController ?? new OverlayController(new JsonHandler<OverlayPositions>());
+        this.overlayController = overlayController ?? new OverlayController(new JsonHandler<OverlayPositions>());
         overlays ??=
         [
             new TelemetryOverlay(),
@@ -412,7 +412,7 @@ public sealed class MainWindowViewModel : ViewModel
 
         Logger?.LogDebug("Creating overlays");
         foreach (var overlay in overlays)
-            overlayController.AddOverlay(overlay);
+            this.overlayController.AddOverlay(overlay);
 
         Logger?.LogDebug("Creating simulator entries");
         SimulatorEntries = CreateObservableEnumCollection<Simulator>();
