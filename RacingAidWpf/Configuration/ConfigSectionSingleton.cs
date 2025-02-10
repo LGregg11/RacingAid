@@ -1,5 +1,9 @@
 ﻿using System.IO;
 using RacingAidWpf.Resources;
+using RacingAidWpf.Telemetry;
+using RacingAidWpf.Timesheets.Leaderboard;
+using RacingAidWpf.Timesheets.Relative;
+using RacingAidWpf.Tracks;
 
 namespace RacingAidWpf.Configuration;
 
@@ -14,9 +18,9 @@ public static class ConfigSectionSingleton
     public static GeneralConfigSection GeneralSection =>
         generalSection ??= new GeneralConfigSection(Config);
 
-    private static TimesheetConfigSection timesheetSection;
-    public static TimesheetConfigSection TimesheetSection =>
-        timesheetSection ??= new TimesheetConfigSection(Config);
+    private static LeaderboardConfigSection leaderboardSection;
+    public static LeaderboardConfigSection LeaderboardSection =>
+        leaderboardSection ??= new LeaderboardConfigSection(Config);
 
     private static RelativeConfigSection relativeSection;
     public static RelativeConfigSection RelativeSection =>

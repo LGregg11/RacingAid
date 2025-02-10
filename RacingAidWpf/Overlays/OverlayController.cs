@@ -9,10 +9,28 @@ public class OverlayController(IHandleData<OverlayPositions> overlayDataHandler,
 {
     private static readonly string OverlayPositionsJsonFullPath =
         Path.Combine(Resource.DataDirectory, "OverlayPositions.json");
-
+    
     private readonly ILogger logger = logger ?? LoggerFactory.GetLogger<OverlayController>();
     private readonly List<Overlay> overlays = [];
     private bool isRepositionEnabled;
+
+    private bool areOverlaysActive;
+
+    public bool AreOverlaysActive
+    {
+        get => areOverlaysActive;
+        set
+        {
+            if (areOverlaysActive == value)
+                return;
+            
+            areOverlaysActive = value;
+            if (areOverlaysActive)
+                ActivateAllEnabled();
+            else
+                DeactivateAll();
+        }
+    }
 
     public virtual bool IsRepositioningEnabled
     {
@@ -34,26 +52,52 @@ public class OverlayController(IHandleData<OverlayPositions> overlayDataHandler,
     public virtual void AddOverlay(Overlay overlay)
     {
         logger?.LogDebug($"Added '{overlay.OverlayName}' overlay");
+        overlay.IsOverlayEnabledToggled += OnIsOverlayEnabledToggled;
         overlays.Add(overlay);
     }
 
     public void RemoveOverlay(Overlay overlay)
     {
         logger?.LogDebug($"Closing and removing '{overlay.OverlayName}' overlay");
+        overlay.IsOverlayEnabledToggled -= OnIsOverlayEnabledToggled;
         overlay.Close();
         overlays.Remove(overlay);
     }
 
-    public void ShowAll()
+    public bool Exists<T>() where T : Overlay => overlays.OfType<T>().Any();
+
+    public void EnableOverlayOfType<T>() where T : Overlay
+    {
+        if (overlays.OfType<T>().FirstOrDefault() is not { } overlay)
+        {
+            logger?.LogWarning($"Failed to find overlay of type {nameof(T)}");
+            return;
+        }
+        
+        overlay.IsOverlayEnabled = true;
+    }
+
+    public void DisableOverlayOfType<T>() where T : Overlay
+    {
+        if (overlays.OfType<T>().FirstOrDefault() is not { } overlay)
+        {
+            logger?.LogWarning($"Failed to find overlay of type {nameof(T)}");
+            return;
+        }
+        
+        overlay.IsOverlayEnabled = false;
+    }
+
+    private void ActivateAllEnabled()
     {
         LoadOverlayPositions();
         
-        logger?.LogDebug("Showing all overlays");
-        foreach (var overlay in overlays)
+        logger?.LogDebug("Showing all enabled overlays");
+        foreach (var overlay in overlays.Where(o => o.IsOverlayEnabled))
             overlay.Show();
     }
 
-    public void HideAll()
+    private void DeactivateAll()
     {
         logger?.LogDebug("Hiding all overlays & disabling repositioning");
         IsRepositioningEnabled = false;
@@ -119,5 +163,17 @@ public class OverlayController(IHandleData<OverlayPositions> overlayDataHandler,
 
         return new OverlayPositions(overlayPositionList);
     }
+
+    private void OnIsOverlayEnabledToggled(Overlay overlay, bool isEnabled)
+    {
+        if (!AreOverlaysActive)
+            return;
         
+        logger?.LogDebug($"{nameof(overlay)} enabled status updated to {isEnabled}");
+        
+        if (isEnabled)
+            overlay.Show();
+        else
+            overlay.Hide();
+    }
 }

@@ -4,19 +4,23 @@ using System.Windows.Input;
 using RacingAidData.Simulators;
 using RacingAidWpf.Commands;
 using RacingAidWpf.Configuration;
+using RacingAidWpf.Dispatchers;
 using RacingAidWpf.FileHandlers;
 using RacingAidWpf.Logging;
 using RacingAidWpf.Model;
 using RacingAidWpf.Overlays;
+using RacingAidWpf.Singleton;
+using RacingAidWpf.Telemetry;
+using RacingAidWpf.Timesheets.Leaderboard;
+using RacingAidWpf.Timesheets.Relative;
 using RacingAidWpf.Tracks;
-using RacingAidWpf.View;
 
-namespace RacingAidWpf.ViewModel;
+namespace RacingAidWpf.AppEntry;
 
 public sealed class MainWindowViewModel : ViewModel
 {
     private readonly GeneralConfigSection generalConfigSection = ConfigSectionSingleton.GeneralSection;
-    private readonly TimesheetConfigSection timesheetConfigSection = ConfigSectionSingleton.TimesheetSection;
+    private readonly LeaderboardConfigSection leaderboardConfigSection = ConfigSectionSingleton.LeaderboardSection;
     private readonly RelativeConfigSection relativeConfigSection = ConfigSectionSingleton.RelativeSection;
     private readonly TelemetryConfigSection telemetryConfigSection = ConfigSectionSingleton.TelemetrySection;
     private readonly TrackMapConfigSection trackMapConfigSection = ConfigSectionSingleton.TrackMapSection;
@@ -24,6 +28,22 @@ public sealed class MainWindowViewModel : ViewModel
 
     public ICommand StartCommand { get; }
     public ICommand StopCommand { get; }
+
+    private bool inSession;
+    public bool InSession
+    {
+        get => inSession;
+        private set
+        {
+            if (inSession == value)
+                return;
+            
+            inSession = value;
+            OnPropertyChanged();
+            
+            OnStartedOrSessionUpdate();
+        }
+    }
 
     private bool isStarted;
     public bool IsStarted
@@ -43,22 +63,6 @@ public sealed class MainWindowViewModel : ViewModel
     }
 
     public bool IsStopped => !IsStarted;
-
-    private bool inSession;
-    public bool InSession
-    {
-        get => inSession;
-        private set
-        {
-            if (inSession == value)
-                return;
-            
-            inSession = value;
-            OnPropertyChanged();
-            
-            OnStartedOrSessionUpdate();
-        }
-    }
 
     public ObservableCollection<EnumEntryModel<Simulator>> SimulatorEntries { get; }
 
@@ -95,95 +99,116 @@ public sealed class MainWindowViewModel : ViewModel
 
     #endregion
 
-    #region Timesheet
-    
-    public int TimesheetPositions
+    #region Leaderboard
+
+    public bool IsLeaderboardOverlayEnabled
     {
-        get => timesheetConfigSection.MaxPositions;
+        get => leaderboardConfigSection.IsEnabled;
         set
         {
-            if (timesheetConfigSection.MaxPositions == value)
+            if (leaderboardConfigSection.IsEnabled == value)
+                return;
+
+            leaderboardConfigSection.IsEnabled = value;
+            OnPropertyChanged();
+
+            if (!overlayController.Exists<LeaderboardOverlay>())
                 return;
             
-            timesheetConfigSection.MaxPositions = value;
+            if (leaderboardConfigSection.IsEnabled)
+                overlayController.EnableOverlayOfType<LeaderboardOverlay>();
+            else
+                overlayController.DisableOverlayOfType<LeaderboardOverlay>();
+        }
+    }
+    
+    public int LeaderboardPositions
+    {
+        get => leaderboardConfigSection.MaxPositions;
+        set
+        {
+            if (leaderboardConfigSection.MaxPositions == value)
+                return;
+            
+            leaderboardConfigSection.MaxPositions = value;
             OnPropertyChanged();
         }
     }
     
     public bool DisplayCarNumber
     {
-        get => timesheetConfigSection.DisplayCarNumber;
+        get => leaderboardConfigSection.DisplayCarNumber;
         set
         {
-            if (timesheetConfigSection.DisplayCarNumber == value)
+            if (leaderboardConfigSection.DisplayCarNumber == value)
                 return;
 
-            timesheetConfigSection.DisplayCarNumber = value;
+            leaderboardConfigSection.DisplayCarNumber = value;
             OnPropertyChanged();
         }
     }
 
     public bool DisplaySafetyRating
     {
-        get => timesheetConfigSection.DisplaySafetyRating;
+        get => leaderboardConfigSection.DisplaySafetyRating;
         set
         {
-            if (timesheetConfigSection.DisplaySafetyRating == value)
+            if (leaderboardConfigSection.DisplaySafetyRating == value)
                 return;
 
-            timesheetConfigSection.DisplaySafetyRating = value;
+            leaderboardConfigSection.DisplaySafetyRating = value;
             OnPropertyChanged();
         }
     }
 
     public bool DisplaySkillRating
     {
-        get => timesheetConfigSection.DisplaySkillRating;
+        get => leaderboardConfigSection.DisplaySkillRating;
         set
         {
-            if (timesheetConfigSection.DisplaySkillRating == value)
+            if (leaderboardConfigSection.DisplaySkillRating == value)
                 return;
 
-            timesheetConfigSection.DisplaySkillRating = value;
+            leaderboardConfigSection.DisplaySkillRating = value;
             OnPropertyChanged();
         }
     }
 
     public bool DisplayLastLap
     {
-        get => timesheetConfigSection.DisplayLastLap;
+        get => leaderboardConfigSection.DisplayLastLap;
         set
         {
-            if (timesheetConfigSection.DisplayLastLap == value)
+            if (leaderboardConfigSection.DisplayLastLap == value)
                 return;
 
-            timesheetConfigSection.DisplayLastLap = value;
+            leaderboardConfigSection.DisplayLastLap = value;
             OnPropertyChanged();
         }
     }
 
     public bool DisplayFastestLap
     {
-        get => timesheetConfigSection.DisplayFastestLap;
+        get => leaderboardConfigSection.DisplayFastestLap;
         set
         {
-            if (timesheetConfigSection.DisplayFastestLap == value)
+            if (leaderboardConfigSection.DisplayFastestLap == value)
                 return;
 
-            timesheetConfigSection.DisplayFastestLap = value;
+            leaderboardConfigSection.DisplayFastestLap = value;
             OnPropertyChanged();
         }
     }
 
     public bool DisplayGapToLeader
     {
-        get => timesheetConfigSection.DisplayGapToLeader;
+        get => leaderboardConfigSection.DisplayGapToLeader;
         set
         {
-            if (timesheetConfigSection.DisplayGapToLeader == value)
+            if (leaderboardConfigSection.DisplayGapToLeader == value)
                 return;
 
-            timesheetConfigSection.DisplayGapToLeader = value;
+            leaderboardConfigSection.DisplayGapToLeader = value;
             OnPropertyChanged();
         }
     }
@@ -191,6 +216,27 @@ public sealed class MainWindowViewModel : ViewModel
     #endregion
 
     #region Relative
+
+    public bool IsRelativeOverlayEnabled
+    {
+        get => relativeConfigSection.IsEnabled;
+        set
+        {
+            if (relativeConfigSection.IsEnabled == value)
+                return;
+
+            relativeConfigSection.IsEnabled = value;
+            OnPropertyChanged();
+
+            if (!overlayController.Exists<RelativeOverlay>())
+                return;
+            
+            if (relativeConfigSection.IsEnabled)
+                overlayController.EnableOverlayOfType<RelativeOverlay>();
+            else
+                overlayController.DisableOverlayOfType<RelativeOverlay>();
+        }
+    }
     
     public int RelativePositions
     {
@@ -287,6 +333,27 @@ public sealed class MainWindowViewModel : ViewModel
 
     #region Telemetry
 
+    public bool IsTelemetryOverlayEnabled
+    {
+        get => telemetryConfigSection.IsEnabled;
+        set
+        {
+            if (telemetryConfigSection.IsEnabled == value)
+                return;
+
+            telemetryConfigSection.IsEnabled = value;
+            OnPropertyChanged();
+
+            if (!overlayController.Exists<TelemetryOverlay>())
+                return;
+            
+            if (telemetryConfigSection.IsEnabled)
+                overlayController.EnableOverlayOfType<TelemetryOverlay>();
+            else
+                overlayController.DisableOverlayOfType<TelemetryOverlay>();
+        }
+    }
+
     public bool UseMetricUnits
     {
         get => telemetryConfigSection.UseMetricUnits;
@@ -303,6 +370,27 @@ public sealed class MainWindowViewModel : ViewModel
     #endregion
 
     #region Track Map
+
+    public bool IsTrackMapOverlayEnabled
+    {
+        get => trackMapConfigSection.IsEnabled;
+        set
+        {
+            if (trackMapConfigSection.IsEnabled == value)
+                return;
+
+            trackMapConfigSection.IsEnabled = value;
+            OnPropertyChanged();
+
+            if (!overlayController.Exists<TrackMapOverlay>())
+                return;
+            
+            if (trackMapConfigSection.IsEnabled)
+                overlayController.EnableOverlayOfType<TrackMapOverlay>();
+            else
+                overlayController.DisableOverlayOfType<TrackMapOverlay>();
+        }
+    }
     
     public ObservableCollection<EnumEntryModel<DriverNumberType>> DriverNumberEntries { get; }
 
@@ -342,21 +430,21 @@ public sealed class MainWindowViewModel : ViewModel
 
     #endregion
 
-    public MainWindowViewModel(OverlayController injectedOverlayController = null, List<Overlay> overlays = null, ILogger logger = null)
+    public MainWindowViewModel(OverlayController overlayController = null, List<Overlay> overlays = null, ILogger logger = null)
     {
         Logger = logger ?? LoggerFactory.GetLogger<MainWindowViewModel>();
-        overlayController = injectedOverlayController ?? new OverlayController(new JsonHandler<OverlayPositions>());
+        this.overlayController = overlayController ?? new OverlayController(new JsonHandler<OverlayPositions>());
         overlays ??=
         [
             new TelemetryOverlay(),
-            new TimesheetOverlay(),
+            new LeaderboardOverlay(),
             new RelativeOverlay(),
             new TrackMapOverlay()
         ];
 
         Logger?.LogDebug("Creating overlays");
         foreach (var overlay in overlays)
-            overlayController.AddOverlay(overlay);
+            this.overlayController.AddOverlay(overlay);
 
         Logger?.LogDebug("Creating simulator entries");
         SimulatorEntries = CreateObservableEnumCollection<Simulator>();
@@ -440,9 +528,9 @@ public sealed class MainWindowViewModel : ViewModel
 
     private void StartAndDisplayOverlays()
     {
-        Logger?.LogDebug("Enabling updates and displaying overlays");
+        Logger?.LogDebug("Enabling updates and displaying enabled overlays");
         RacingAidUpdateDispatch.Start();
-        overlayController.ShowAll();
+        overlayController.AreOverlaysActive = true;
     }
 
     private void HideAndResetOverlays()
@@ -452,7 +540,7 @@ public sealed class MainWindowViewModel : ViewModel
         IsRepositionEnabled = false;
         
         Logger?.LogDebug("Hiding and Resetting updates");
-        overlayController.HideAll();
+        overlayController.AreOverlaysActive = false;
         overlayController.ResetAll();
     }
 

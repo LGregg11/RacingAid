@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Threading;
 using RacingAidWpf.Logging;
 
-namespace RacingAidWpf.ViewModel;
+namespace RacingAidWpf.AppEntry;
 
 public abstract class ViewModel : INotifyPropertyChanged
 {

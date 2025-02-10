@@ -1,11 +1,14 @@
-﻿namespace RacingAidWpf.Configuration;
+﻿using RacingAidWpf.Configuration;
+using RacingAidWpf.Overlays;
 
-public class RelativeConfigSection(IConfig config) : ConfigSection(config, "Relative")
+namespace RacingAidWpf.Timesheets.Leaderboard;
+
+public class LeaderboardConfigSection(IConfig config) : OverlayConfigSection(config, "Leaderboard")
 {
-    public int MaxPositionsAheadOrBehind
+    public int MaxPositions
     {
-        get => GetInt(nameof(MaxPositionsAheadOrBehind), 3);
-        set => SetValue(nameof(MaxPositionsAheadOrBehind), value.ToString());
+        get => GetInt(nameof(MaxPositions), 10);
+        set => SetValue(nameof(MaxPositions), value.ToString());
     }
     
     public bool DisplayCarNumber
@@ -38,9 +41,9 @@ public class RelativeConfigSection(IConfig config) : ConfigSection(config, "Rela
         set => SetValue(nameof(DisplayFastestLap), value.ToString());
     }
     
-    public bool DisplayGapToLocal
+    public bool DisplayGapToLeader
     {
-        get => GetBool(nameof(DisplayGapToLocal));
-        set => SetValue(nameof(DisplayGapToLocal), value.ToString());
+        get => GetBool(nameof(DisplayGapToLeader));
+        set => SetValue(nameof(DisplayGapToLeader), value.ToString());
     }
 }

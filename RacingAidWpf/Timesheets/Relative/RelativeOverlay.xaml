@@ -1,14 +1,14 @@
-﻿<overlays:Overlay x:Class="RacingAidWpf.View.TimesheetOverlay"
+﻿<overlays:Overlay x:Class="RacingAidWpf.Timesheets.Relative.RelativeOverlay"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:viewModel="clr-namespace:RacingAidWpf.ViewModel"
         xmlns:converters="clr-namespace:RacingAidWpf.Converters"
         xmlns:overlays="clr-namespace:RacingAidWpf.Overlays"
+        xmlns:relative="clr-namespace:RacingAidWpf.Timesheets.Relative"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance viewModel:TimesheetOverlayViewModel}"
-        Title="Timesheet"
+        d:DataContext="{d:DesignInstance relative:RelativeOverlayViewModel}"
+        Title="Relative"
         MaxWidth="800"
         MaxHeight="500"
         SizeToContent="WidthAndHeight"
@@ -29,7 +29,7 @@
         <Canvas Style="{StaticResource DefaultCanvasStyle}"/>
         <FrameworkElement x:Name="DummyElement" Visibility="Collapsed"/>
         
-        <DataGrid ItemsSource="{Binding Timesheet}"
+        <DataGrid ItemsSource="{Binding Relative}"
                   Style="{StaticResource DefaultDataGridStyle}"
                   ColumnHeaderStyle="{StaticResource DefaultDataGridColumnHeaderStyle}"
                   AutoGenerateColumns="False"
@@ -43,7 +43,7 @@
                 <DataGridTextColumn Header="Skill" Binding="{Binding SkillRating}" Width="1*" Visibility="{Binding DataContext.SkillColumnVisibility, Source={x:Reference DummyElement}}"/>
                 <DataGridTextColumn Header="Last Lap" Binding="{Binding LastLapTimeMs, Converter={StaticResource LapTimeConverter}}" Width="2*" Visibility="{Binding DataContext.LastLapColumnVisibility, Source={x:Reference DummyElement}}"/>
                 <DataGridTextColumn Header="Fastest Lap" Binding="{Binding FastestLapTimeMs, Converter={StaticResource LapTimeConverter}}" Width="2*" Visibility="{Binding DataContext.FastestLapColumnVisibility, Source={x:Reference DummyElement}}"/>
-                <DataGridTextColumn Header="Leader" Binding="{Binding DeltaToLeaderMs, Converter={StaticResource GapConverter}}" Width="1*" Visibility="{Binding DataContext.GapToLeaderColumnVisibility, Source={x:Reference DummyElement}}"/>
+                <DataGridTextColumn Header="Delta" Binding="{Binding DeltaToLocalMs, Converter={StaticResource GapConverter}}" Width="1*" Visibility="{Binding DataContext.DeltaToLocalColumnVisibility, Source={x:Reference DummyElement}}"/>
             </DataGrid.Columns>
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow" BasedOn="{StaticResource DefaultDataGridRowStyle}">

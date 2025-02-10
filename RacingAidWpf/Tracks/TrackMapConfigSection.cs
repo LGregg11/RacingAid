@@ -1,8 +1,9 @@
-﻿using RacingAidWpf.Tracks;
+﻿using RacingAidWpf.Configuration;
+using RacingAidWpf.Overlays;
 
-namespace RacingAidWpf.Configuration;
+namespace RacingAidWpf.Tracks;
 
-public class TrackMapConfigSection(IConfig config) : ConfigSection(config, "TrackMap")
+public class TrackMapConfigSection(IConfig config) : OverlayConfigSection(config, "TrackMap")
 {
     public DriverNumberType DriverNumberType
     {

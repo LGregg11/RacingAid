@@ -1,6 +1,4 @@
-﻿using RacingAidWpf.ViewModel;
-
-namespace RacingAidWpf.View;
+﻿namespace RacingAidWpf.Timesheets.Relative;
 
 public partial class RelativeOverlay
 {

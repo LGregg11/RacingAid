@@ -1,15 +1,18 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
 using RacingAidWpf.Configuration;
+using RacingAidWpf.Dispatchers;
 using RacingAidWpf.Extensions;
 using RacingAidWpf.Logging;
 using RacingAidWpf.Model;
+using RacingAidWpf.Overlays;
+using RacingAidWpf.Singleton;
 
-namespace RacingAidWpf.ViewModel;
+namespace RacingAidWpf.Timesheets.Leaderboard;
 
-public class TimesheetOverlayViewModel : OverlayViewModel
+public class LeaderboardOverlayViewModel : OverlayViewModel
 {
-    private static readonly TimesheetConfigSection TimesheetConfigSection = ConfigSectionSingleton.TimesheetSection;
+    private static readonly LeaderboardConfigSection LeaderboardConfigSection = ConfigSectionSingleton.LeaderboardSection;
     
     private ObservableCollection<TimesheetGridRow> timesheet = [];
     public ObservableCollection<TimesheetGridRow> Timesheet
@@ -30,22 +33,22 @@ public class TimesheetOverlayViewModel : OverlayViewModel
     
     #region Visibility properties
 
-    public Visibility CarNumberColumnVisibility => TimesheetConfigSection.DisplayCarNumber.ToVisibility();
-    public Visibility SafetyColumnVisibility => TimesheetConfigSection.DisplaySafetyRating.ToVisibility();
-    public Visibility SkillColumnVisibility => TimesheetConfigSection.DisplaySkillRating.ToVisibility();
-    public Visibility LastLapColumnVisibility => TimesheetConfigSection.DisplayLastLap.ToVisibility();
-    public Visibility FastestLapColumnVisibility => TimesheetConfigSection.DisplayFastestLap.ToVisibility();
-    public Visibility GapToLeaderColumnVisibility => TimesheetConfigSection.DisplayGapToLeader.ToVisibility();
+    public Visibility CarNumberColumnVisibility => LeaderboardConfigSection.DisplayCarNumber.ToVisibility();
+    public Visibility SafetyColumnVisibility => LeaderboardConfigSection.DisplaySafetyRating.ToVisibility();
+    public Visibility SkillColumnVisibility => LeaderboardConfigSection.DisplaySkillRating.ToVisibility();
+    public Visibility LastLapColumnVisibility => LeaderboardConfigSection.DisplayLastLap.ToVisibility();
+    public Visibility FastestLapColumnVisibility => LeaderboardConfigSection.DisplayFastestLap.ToVisibility();
+    public Visibility GapToLeaderColumnVisibility => LeaderboardConfigSection.DisplayGapToLeader.ToVisibility();
     
     #endregion
     
-    public TimesheetOverlayViewModel(ILogger logger = null)
+    public LeaderboardOverlayViewModel(ILogger logger = null)
     {
-        Logger = logger ?? LoggerFactory.GetLogger<TimesheetOverlayViewModel>();
+        Logger = logger ?? LoggerFactory.GetLogger<LeaderboardOverlayViewModel>();
         
         RacingAidUpdateDispatch.Update += UpdateProperties;
 
-        TimesheetConfigSection.ConfigUpdated += OnConfigUpdated;
+        LeaderboardConfigSection.ConfigUpdated += OnConfigUpdated;
     }
 
     public override void Reset()
@@ -71,7 +74,7 @@ public class TimesheetOverlayViewModel : OverlayViewModel
         
         ObservableCollection<TimesheetGridRow> newTimesheet = [];
 
-        var entriesToDisplay = Math.Min(newDrivers.Count, TimesheetConfigSection.MaxPositions);
+        var entriesToDisplay = Math.Min(newDrivers.Count, LeaderboardConfigSection.MaxPositions);
         for (var i=0; i < entriesToDisplay; i++)
         {
             var driver = newDrivers[i];
