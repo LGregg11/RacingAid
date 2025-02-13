@@ -1,6 +1,6 @@
 ﻿namespace RacingAidData.Core.Models;
 
-public class RelativeEntryModel : TimingEntryModel
+public class RelativeEntryModel : TimesheetEntryModel
 {
     /// <summary>
     /// Gap to local driver (on track) in milliseconds

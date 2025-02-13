@@ -18,7 +18,7 @@ public class iRacingDataDeserializer : IDeserializeData
         // Timesheet data
         if (CreateTimesheetEntries(iRacingData) is { Count: > 0 } timesheetEntries)
         {
-            var timesheetModel = new TimesheetModel
+            var timesheetModel = new LeaderboardModel
             {
                 Entries = timesheetEntries,
                 LocalEntry = timesheetEntries.FirstOrDefault(e => e.IsLocal)
@@ -53,9 +53,9 @@ public class iRacingDataDeserializer : IDeserializeData
         return models.Count > 0;
     }
 
-    private static List<TimesheetEntryModel> CreateTimesheetEntries(IRacingSdkData iRacingData)
+    private static List<LeaderboardEntryModel> CreateTimesheetEntries(IRacingSdkData iRacingData)
     {
-        var timesheetEntries = new List<TimesheetEntryModel>();
+        var timesheetEntries = new List<LeaderboardEntryModel>();
 
         if (iRacingData.SessionInfo?.DriverInfo is not { } driverInfo ||
             iRacingData.SessionInfo.SessionInfo.Sessions.LastOrDefault() is not
@@ -89,7 +89,7 @@ public class iRacingDataDeserializer : IDeserializeData
                 ? GetGapToLeaderMs(iRacingData, driver.CarIdx) - leaderTimeMs
                 : 0;
             
-            timesheetEntries.Add(new TimesheetEntryModel
+            timesheetEntries.Add(new LeaderboardEntryModel
             {
                 FullName = driver.UserName,
                 CarModel = driver.CarScreenName,

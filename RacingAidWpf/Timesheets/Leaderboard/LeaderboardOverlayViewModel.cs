@@ -64,7 +64,7 @@ public class LeaderboardOverlayViewModel : OverlayViewModel
 
     private void UpdateDriversDataGrid()
     {
-        var newDrivers = RacingAidSingleton.Instance.Timesheet.Entries;
+        var newDrivers = RacingAidSingleton.Instance.Leaderboard.Entries;
 
         if (newDrivers.Count == 0)
         {

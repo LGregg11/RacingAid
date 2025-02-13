@@ -148,7 +148,7 @@ public class TelemetryOverlayViewModel : OverlayViewModel
         Gear = telemetry.Gear;
         SteeringAngleDegrees = telemetry.SteeringAngleDegrees;
         
-        var fullName = racingAid.Timesheet.LocalEntry?.FullName;
+        var fullName = racingAid.Leaderboard.LocalEntry?.FullName;
         if (!string.IsNullOrEmpty(fullName))
             DriverName = fullName;
     }
