@@ -15,8 +15,8 @@ public class RelativeOverlayViewModel : OverlayViewModel
 {
     private static readonly RelativeConfigSection RelativeConfigSection = ConfigSectionSingleton.RelativeSection;
     
-    private ObservableCollection<RelativeGridRow> relative = [];
-    public ObservableCollection<RelativeGridRow> Relative
+    private ObservableCollection<RelativeTimesheetInfo> relative = [];
+    public ObservableCollection<RelativeTimesheetInfo> Relative
     {
         get => relative;
         private set
@@ -85,7 +85,7 @@ public class RelativeOverlayViewModel : OverlayViewModel
 
         var relativeGridRowsToDisplay = newRelativeGridRows.GetRange(minEntryIndex, maxEntryIndex - minEntryIndex);
 
-        Relative = new ObservableCollection<RelativeGridRow>(relativeGridRowsToDisplay);
+        Relative = new ObservableCollection<RelativeTimesheetInfo>(relativeGridRowsToDisplay);
     }
 
     private void OnConfigUpdated()
@@ -98,12 +98,12 @@ public class RelativeOverlayViewModel : OverlayViewModel
         OnPropertyChanged(nameof(DeltaToLocalColumnVisibility));
     }
 
-    private static List<RelativeGridRow> CreateOrderedRelativeGridRowsByLapDistance(List<RelativeEntryModel> relativeModelEntries, RelativeEntryModel currentDriver)
+    private static List<RelativeTimesheetInfo> CreateOrderedRelativeGridRowsByLapDistance(List<RelativeEntryModel> relativeModelEntries, RelativeEntryModel currentDriver)
     {
         const float centerPercentage = 0.5f;
         var lapDistancePercentageDelta = currentDriver.LapDistancePercentage - centerPercentage;
         
-        var updatedRelativeModeEntries = new List<RelativeGridRow>();
+        var updatedRelativeModeEntries = new List<RelativeTimesheetInfo>();
         
         foreach (var relativeModelEntry in relativeModelEntries)
         {
@@ -127,9 +127,9 @@ public class RelativeOverlayViewModel : OverlayViewModel
         return updatedRelativeModeEntries.OrderByDescending(e => e.LapDistancePercentage).ToList();
     }
 
-    private static RelativeGridRow RelativeModelToGridRow(RelativeEntryModel relativeEntryModel)
+    private static RelativeTimesheetInfo RelativeModelToGridRow(RelativeEntryModel relativeEntryModel)
     {
-        return new RelativeGridRow(
+        return new RelativeTimesheetInfo(
             relativeEntryModel.OverallPosition,
             relativeEntryModel.ClassPosition,
             relativeEntryModel.FullName,

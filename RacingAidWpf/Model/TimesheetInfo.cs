@@ -1,6 +1,6 @@
 ﻿namespace RacingAidWpf.Model;
 
-public class TimesheetGridRow(
+public class TimesheetInfo(
     int position,
     int positionInClass,
     string name,
@@ -10,10 +10,10 @@ public class TimesheetGridRow(
     int carNumber,
     int lastLapTimeMs = 0,
     int fastestLapTimeMs = 0,
-    int deltaToLeaderMs = 0,
     bool isLocal = false,
-    bool inPits = false) : IEquatable<TimesheetGridRow>
+    bool inPits = false) : IEquatable<TimesheetInfo>
 {
+
     public string CarModel { get; } = carModel;
     public int CarNumber { get; } = carNumber;
     public int PositionOverall { get; set; } = position;
@@ -23,22 +23,21 @@ public class TimesheetGridRow(
     public string SafetyRating { get; set; } = safetyRating;
     public int LastLapTimeMs { get; set; } = lastLapTimeMs;
     public int FastestLapTimeMs { get; set; } = fastestLapTimeMs;
-    public int DeltaToLeaderMs { get; set; } = deltaToLeaderMs;
     public bool IsLocal { get; set; } = isLocal;
 
     public bool InPits { get; set; } = inPits;
 
-    public static bool operator ==(TimesheetGridRow left, TimesheetGridRow right)
+    public static bool operator ==(TimesheetInfo left, TimesheetInfo right)
     {
         return Equals(left, right);
     }
 
-    public static bool operator !=(TimesheetGridRow left, TimesheetGridRow right)
+    public static bool operator !=(TimesheetInfo left, TimesheetInfo right)
     {
         return !(left == right);
     }
 
-    public bool Equals(TimesheetGridRow other)
+    public bool Equals(TimesheetInfo other)
     {
         if (other is null) return false;
         if (ReferenceEquals(this, other)) return true;
@@ -50,7 +49,7 @@ public class TimesheetGridRow(
         if (obj is null) return false;
         if (ReferenceEquals(this, obj)) return true;
         if (obj.GetType() != GetType()) return false;
-        return Equals((TimesheetGridRow)obj);
+        return Equals((TimesheetInfo)obj);
     }
 
     public override int GetHashCode()

@@ -14,16 +14,16 @@ public class LeaderboardOverlayViewModel : OverlayViewModel
 {
     private static readonly LeaderboardConfigSection LeaderboardConfigSection = ConfigSectionSingleton.LeaderboardSection;
     
-    private ObservableCollection<TimesheetGridRow> timesheet = [];
-    public ObservableCollection<TimesheetGridRow> Timesheet
+    private ObservableCollection<LeaderboardTimesheetInfo> leaderboard = [];
+    public ObservableCollection<LeaderboardTimesheetInfo> Leaderboard
     {
-        get => timesheet;
+        get => leaderboard;
         private set
         {
-            if (timesheet == value)
+            if (leaderboard == value)
                 return;
             
-            timesheet = value;
+            leaderboard = value;
             InvokeOnMainThread(() =>
             {
                 OnPropertyChanged();
@@ -53,8 +53,8 @@ public class LeaderboardOverlayViewModel : OverlayViewModel
 
     public override void Reset()
     {
-        Logger?.LogDebug($"Resetting {nameof(timesheet)}");
-        timesheet = [];
+        Logger?.LogDebug($"Resetting {nameof(leaderboard)}");
+        leaderboard = [];
     }
 
     private void UpdateProperties()
@@ -68,11 +68,11 @@ public class LeaderboardOverlayViewModel : OverlayViewModel
 
         if (newDrivers.Count == 0)
         {
-            Timesheet = [];
+            Leaderboard = [];
             return;
         }
         
-        ObservableCollection<TimesheetGridRow> newTimesheet = [];
+        ObservableCollection<LeaderboardTimesheetInfo> newTimesheet = [];
 
         var entriesToDisplay = Math.Min(newDrivers.Count, LeaderboardConfigSection.MaxPositions);
         for (var i=0; i < entriesToDisplay; i++)
@@ -80,7 +80,7 @@ public class LeaderboardOverlayViewModel : OverlayViewModel
             var driver = newDrivers[i];
 
             newTimesheet.Add(
-                new TimesheetGridRow(
+                new LeaderboardTimesheetInfo(
                     i+1,
                     0,
                     driver.FullName,
@@ -94,7 +94,7 @@ public class LeaderboardOverlayViewModel : OverlayViewModel
                     driver.IsLocal));
         }
 
-        Timesheet = newTimesheet;
+        Leaderboard = newTimesheet;
     }
 
     private void OnConfigUpdated()
