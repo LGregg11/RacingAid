@@ -13,7 +13,7 @@ public class RelativeTimesheetInfo(
     int deltaToLocalMs = 0,
     float lapDistancePercentage = 0f,
     bool isLocal = false,
-    bool inPits = true) :
+    bool inPits = false) :
     TimesheetInfo(
         position,
         positionInClass,
