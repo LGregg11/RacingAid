@@ -15,10 +15,10 @@ public class iRacingDataDeserializer : IDeserializeData
         if (data is not IRacingSdkData iRacingData)
             return false;
 
-        // Timesheet data
+        // Leaderboard timesheet data
         if (CreateTimesheetEntries(iRacingData) is { Count: > 0 } timesheetEntries)
         {
-            var timesheetModel = new LeaderboardModel
+            var timesheetModel = new TimesheetModel<LeaderboardEntryModel>
             {
                 Entries = timesheetEntries,
                 LocalEntry = timesheetEntries.FirstOrDefault(e => e.IsLocal)
@@ -27,10 +27,10 @@ public class iRacingDataDeserializer : IDeserializeData
             models.Add(timesheetModel);
         }
 
-        // Relative data
+        // Relative timesheet data
         if (CreateRelativeEntries(iRacingData) is { Count: > 0 } relativeEntries)
         {
-            var relativeModel = new RelativeModel
+            var relativeModel = new TimesheetModel<RelativeEntryModel>
             {
                 Entries = relativeEntries,
                 LocalEntry = relativeEntries.FirstOrDefault(e => e.IsLocal)
