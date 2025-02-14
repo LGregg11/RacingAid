@@ -22,16 +22,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Page Update="Timesheets\Relative\RelativeOverlay.xaml">
-          <Generator>MSBuild:Compile</Generator>
-          <XamlRuntime>Wpf</XamlRuntime>
-          <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Timesheets\Leaderboard\LeaderboardOverlay.xaml">
-          <Generator>MSBuild:Compile</Generator>
-          <XamlRuntime>Wpf</XamlRuntime>
-          <SubType>Designer</SubType>
-        </Page>
         <Page Update="Tracks\TrackMapOverlay.xaml">
           <Generator>MSBuild:Compile</Generator>
           <XamlRuntime>Wpf</XamlRuntime>
@@ -47,9 +37,35 @@
           <XamlRuntime>Wpf</XamlRuntime>
           <SubType>Designer</SubType>
         </Page>
+        <Page Update="View\MainWindow.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
+        <Page Update="View\TelemetryOverlay.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
+        <Page Update="View\RelativeOverlay.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
+        <Page Update="View\LeaderboardOverlay.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
+        <Page Update="View\TrackMapOverlay.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
     </ItemGroup>
 
     <ItemGroup>
+        <Folder Include="Core\" />
         <Folder Include="Resources\Images\" />
     </ItemGroup>
 
@@ -64,7 +80,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ApplicationDefinition Include="AppEntry\App.xaml">
+      <ApplicationDefinition Include="View\App.xaml">
         <Generator>MSBuild:Compile</Generator>
         <XamlRuntime>Wpf</XamlRuntime>
         <SubType>Designer</SubType>

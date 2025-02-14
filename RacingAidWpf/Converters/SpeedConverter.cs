@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
-using RacingAidWpf.Configuration;
+using RacingAidWpf.Core.Configuration;
 
 namespace RacingAidWpf.Converters;
 
