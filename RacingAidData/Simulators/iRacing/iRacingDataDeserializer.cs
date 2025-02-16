@@ -147,7 +147,6 @@ public class iRacingDataDeserializer : IDeserializeData
                 LastLapMs = hasResult ? (int)(resultPosition.LastTime * 1000) : 0,
                 FastestLapMs = hasResult ? (int)(resultPosition.FastestTime * 1000) : 0,
                 GapToLocalMs = GetGapToLocalMs(iRacingData, localCarIdx, carIdx),
-                LapDistancePercentage = GetLapDistancePercentage(iRacingData, carIdx),
                 IsLocal = carIdx == driverInfo.DriverCarIdx
             });
         }

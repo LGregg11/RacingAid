@@ -11,7 +11,7 @@ public class RelativeTimesheetInfo(
     int lastLapTimeMs = 0,
     int fastestLapTimeMs = 0,
     int deltaToLocalMs = 0,
-    float lapDistancePercentage = 0f,
+    float lapsDriven = 0f,
     bool isLocal = false,
     bool inPits = false) :
     TimesheetInfo(
@@ -28,5 +28,6 @@ public class RelativeTimesheetInfo(
         inPits)
 {
     public int DeltaToLocalMs { get; set; } = deltaToLocalMs;
-    public float LapDistancePercentage { get; set; } = lapDistancePercentage;
+    public float LapsDriven { get; set; } = lapsDriven;
+    public float LapPercentage => LapsDriven - (int)LapsDriven;
 }

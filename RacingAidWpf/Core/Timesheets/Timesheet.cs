@@ -1,11 +1,14 @@
 ﻿using RacingAidData.Core.Models;
+using RacingAidWpf.Core.Logging;
 using RacingAidWpf.Model;
 
 namespace RacingAidWpf.Core.Timesheets;
 
-public abstract class TimesheetController<T> where T : TimesheetEntryModel
+public abstract class Timesheet<T>(ILogger logger = null) where T : TimesheetEntryModel
 {
-    public List<TimesheetInfo> Entries { get; protected set; } = [];
+    protected ILogger Logger { get; } = logger ?? LoggerFactory.GetLogger<Timesheet<T>>();
+
+    protected List<TimesheetInfo> Entries { get; private set; } = [];
 
     public void Clear()
     {
@@ -25,7 +28,7 @@ public abstract class TimesheetController<T> where T : TimesheetEntryModel
     
     protected abstract TimesheetInfo CreateTimesheetInfo(T timesheetEntryData);
 
-    private List<TimesheetInfo> CreateTimesheetEntries(TimesheetModel<T> timesheetData)
+    protected virtual List<TimesheetInfo> CreateTimesheetEntries(TimesheetModel<T> timesheetData)
     {
         List<TimesheetInfo> timesheetInfoEntries = [];
         timesheetInfoEntries.AddRange(timesheetData.Entries.Select(CreateTimesheetInfo));

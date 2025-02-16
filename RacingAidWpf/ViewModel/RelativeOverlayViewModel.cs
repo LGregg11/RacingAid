@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
-using RacingAidData.Core.Models;
 using RacingAidWpf.Core.Configuration;
 using RacingAidWpf.Core.Dispatchers;
 using RacingAidWpf.Core.Logging;
@@ -15,6 +14,7 @@ namespace RacingAidWpf.ViewModel;
 public class RelativeOverlayViewModel : OverlayViewModel
 {
     private static readonly RelativeConfigSection RelativeConfigSection = ConfigSectionSingleton.RelativeSection;
+    private readonly RelativeTimesheet relativeTimesheet;
     
     private ObservableCollection<RelativeTimesheetInfo> relative = [];
     public ObservableCollection<RelativeTimesheetInfo> Relative
@@ -41,51 +41,38 @@ public class RelativeOverlayViewModel : OverlayViewModel
     
     #endregion
     
-    public RelativeOverlayViewModel(ILogger logger = null)
+    public RelativeOverlayViewModel(RelativeTimesheet relativeTimesheet = null, ILogger logger = null)
     {
         Logger = logger ?? LoggerFactory.GetLogger<RelativeOverlayViewModel>();
+        this.relativeTimesheet = relativeTimesheet ?? new RelativeTimesheet();
         
-        RacingAidUpdateDispatch.Update += UpdateProperties;
-
+        RacingAidUpdateDispatch.Update += UpdateRelative;
         RelativeConfigSection.ConfigUpdated += OnConfigUpdated;
     }
 
     public override void Reset()
     {
-        relative = [];
+        Logger?.LogDebug($"Resetting {nameof(Relative)}");
+        relativeTimesheet.Clear();
+        Relative =
+            new ObservableCollection<RelativeTimesheetInfo>(relativeTimesheet.RelativeEntries);
     }
 
-    private void UpdateProperties()
+    private void UpdateRelative()
     {
-        UpdateDriversDataGrid();
-    }
-
-    private void UpdateDriversDataGrid()
-    {
-        // We need to order the drivers by their current lap distance and determine the delta from the current (local) driver's lap distance
-        // Because the current driver could be 0.9 (90%) of the way through the lap, or in the pits, and you'd want
-        // to see who is behind/ ahead of you.
-        // i.e. local at 0.9, other at 0.6 -> -0.3 lap distance behind, local at 0.3, other at 0.9 -> -0.4 lap distance behind
-
-        var relativeModel = RacingAidSingleton.Instance.Relative;
-        var relativeModelEntries = relativeModel.Entries;
-
-        if (relativeModelEntries.Count == 0)
-        {
-            Relative = [];
+        if (RacingAidSingleton.Instance.Relative is not { LocalEntry: {} localEntry } relativeModel)
             return;
-        }
         
-        var currentDriver = relativeModel.LocalEntry ?? relativeModelEntries.First();
-        var newRelativeGridRows = CreateOrderedRelativeGridRowsByLapDistance(relativeModelEntries, currentDriver);
-
+        relativeTimesheet.UpdateFromData(relativeModel);
+        var relativeEntries = relativeTimesheet.RelativeEntries.ToList();
+        
+        // Only display relative entries up to a maximum specified in the configs
         var entriesAheadOrBehind = RelativeConfigSection.MaxPositionsAheadOrBehind;
-        var currentDriverIndex = newRelativeGridRows.FindIndex(r => r.CarNumber == currentDriver.CarNumber);
+        var currentDriverIndex = relativeEntries.FindIndex(r => r.CarNumber == localEntry.CarNumber);
         var minEntryIndex = Math.Max(currentDriverIndex - entriesAheadOrBehind, 0);
-        var maxEntryIndex = Math.Min(currentDriverIndex + entriesAheadOrBehind + 1, newRelativeGridRows.Count - 1);
+        var maxEntryIndex = Math.Min(currentDriverIndex + entriesAheadOrBehind + 1, relativeEntries.Count - 1);
 
-        var relativeGridRowsToDisplay = newRelativeGridRows.GetRange(minEntryIndex, maxEntryIndex - minEntryIndex);
-
+        var relativeGridRowsToDisplay = relativeEntries.GetRange(minEntryIndex, maxEntryIndex - minEntryIndex);
         Relative = new ObservableCollection<RelativeTimesheetInfo>(relativeGridRowsToDisplay);
     }
 
@@ -97,52 +84,5 @@ public class RelativeOverlayViewModel : OverlayViewModel
         OnPropertyChanged(nameof(LastLapColumnVisibility));
         OnPropertyChanged(nameof(FastestLapColumnVisibility));
         OnPropertyChanged(nameof(DeltaToLocalColumnVisibility));
-    }
-
-    private static List<RelativeTimesheetInfo> CreateOrderedRelativeGridRowsByLapDistance(List<RelativeEntryModel> relativeModelEntries, RelativeEntryModel currentDriver)
-    {
-        const float centerPercentage = 0.5f;
-        var lapDistancePercentageDelta = currentDriver.LapDistancePercentage - centerPercentage;
-        
-        var updatedRelativeModeEntries = new List<RelativeTimesheetInfo>();
-        
-        foreach (var relativeModelEntry in relativeModelEntries)
-        {
-            var updatedLapDistancePercentage = relativeModelEntry.LapDistancePercentage - lapDistancePercentageDelta;
-            switch (updatedLapDistancePercentage)
-            {
-                case < 0f:
-                    updatedLapDistancePercentage += 1f;
-                    break;
-                case > 1f:
-                    updatedLapDistancePercentage -= 1f;
-                    break;
-            }
-
-            var relativeGridRow = RelativeModelToGridRow(relativeModelEntry);
-            relativeGridRow.LapDistancePercentage = updatedLapDistancePercentage;
-            
-            updatedRelativeModeEntries.Add(relativeGridRow);
-        }
-
-        return updatedRelativeModeEntries.OrderByDescending(e => e.LapDistancePercentage).ToList();
-    }
-
-    private static RelativeTimesheetInfo RelativeModelToGridRow(RelativeEntryModel relativeEntryModel)
-    {
-        return new RelativeTimesheetInfo(
-            relativeEntryModel.OverallPosition,
-            relativeEntryModel.ClassPosition,
-            relativeEntryModel.FullName,
-            relativeEntryModel.SkillRating,
-            relativeEntryModel.SafetyRating,
-            relativeEntryModel.CarModel,
-            relativeEntryModel.CarNumber,
-            relativeEntryModel.LastLapMs,
-            relativeEntryModel.FastestLapMs,
-            relativeEntryModel.GapToLocalMs,
-            relativeEntryModel.LapDistancePercentage,
-            relativeEntryModel.IsLocal,
-            false);
     }
 }

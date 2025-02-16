@@ -189,7 +189,7 @@ public class TrackMapOverlayViewModel : OverlayViewModel
         }
 
         var maxTrackLength = lastPosition.LapDistance;
-        var trackDistance = maxTrackLength * relativeEntryModel.LapDistancePercentage;
+        var trackDistance = maxTrackLength * relativeEntryModel.LapPercentage;
         if (GetPositionOnTrack(positions, trackDistance) is not { } position)
         {
             Logger?.LogError($"Failed to calculate track map position for '{CurrentTrackName}'");

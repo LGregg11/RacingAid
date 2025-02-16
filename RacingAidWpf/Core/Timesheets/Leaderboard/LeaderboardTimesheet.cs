@@ -3,8 +3,10 @@ using RacingAidWpf.Model;
 
 namespace RacingAidWpf.Core.Timesheets.Leaderboard;
 
-public class LeaderboardTimesheetController : TimesheetController<LeaderboardEntryModel>
+public class LeaderboardTimesheet : Timesheet<LeaderboardEntryModel>
 {
+    public IEnumerable<LeaderboardTimesheetInfo> LeaderboardEntries => Entries.OfType<LeaderboardTimesheetInfo>();
+    
     protected override TimesheetInfo CreateTimesheetInfo(LeaderboardEntryModel timesheetEntryData)
     {
         return new LeaderboardTimesheetInfo(

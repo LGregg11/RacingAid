@@ -54,6 +54,11 @@ public abstract class TimesheetEntryModel
     /// Laps driven
     /// </summary>
     public float LapsDriven { get; init; }
+
+    /// <summary>
+    /// Lap percentage (0->1)
+    /// </summary>
+    public float LapPercentage => LapsDriven - (int)LapsDriven;
     
     /// <summary>
     /// Whether this entry is of the local user

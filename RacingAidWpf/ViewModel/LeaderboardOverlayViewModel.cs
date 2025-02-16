@@ -14,6 +14,7 @@ namespace RacingAidWpf.ViewModel;
 public class LeaderboardOverlayViewModel : OverlayViewModel
 {
     private static readonly LeaderboardConfigSection LeaderboardConfigSection = ConfigSectionSingleton.LeaderboardSection;
+    private readonly LeaderboardTimesheet leaderboardTimesheet;
     
     private ObservableCollection<LeaderboardTimesheetInfo> leaderboard = [];
     public ObservableCollection<LeaderboardTimesheetInfo> Leaderboard
@@ -43,59 +44,32 @@ public class LeaderboardOverlayViewModel : OverlayViewModel
     
     #endregion
     
-    public LeaderboardOverlayViewModel(ILogger logger = null)
+    public LeaderboardOverlayViewModel(LeaderboardTimesheet leaderboardTimesheet = null, ILogger logger = null)
     {
         Logger = logger ?? LoggerFactory.GetLogger<LeaderboardOverlayViewModel>();
+        this.leaderboardTimesheet = leaderboardTimesheet ?? new LeaderboardTimesheet();
         
-        RacingAidUpdateDispatch.Update += UpdateProperties;
-
+        RacingAidUpdateDispatch.Update += UpdateLeaderboard;
         LeaderboardConfigSection.ConfigUpdated += OnConfigUpdated;
     }
 
     public override void Reset()
     {
-        Logger?.LogDebug($"Resetting {nameof(leaderboard)}");
-        leaderboard = [];
+        Logger?.LogDebug($"Resetting {nameof(Leaderboard)}");
+        leaderboardTimesheet.Clear();
+        Leaderboard =
+            new ObservableCollection<LeaderboardTimesheetInfo>(leaderboardTimesheet.LeaderboardEntries);
     }
 
-    private void UpdateProperties()
+    private void UpdateLeaderboard()
     {
-        UpdateDriversDataGrid();
-    }
-
-    private void UpdateDriversDataGrid()
-    {
-        var newDrivers = RacingAidSingleton.Instance.Leaderboard.Entries;
-
-        if (newDrivers.Count == 0)
-        {
-            Leaderboard = [];
-            return;
-        }
+        leaderboardTimesheet.UpdateFromData(RacingAidSingleton.Instance.Leaderboard);
+        var leaderboardEntries = leaderboardTimesheet.LeaderboardEntries.ToList();
         
-        ObservableCollection<LeaderboardTimesheetInfo> newTimesheet = [];
-
-        var entriesToDisplay = Math.Min(newDrivers.Count, LeaderboardConfigSection.MaxPositions);
-        for (var i=0; i < entriesToDisplay; i++)
-        {
-            var driver = newDrivers[i];
-
-            newTimesheet.Add(
-                new LeaderboardTimesheetInfo(
-                    i+1,
-                    0,
-                    driver.FullName,
-                    driver.SkillRating,
-                    driver.SafetyRating,
-                    driver.CarModel,
-                    driver.CarNumber,
-                    driver.LastLapMs,
-                    driver.FastestLapMs,
-                    driver.GapToLeaderMs,
-                    driver.IsLocal));
-        }
-
-        Leaderboard = newTimesheet;
+        // Only display leaderboard entries up to a maximum specified in the configs
+        var entriesToDisplay = Math.Min(leaderboardEntries.Count, LeaderboardConfigSection.MaxPositions);
+        leaderboardEntries = leaderboardEntries[..entriesToDisplay]; // new syntax for .Slice(0, n)
+        Leaderboard = new ObservableCollection<LeaderboardTimesheetInfo>(leaderboardEntries);
     }
 
     private void OnConfigUpdated()
