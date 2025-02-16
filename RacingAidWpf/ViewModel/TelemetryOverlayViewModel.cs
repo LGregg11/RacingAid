@@ -16,6 +16,7 @@ public class TelemetryOverlayViewModel : OverlayViewModel
     
     private readonly RacingAid racingAid = RacingAidSingleton.Instance;
     private readonly TelemetryConfigSection telemetryConfigSection = ConfigSectionSingleton.TelemetrySection;
+    private readonly TelemetryInfo telemetryInfo;
     
     private string driverName = "N/A";
     public string DriverName
@@ -124,9 +125,10 @@ public class TelemetryOverlayViewModel : OverlayViewModel
 
     public BitmapImage SteeringWheelImage => new(Resource.SteeringWheelUri);
 
-    public TelemetryOverlayViewModel(ILogger logger = null)
+    public TelemetryOverlayViewModel(TelemetryInfo telemetryInfo = null, ILogger logger = null)
     {
         Logger = logger ?? LoggerFactory.GetLogger<TelemetryOverlayViewModel>();
+        this.telemetryInfo = telemetryInfo ?? new TelemetryInfo();
         
         RacingAidUpdateDispatch.Update += UpdateProperties;
         
@@ -135,19 +137,20 @@ public class TelemetryOverlayViewModel : OverlayViewModel
 
     public override void Reset()
     {
-        // Do nothing
+        Logger?.LogDebug("Resetting telemetry");
+        telemetryInfo.Clear();
     }
 
     private void UpdateProperties()
     {
-        var telemetry = racingAid.Telemetry;
-        
-        ThrottlePercentage = telemetry.ThrottleInput;
-        BrakePercentage = telemetry.BrakeInput;
-        ClutchPercentage = 1f - telemetry.ClutchInput;
-        SpeedMetresPerSecond = telemetry.SpeedMs;
-        Gear = telemetry.Gear;
-        SteeringAngleDegrees = telemetry.SteeringAngleDegrees;
+        telemetryInfo.UpdateFromData(racingAid.Telemetry);
+
+        ThrottlePercentage = telemetryInfo.ThrottlePercentage;
+        BrakePercentage = telemetryInfo.BrakePercentage;
+        ClutchPercentage = telemetryInfo.ClutchPercentage;
+        SpeedMetresPerSecond = telemetryInfo.SpeedMetresPerSecond;
+        SteeringAngleDegrees = telemetryInfo.SteeringAngleDegrees;
+        Gear = telemetryInfo.Gear;
         
         var fullName = racingAid.Leaderboard.LocalEntry?.FullName;
         if (!string.IsNullOrEmpty(fullName))

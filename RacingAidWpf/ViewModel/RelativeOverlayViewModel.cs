@@ -54,8 +54,7 @@ public class RelativeOverlayViewModel : OverlayViewModel
     {
         Logger?.LogDebug($"Resetting {nameof(Relative)}");
         relativeTimesheet.Clear();
-        Relative =
-            new ObservableCollection<RelativeTimesheetInfo>(relativeTimesheet.RelativeEntries);
+        Relative = new ObservableCollection<RelativeTimesheetInfo>(relativeTimesheet.RelativeEntries);
     }
 
     private void UpdateRelative()

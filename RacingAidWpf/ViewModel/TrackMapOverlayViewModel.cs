@@ -201,7 +201,8 @@ public class TrackMapOverlayViewModel : OverlayViewModel
         var size = relativeEntryModel.IsLocal ? localSize : otherSize;
         var halfSize = size / 2d;
         
-        return new DriverTrackVisualization(position.X - halfSize,
+        return new DriverTrackVisualization(
+            position.X - halfSize,
             position.Y  - halfSize,
             size,
             number,
