@@ -69,7 +69,7 @@ public class RelativeOverlayViewModel : OverlayViewModel
         var entriesAheadOrBehind = RelativeConfigSection.MaxPositionsAheadOrBehind;
         var currentDriverIndex = relativeEntries.FindIndex(r => r.CarNumber == localEntry.CarNumber);
         var minEntryIndex = Math.Max(currentDriverIndex - entriesAheadOrBehind, 0);
-        var maxEntryIndex = Math.Min(currentDriverIndex + entriesAheadOrBehind + 1, relativeEntries.Count - 1);
+        var maxEntryIndex = Math.Min(currentDriverIndex + entriesAheadOrBehind + 1, relativeEntries.Count);
 
         var relativeGridRowsToDisplay = relativeEntries.GetRange(minEntryIndex, maxEntryIndex - minEntryIndex);
         Relative = new ObservableCollection<RelativeTimesheetInfo>(relativeGridRowsToDisplay);
