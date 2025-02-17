@@ -1,8 +1,8 @@
 ﻿namespace RacingAidData.Core.Models;
 
-public sealed class TimesheetModel : RaceDataModel
+public class TimesheetModel<T> : RaceDataModel where T : TimesheetEntryModel
 {
-    public TimesheetEntryModel? LocalEntry { get; init; }
+    public T? LocalEntry { get; init; }
 
-    public List<TimesheetEntryModel> Entries { get; init; } = [];
+    public List<T> Entries { get; init; } = [];
 }

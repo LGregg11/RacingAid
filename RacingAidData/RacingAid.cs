@@ -39,24 +39,24 @@ public class RacingAid
     
     #region Model Properties
 
-    private TimesheetModel timesheet = new();
+    private TimesheetModel<LeaderboardEntryModel> leaderboard = new();
 
-    public TimesheetModel Timesheet
+    public TimesheetModel<LeaderboardEntryModel> Leaderboard
     {
-        get => timesheet;
+        get => leaderboard;
         private set
         {
-            if (timesheet == value)
+            if (leaderboard == value)
                 return;
             
-            timesheet = value;
+            leaderboard = value;
             modelsHaveUpdated = true;
         }
     }
 
-    private RelativeModel relative = new();
+    private TimesheetModel<RelativeEntryModel> relative = new();
 
-    public RelativeModel Relative
+    public TimesheetModel<RelativeEntryModel> Relative
     {
         get => relative;
         private set
@@ -186,13 +186,13 @@ public class RacingAid
     {
         switch (model)
         {
-            case TimesheetModel driversModel:
-                Timesheet = driversModel;
+            case TimesheetModel<LeaderboardEntryModel> leaderboardModel:
+                Leaderboard = leaderboardModel;
                 break;
             case TelemetryModel telemetryModel:
                 Telemetry = telemetryModel;
                 break;
-            case RelativeModel relativeModel:
+            case TimesheetModel<RelativeEntryModel> relativeModel:
                 Relative = relativeModel;
                 break;
             case DriverDataModel driverDataModel:
