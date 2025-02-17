@@ -437,10 +437,10 @@ public sealed class MainWindowViewModel : ViewModel
         this.overlayController = overlayController ?? new OverlayController(new JsonHandler<OverlayPositions>());
         overlays ??=
         [
-            new TelemetryOverlay(),
-            new LeaderboardOverlay(),
-            new RelativeOverlay(),
-            new TrackMapOverlay()
+            new TelemetryOverlay { IsOverlayEnabled = telemetryConfigSection.IsEnabled },
+            new LeaderboardOverlay { IsOverlayEnabled = leaderboardConfigSection.IsEnabled },
+            new RelativeOverlay { IsOverlayEnabled = relativeConfigSection.IsEnabled },
+            new TrackMapOverlay { IsOverlayEnabled = trackMapConfigSection.IsEnabled }
         ];
 
         Logger?.LogDebug("Creating overlays");
@@ -526,7 +526,7 @@ public sealed class MainWindowViewModel : ViewModel
 
     private void StartAndDisplayOverlays()
     {
-        Logger?.LogDebug("Enabling updates and displaying enabled overlays");
+        Logger?.LogDebug("Activating overlays");
         RacingAidUpdateDispatch.Start();
         overlayController.AreOverlaysActive = true;
     }
@@ -537,7 +537,7 @@ public sealed class MainWindowViewModel : ViewModel
         RacingAidUpdateDispatch.Stop();
         IsRepositionEnabled = false;
         
-        Logger?.LogDebug("Hiding and Resetting updates");
+        Logger?.LogDebug("Deactivating & Resetting overlays");
         overlayController.AreOverlaysActive = false;
         overlayController.ResetAll();
     }

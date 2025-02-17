@@ -94,7 +94,7 @@ public class OverlayController(IHandleData<OverlayPositions> overlayDataHandler,
         
         logger?.LogDebug("Showing all enabled overlays");
         foreach (var overlay in overlays.Where(o => o.IsOverlayEnabled))
-            overlay.Show();
+            Activate(overlay);
     }
 
     private void DeactivateAll()
@@ -103,7 +103,7 @@ public class OverlayController(IHandleData<OverlayPositions> overlayDataHandler,
         IsRepositioningEnabled = false;
 
         foreach (var overlay in overlays)
-            overlay.Hide();
+            Deactivate(overlay);
     }
 
     public void CloseAll()
@@ -170,10 +170,20 @@ public class OverlayController(IHandleData<OverlayPositions> overlayDataHandler,
             return;
         
         logger?.LogDebug($"{nameof(overlay)} enabled status updated to {isEnabled}");
-        
+
         if (isEnabled)
-            overlay.Show();
+            Activate(overlay);
         else
-            overlay.Hide();
+            Deactivate(overlay);
+    }
+
+    private static void Activate(Overlay overlay)
+    {
+        overlay.Show();
+    }
+
+    private static void Deactivate(Overlay overlay)
+    {
+        overlay.Hide();
     }
 }
