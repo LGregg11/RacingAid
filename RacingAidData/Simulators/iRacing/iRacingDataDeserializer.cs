@@ -143,7 +143,7 @@ public class iRacingDataDeserializer : IDeserializeData
             var gapToLocalMs = GetGapToLocalMs(iRacingData, localCarIdx, carIdx);
             if (localLapPercentage >= 0.5f && lapPercentage < 0.5f)
             {
-                var localLapPercentageDelta = lapPercentage - (1f - localLapPercentage);
+                var localLapPercentageDelta = -1f * (lapPercentage + (1f - localLapPercentage));
                 gapToLocalMs = (int)(localLapTimeMs * localLapPercentageDelta / localLapPercentage);
             }
 
