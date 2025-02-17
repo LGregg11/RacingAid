@@ -61,6 +61,11 @@ public abstract class TimesheetEntryModel
     public float LapPercentage => LapsDriven - (int)LapsDriven;
     
     /// <summary>
+    /// Whether they are in the pits
+    /// </summary>
+    public bool InPits { get; init; }
+    
+    /// <summary>
     /// Whether this entry is of the local user
     /// </summary>
     public bool IsLocal { get; init; }

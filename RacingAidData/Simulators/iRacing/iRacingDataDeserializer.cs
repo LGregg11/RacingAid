@@ -102,6 +102,7 @@ public class iRacingDataDeserializer : IDeserializeData
                 LastLapMs = (int)(resultPosition.LastTime * 1000),
                 FastestLapMs = (int)(resultPosition.FastestTime * 1000),
                 GapToLeaderMs = gapToLeaderMs,
+                InPits = GetInPits(iRacingData, carIdx),
                 IsLocal = carIdx == driverInfo.DriverCarIdx
             });
         }
@@ -116,6 +117,8 @@ public class iRacingDataDeserializer : IDeserializeData
             return relativeEntries;
 
         var localCarIdx = driverInfo.DriverCarIdx;
+        var localLapPercentage = GetLapDistancePercentage(iRacingData, localCarIdx);
+        var localLapTimeMs = GetEstTimeToPositionOnTrackMs(iRacingData, localCarIdx);
         var resultsPositions = iRacingData.SessionInfo.SessionInfo.Sessions.LastOrDefault()?.ResultsPositions;
 
         // Loop through position results to ensure the position order is correct - can grab necessary driver info
@@ -134,6 +137,16 @@ public class iRacingDataDeserializer : IDeserializeData
                 resultPosition = position;
             }
 
+            var lapsDriven = GetLapsDriven(iRacingData, carIdx);
+            var lapPercentage = lapsDriven - (int)lapsDriven;
+            
+            var gapToLocalMs = GetGapToLocalMs(iRacingData, localCarIdx, carIdx);
+            if (localLapPercentage >= 0.5f && lapPercentage < 0.5f)
+            {
+                var localLapPercentageDelta = lapPercentage - (1f - localLapPercentage);
+                gapToLocalMs = (int)(localLapTimeMs * localLapPercentageDelta / localLapPercentage);
+            }
+
             relativeEntries.Add(new RelativeEntryModel
             {
                 FullName = driver.UserName,
@@ -143,10 +156,11 @@ public class iRacingDataDeserializer : IDeserializeData
                 SafetyRating = driver.LicString,
                 OverallPosition = GetOverallPosition(iRacingData, carIdx), // might not have a 'result' yet
                 ClassPosition = GetClassPosition(iRacingData, carIdx), // might not have a 'result' yet
-                LapsDriven = GetLapsDriven(iRacingData, carIdx),
+                LapsDriven = lapsDriven,
                 LastLapMs = hasResult ? (int)(resultPosition.LastTime * 1000) : 0,
                 FastestLapMs = hasResult ? (int)(resultPosition.FastestTime * 1000) : 0,
-                GapToLocalMs = GetGapToLocalMs(iRacingData, localCarIdx, carIdx),
+                GapToLocalMs = gapToLocalMs,
+                InPits = GetInPits(iRacingData, carIdx),
                 IsLocal = carIdx == driverInfo.DriverCarIdx
             });
         }
