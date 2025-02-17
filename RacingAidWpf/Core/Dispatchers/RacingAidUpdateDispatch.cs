@@ -18,7 +18,6 @@ public static class RacingAidUpdateDispatch
     private static CancellationTokenSource updateThreadCancellationTokenSource;
     private static CancellationToken updateThreadCancellationToken;
     private static Thread updateThread;
-    private static bool keepThreadAlive;
     private static bool modelsUpdated;
 
     /// <remarks>
@@ -39,8 +38,6 @@ public static class RacingAidUpdateDispatch
         RacingAid.ModelsUpdated += OnModelUpdated;
 
         GeneralConfigSection.ConfigUpdated += OnConfigUpdated;
-        
-        keepThreadAlive = true;
         updateThread.Start();
     }
 
@@ -56,8 +53,6 @@ public static class RacingAidUpdateDispatch
         
         RacingAid.ModelsUpdated -= OnModelUpdated;
         
-        keepThreadAlive = false;
-        
         InvokeUpdateAutoResetEvent.Set();
         updateThreadCancellationTokenSource.Cancel();
         
@@ -68,7 +63,7 @@ public static class RacingAidUpdateDispatch
 
     private static void UpdateLoop()
     {
-        while (keepThreadAlive)
+        while (!updateThreadCancellationToken.IsCancellationRequested)
         {
             if (updateIntervalMs > 0)
                 Thread.Sleep(updateIntervalMs);

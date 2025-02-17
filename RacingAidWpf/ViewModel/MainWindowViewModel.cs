@@ -511,10 +511,7 @@ public sealed class MainWindowViewModel : ViewModel
         Logger?.LogDebug($"Session {sessionStatus}");
         
         // Make sure this is done on the main thread
-        Application.Current.Dispatcher.Invoke(() =>
-        {
-            InSession = connected;
-        });
+        InvokeOnMainThread(() => { InSession = connected; });
     }
 
     private void OnStartedOrSessionUpdate()
