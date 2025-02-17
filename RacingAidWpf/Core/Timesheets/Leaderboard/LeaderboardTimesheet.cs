@@ -20,6 +20,7 @@ public class LeaderboardTimesheet : Timesheet<LeaderboardEntryModel>
             timesheetEntryData.LastLapMs,
             timesheetEntryData.FastestLapMs,
             timesheetEntryData.GapToLeaderMs,
-            timesheetEntryData.IsLocal);
+            timesheetEntryData.IsLocal,
+            timesheetEntryData.InPits);
     }
 }

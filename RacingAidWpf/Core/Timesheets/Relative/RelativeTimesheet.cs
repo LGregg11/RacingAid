@@ -21,34 +21,49 @@ public class RelativeTimesheet : Timesheet<RelativeEntryModel>
             relativeEntryModel.FastestLapMs,
             relativeEntryModel.GapToLocalMs,
             relativeEntryModel.LapsDriven,
-            relativeEntryModel.IsLocal);
+            relativeEntryModel.IsLocal,
+            relativeEntryModel.InPits);
     }
 
     protected override List<TimesheetInfo> CreateTimesheetEntries(TimesheetModel<RelativeEntryModel> relativeData)
     {
-        const float fullLapPercentage = 1f;
-        const float halfLapPercentage = 0.5f;
-        
         var localLapPercentage = relativeData.LocalEntry?.LapPercentage ?? 0f;
         
         List<RelativeTimesheetInfo> relativeInfoEntries = [];
         foreach (var relativeEntry in relativeData.Entries)
         {
-            if (CreateTimesheetInfo(relativeEntry) is not RelativeTimesheetInfo relativeTimesheetInfo)
+            if (CreateTimesheetInfo(relativeEntry) is not RelativeTimesheetInfo relativeTimesheetInfo || relativeTimesheetInfo.LapsDriven < 0)
                 continue;
             
-            // local driver info will be at 0. All info should be between -0.5f and +0.5f, so bring back into range
-            var currentInfoLapDelta = relativeTimesheetInfo.LapPercentage - localLapPercentage;
-            if (currentInfoLapDelta > halfLapPercentage)
-                currentInfoLapDelta -= fullLapPercentage;
-            else if (currentInfoLapDelta < halfLapPercentage)
-                currentInfoLapDelta += fullLapPercentage;
+            var currentLapPercentageDelta = CalculateBoundedLapPercentageDelta(relativeEntry.LapPercentage, localLapPercentage);
             
             // Simple sort to order info by lap distance relative to local lap position
-            var index = relativeInfoEntries.Count(e => e.LapPercentage - localLapPercentage < currentInfoLapDelta);
+            var index = relativeInfoEntries.Count(e =>
+                CalculateBoundedLapPercentageDelta(e.LapPercentage, localLapPercentage) > currentLapPercentageDelta);
             relativeInfoEntries.Insert(index, relativeTimesheetInfo);
         }
 
         return new List<TimesheetInfo>(relativeInfoEntries);
+    }
+
+    private static float CalculateBoundedLapPercentageDelta(float lapPercentage, float localLapPercentage)
+    {
+        const float fullLapPercentage = 1f;
+        const float halfLapPercentage = 0.5f;
+        const float startLapPercentage = 0f;
+        
+        // local driver info will be at 0.5. All info should be between 0 and 1, so bring back into range
+        var updatedLapPercentageDelta = lapPercentage - (localLapPercentage - halfLapPercentage);
+        switch (updatedLapPercentageDelta)
+        {
+            case > fullLapPercentage:
+                updatedLapPercentageDelta -= fullLapPercentage;
+                break;
+            case < startLapPercentage:
+                updatedLapPercentageDelta += fullLapPercentage;
+                break;
+        }
+        
+        return updatedLapPercentageDelta;
     }
 }
