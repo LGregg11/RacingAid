@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+    tags:
+      - 'v*'
+      
+env:
+  APPLICATION_NAME: RacingAid
 
 jobs:
   build:
@@ -12,6 +17,10 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      
+    - name: Modifying name for tagged Build
+      if: github.ref_type == 'tag'
+      run: echo "APPLICATION_NAME=${APPLICATION_NAME}_${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
     - name: Set up .NET
       uses: actions/setup-dotnet@v3
@@ -25,10 +34,10 @@ jobs:
       run: dotnet build -c Release
 
     - name: Publish the project
-      run: dotnet publish ./RacingAidWpf/RacingAidWpf.csproj -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o out
+      run: dotnet publish ./RacingAidWpf/RacingAidWpf.csproj -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -p:AssemblyName:${{ env.APPLICATION_NAME }} -o out
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: RacingAid-Exe
+        name: ${{ env.APPLICATION_NAME }}-Exe
         path: out/ # The path where the .exe is located
