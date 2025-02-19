@@ -28,7 +28,7 @@ From there, simply run the application executable (.exe).
 
 #### iRacing
 
-Go to the iRacing app.ini (Can be found at C:\Users\<user>\documents\iRacing\app.ini)
+Go to the iRacing app.ini (Can be found at `C:\Users\<user>\documents\iRacing\app.ini`)
 and under `[Misc]` set `irsdkEnableMem=1`. Make sure to save and restart the application.
 
 ## How to use
@@ -46,7 +46,7 @@ Press `Start`. Once you are in a lobby, the enabled overlays will appear.
 ### Configuration settings
 
 All the settings seen in the Main Window are configurable and will be saved (assuming they are
-valid) in a config file found at "%APPDATA%/RacingAid/Config/config.ini".
+valid) in a config file found at `%APPDATA%/RacingAid/Config/config.ini`.
 
 ### Reposition Overlays
 
@@ -55,7 +55,7 @@ overlays into your desired position. Once completed, press `Disabled Reposition`
 save the position of the overlays so that you do not have to reposition them when the app is
 next used.
 
-Overlay position data can be manually updated at "%APPDATA%/RacingAid/Data/OverlayPositions.json"
+Overlay position data can be manually updated at `%APPDATA%/RacingAid/Data/OverlayPositions.json`
 
 ### Track Map
 
@@ -76,7 +76,7 @@ there are a list of options to display from the TrackMap config section in the m
 
 ![TrackMap_NumberOptions.png](./Resources/TrackMap_NumberOptions.png)
 
-Track map data can be obtained at "%APPDATA%/RacingAid/Data/TrackMaps.json"
+Track map data can be obtained at `%APPDATA%/RacingAid/Data/TrackMaps.json`
 
 ## For developers
 
