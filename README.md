@@ -17,7 +17,7 @@ currently under development.*
 
 ## Setup
 
-Simply download the zip file from the [latest build](https://img.shields.io/github/v/release/LGregg11/RacingAid) or from a build in the list of existing [releases](https://github.com/LGregg11/RacingAid/releases) or [tags](https://github.com/LGregg11/RacingAid/tags).
+Simply download the zip file from a build in the list of existing [releases](https://github.com/LGregg11/RacingAid/releases) or [tags](https://github.com/LGregg11/RacingAid/tags).
 
 Once you have a build, unzip the folder and follow the prerequisites (listed below) for the
 sim you wish to use.
