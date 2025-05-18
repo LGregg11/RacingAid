@@ -15,9 +15,9 @@ public static class RacingAidUpdateDispatch
     private static readonly GeneralConfigSection GeneralConfigSection = ConfigSectionSingleton.GeneralSection;
 
     private static readonly AutoResetEvent InvokeUpdateAutoResetEvent = new(false);
-    private static CancellationTokenSource updateThreadCancellationTokenSource;
-    private static CancellationToken updateThreadCancellationToken;
-    private static Thread updateThread;
+    private static CancellationTokenSource cancellationTokenSource;
+    private static CancellationToken cancellationToken;
+    private static Thread updateLoopThread;
     private static bool modelsUpdated;
 
     /// <remarks>
@@ -29,16 +29,16 @@ public static class RacingAidUpdateDispatch
 
     public static void Start()
     {
-        if (updateThread != null || SynchronizationContext == null)
+        if (updateLoopThread != null || SynchronizationContext == null)
             return;
-
-        updateThreadCancellationTokenSource = new CancellationTokenSource();
-        updateThreadCancellationToken = updateThreadCancellationTokenSource.Token;
-        updateThread = new Thread(UpdateLoop);
+        
         RacingAid.ModelsUpdated += OnModelUpdated;
-
         GeneralConfigSection.ConfigUpdated += OnConfigUpdated;
-        updateThread.Start();
+        
+        cancellationTokenSource = new CancellationTokenSource();
+        cancellationToken = cancellationTokenSource.Token;
+        updateLoopThread = new Thread(UpdateLoop);
+        updateLoopThread.Start();
     }
 
     private static void OnConfigUpdated()
@@ -48,34 +48,36 @@ public static class RacingAidUpdateDispatch
 
     public static void Stop()
     {
-        if (updateThread == null)
+        if (updateLoopThread == null)
             return;
         
         RacingAid.ModelsUpdated -= OnModelUpdated;
         
+        cancellationTokenSource.Cancel();
+
         InvokeUpdateAutoResetEvent.Set();
-        updateThreadCancellationTokenSource.Cancel();
-        
-        updateThread?.Join();
-        
-        updateThread = null;
+
+        updateLoopThread.Join();
+        updateLoopThread = null;
     }
 
     private static void UpdateLoop()
     {
-        while (!updateThreadCancellationToken.IsCancellationRequested)
+        while (!cancellationToken.IsCancellationRequested)
         {
             if (updateIntervalMs > 0)
                 Thread.Sleep(updateIntervalMs);
 
-            if (updateThreadCancellationToken.IsCancellationRequested)
-                return;
+            if (cancellationToken.IsCancellationRequested)
+                break;
 
             var shouldInvokeUpdate = modelsUpdated;
             if (!shouldInvokeUpdate)
-                shouldInvokeUpdate = InvokeUpdateAutoResetEvent.WaitOne(
-                    -1,
-                    updateThreadCancellationToken.IsCancellationRequested);
+            {
+                // Wait for the event to be triggered - unless the cancellation token is requested
+                shouldInvokeUpdate =
+                    InvokeUpdateAutoResetEvent.WaitOne(-1) && !cancellationToken.IsCancellationRequested;
+            }
 
             if (shouldInvokeUpdate)
                 InvokeUpdate();
