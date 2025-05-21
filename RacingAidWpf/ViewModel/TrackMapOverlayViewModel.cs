@@ -160,13 +160,13 @@ public class TrackMapOverlayViewModel : OverlayViewModel
     private static TrackMap TransformTrackMap(TrackMap trackMap)
     {
         // 0.95 for padding
-        trackMap.Positions = TrackMapUtilities.UpdatePositions(
+        var transformedPositions = TrackMapUtilities.UpdatePositions(
             trackMap.Positions,
             true,
             true,
             TargetSize * 0.95f);
-
-        return trackMap;
+        
+        return new TrackMap(trackMap.Name, transformedPositions);
     }
 
     private DriverTrackVisualization CreateDriverTrackVisualization(List<TrackMapPosition> positions, RelativeEntryModel relativeEntryModel, DriverNumberType driverNumberType)

@@ -9,7 +9,8 @@ public static class TrackMapUtilities
         var updatedPositions = new List<TrackMapPosition>();
         foreach (var position in positions)
         {
-            var updatedPosition = position;
+            var updatedPosition = new TrackMapPosition(position.LapDistance, position.X, position.Y, position.Z);
+            
             if (invertY)
                 updatedPosition = InvertYPosition(updatedPosition);
             
