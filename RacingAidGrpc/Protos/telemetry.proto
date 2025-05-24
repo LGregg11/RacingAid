@@ -1,0 +1,13 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "RacingAidGrpc";
+
+import "google/protobuf/empty.proto";
+
+service Telemetry {
+  rpc SubscribeToSessionStatus (google.protobuf.Empty) returns (stream SessionStatusResponse);
+}
+
+message SessionStatusResponse {
+  bool sessionActive = 1;
+}
