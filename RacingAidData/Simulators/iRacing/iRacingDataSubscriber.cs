@@ -26,16 +26,6 @@ public class iRacingDataSubscriber : ISubscribeData
         iRacingSdk.OnDisconnected += OnDisconnected;
     }
 
-    private void OnConnected()
-    {
-        ConnectionUpdated?.Invoke(IsConnected);
-    }
-
-    private void OnDisconnected()
-    {
-        ConnectionUpdated?.Invoke(IsConnected);
-    }
-
     public void Start()
     {
         iRacingSdk.Start();
@@ -50,5 +40,15 @@ public class iRacingDataSubscriber : ISubscribeData
     {
         LatestData = iRacingSdk.Data;
         DataReceived?.Invoke();
+    }
+
+    private void OnConnected()
+    {
+        ConnectionUpdated?.Invoke(IsConnected);
+    }
+
+    private void OnDisconnected()
+    {
+        ConnectionUpdated?.Invoke(IsConnected);
     }
 }
