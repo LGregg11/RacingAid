@@ -2,6 +2,7 @@
 using RacingAidData.Core.Models;
 using RacingAidData.Core.Subscribers;
 using RacingAidData.Simulators;
+using RacingAidData.Simulators.Debug;
 using RacingAidData.Simulators.iRacing;
 
 namespace RacingAidData;
@@ -132,6 +133,10 @@ public class RacingAid
             case Simulator.iRacing:
                 DataDeserializer = new iRacingDataDeserializer();
                 DataSubscriber = new iRacingDataSubscriber();
+                break;
+            case Simulator.Debug:
+                DataDeserializer = new DebugDeserializer();
+                DataSubscriber = new DebugSubscriber();
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(simulator), simulator, null);
