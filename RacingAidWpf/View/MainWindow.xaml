@@ -43,20 +43,30 @@
               Margin="10, 0, 0, 0"
               IsChecked="{Binding IsRepositionEnabled}" 
               IsEnabled="{Binding InSession}">
-            <ToggleButton.Style>
-                <Style TargetType="ToggleButton">
-                    <Setter Property="Content" Value="Enable Reposition" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsRepositionEnabled}" Value="True">
-                            <Setter Property="Content" Value="Disable Reposition" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsRepositionEnabled}" Value="False">
-                            <Setter Property="Content" Value="Enable Reposition" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ToggleButton.Style>
-        </ToggleButton>
+                <ToggleButton.Style>
+                    <Style TargetType="ToggleButton">
+                        <Setter Property="Content" Value="Enable Reposition" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsRepositionEnabled}" Value="True">
+                                <Setter Property="Content" Value="Disable Reposition" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsRepositionEnabled}" Value="False">
+                                <Setter Property="Content" Value="Enable Reposition" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ToggleButton.Style>
+            </ToggleButton>
+            <Button x:Name="StartRecordingButton"
+                    Height="25" Width="100"
+                    Margin="10,0,0,0"
+                    Content="Start Recording"
+                    Command="{Binding StartRecordingCommand}"/>
+            <Button x:Name="StopRecordingButton"
+                    Height="25" Width="100"
+                    Margin="10,0,0,0"
+                    Content="Stop Recording"
+                    Command="{Binding StopRecordingCommand}"/>
 
         </StackPanel>
         

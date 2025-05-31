@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using RacingAidData.Core.Replay;
 using RacingAidData.Simulators;
 using RacingAidWpf.Commands;
 using RacingAidWpf.Core.Configuration;
@@ -25,9 +26,13 @@ public sealed class MainWindowViewModel : ViewModel
     private readonly TelemetryConfigSection telemetryConfigSection = ConfigSectionSingleton.TelemetrySection;
     private readonly TrackMapConfigSection trackMapConfigSection = ConfigSectionSingleton.TrackMapSection;
     private readonly OverlayController overlayController;
+    private readonly ReplayController replayController;
 
     public ICommand StartCommand { get; }
     public ICommand StopCommand { get; }
+    
+    public ICommand StartRecordingCommand { get; }
+    public ICommand StopRecordingCommand { get; }
 
     private bool inSession;
     public bool InSession
@@ -453,9 +458,18 @@ public sealed class MainWindowViewModel : ViewModel
         Logger?.LogDebug("Creating track map driver number entries");
         DriverNumberEntries = CreateObservableEnumCollection<DriverNumberType>();
         SelectedDriverNumberEntry = DriverNumberEntries.First(d => d.Value == trackMapConfigSection.DriverNumberType);
+        
+        // Setup recording
+        replayController = new ReplayController();
+        
+        var racingAid = RacingAidSingleton.Instance;
+        racingAid.SetupReplayController(replayController);
 
         StartCommand = new Command(Start);
         StopCommand = new Command(Stop);
+        
+        StartRecordingCommand = new Command(StartRecording);
+        StopRecordingCommand = new Command(StopRecording);
     }
 
     public void Close()
@@ -479,6 +493,18 @@ public sealed class MainWindowViewModel : ViewModel
         
         InSession = racingAid.InSession;
         Logger?.LogInformation("Started racing aid");
+    }
+
+    public void StartRecording()
+    {
+        var recordFile = replayController.StartRecording();
+        Logger?.LogDebug($"Starting recording: {recordFile}");
+    }
+
+    public void StopRecording()
+    {
+        replayController.StopRecording();
+        Logger?.LogDebug("Stopping recording");
     }
 
     public void Stop()
