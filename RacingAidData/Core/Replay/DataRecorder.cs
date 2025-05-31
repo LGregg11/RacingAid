@@ -10,10 +10,10 @@ public class DataRecorder : IRecordData
 {
     private class FileExistsException(string message) : Exception(message);
     
-    private const string FileExtension = ".json1";
     
-    private const string DateTimeFormat = "YY-MM-dd_HH-mm-ss";
+    private const string DefaultFileExtension = ".json1";
     private const string DefaultFileNamePrefix = "RacingAidData";
+    private const string DateTimeFormat = "YY-MM-dd_HH-mm-ss";
     
     private SemaphoreSlim? fileWriteSemaphore;
     private StreamWriter? streamWriter;
@@ -23,8 +23,11 @@ public class DataRecorder : IRecordData
         "Recordings");
     
     public bool IsRecording { get; private set; }
+
+    public string RecordDirectory => DefaultRecordDirectory;
+    public string RecordExtension => DefaultFileExtension;
     
-    public void Start(string directory, string fileName)
+    public void Start(string fileName)
     {
         if (IsRecording)
             return;
@@ -33,7 +36,7 @@ public class DataRecorder : IRecordData
         
         try
         {
-            filePath = GetFilePath(directory, fileName);
+            filePath = GetFilePath(fileName);
         }
         catch (Exception e)
         {
@@ -90,14 +93,13 @@ public class DataRecorder : IRecordData
         streamWriter = new StreamWriter(filePath);
     }
 
-    private static string GetFilePath(string directory, string fileName)
+    private string GetFilePath(string fileName)
     {
-        var filePath = Path.Combine(directory, fileName);
-        
-        if (string.IsNullOrEmpty(filePath))
-            filePath = Path.Combine(DefaultRecordDirectory, DefaultFileNamePrefix);
-        
-        filePath += $"_{DateTime.Now.ToString(DateTimeFormat)}{FileExtension}";
+        if (string.IsNullOrEmpty(fileName))
+            fileName = $"{DefaultFileNamePrefix}_{DateTime.Now.ToString(DateTimeFormat)}";
+
+        fileName = Path.ChangeExtension(fileName, RecordExtension);
+        var filePath = Path.Combine(RecordDirectory, fileName);
 
         if (File.Exists(filePath))
             throw new FileExistsException("File already exists");

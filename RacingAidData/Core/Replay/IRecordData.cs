@@ -6,7 +6,10 @@ public interface IRecordData
 {
     public bool IsRecording { get; }
     
-    public void Start(string directory, string filename);
+    public string RecordDirectory { get; }
+    public string RecordExtension { get; }
+    
+    public void Start(string fileName);
     public Task StopAsync();
     
     public Task AddRecordAsync(RaceDataModel raceDataRecord);
