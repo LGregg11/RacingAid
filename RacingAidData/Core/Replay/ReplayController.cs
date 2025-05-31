@@ -19,12 +19,12 @@ public class ReplayController : IReplayControl
         this.dataReplayer.ReplayDataReceived += model => { ReplayDataReceived?.Invoke(model); };
     }
 
-    public void StartRecording(string fileName = "")
+    public string StartRecording(string fileName = "")
     {
         if (IsRecording || IsReplaying)
-            return;
+            return string.Empty;
         
-        dataRecorder.Start(fileName);
+        return dataRecorder.Start(fileName);
     }
 
     public void RecordData(RaceDataModel data)
@@ -32,12 +32,12 @@ public class ReplayController : IReplayControl
         Task.Run(async () => await dataRecorder.AddRecordAsync(data));
     }
 
-    public async Task StopRecordingAsync()
+    public void StopRecording()
     {
         if (!IsRecording || IsReplaying)
             return;
         
-        await dataRecorder.StopAsync();
+        Task.Run(async () => await dataRecorder.StopAsync());
     }
 
     public IList<string> GetReplays()

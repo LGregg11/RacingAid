@@ -12,13 +12,14 @@ public class DataRecorder : IRecordData
     
     private const string DefaultFileExtension = ".json1";
     private const string DefaultFileNamePrefix = "RacingAidData";
-    private const string DateTimeFormat = "YY-MM-dd_HH-mm-ss";
+    private const string DateTimeFormat = "yy-MM-dd_HH-mm-ss";
     
     private SemaphoreSlim? fileWriteSemaphore;
     private StreamWriter? streamWriter;
     
     private static string DefaultRecordDirectory => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "RacingAid", 
         "Recordings");
     
     public bool IsRecording { get; private set; }
@@ -26,29 +27,30 @@ public class DataRecorder : IRecordData
     public string RecordDirectory => DefaultRecordDirectory;
     public string RecordExtension => DefaultFileExtension;
     
-    public void Start(string fileName)
+    public string Start(string fileName)
     {
         if (IsRecording)
-            return;
+            return string.Empty;
 
         string filePath;
         
         try
         {
             filePath = GetFilePath(fileName);
+            OpenRecordingFile(filePath);
         }
         catch (Exception e)
         {
             // Raise error but continue
             Console.WriteLine(e);
-            return;
+            return string.Empty;
         }
         
         // Ensures only one write operation at a time
         fileWriteSemaphore = new SemaphoreSlim(1, 1);
         
-        OpenRecordingFile(filePath);
         IsRecording = true;
+        return filePath;
     }
 
     public async Task StopAsync()
@@ -89,6 +91,13 @@ public class DataRecorder : IRecordData
 
     private void OpenRecordingFile(string filePath)
     {
+        var directory = Path.GetDirectoryName(filePath);
+        if (string.IsNullOrEmpty(directory))
+            return;
+        
+        if (!Directory.Exists(directory))
+            Directory.CreateDirectory(directory);
+        
         streamWriter = new StreamWriter(filePath);
     }
 

@@ -9,9 +9,9 @@ public interface IReplayControl
     public bool IsRecording { get; }
     public bool IsReplaying { get; }
     
-    public void StartRecording(string filePath);
+    public string StartRecording(string filePath);
     public void RecordData(RaceDataModel data);
-    public Task StopRecordingAsync();
+    public void StopRecording();
 
     public IList<string> GetReplays();
     public bool SelectReplay(string filePath);
