@@ -1,10 +1,13 @@
-﻿namespace RacingAidData.Core.Replay;
+﻿using RacingAidData.Core.Models;
 
-public class ReplayController
+namespace RacingAidData.Core.Replay;
+
+public class ReplayController : IReplayControl
 {
     private readonly IRecordData dataRecorder;
     private readonly IReplayData dataReplayer;
-    
+
+    public event Action<RaceDataModel>? ReplayDataReceived;
     public bool IsRecording => dataRecorder.IsRecording;
     public bool IsReplaying => dataReplayer.IsReplaying;
 
@@ -12,6 +15,8 @@ public class ReplayController
     {
         this.dataRecorder = dataRecorder ?? new DataRecorder();
         this.dataReplayer = dataReplayer ?? new DataReplayer();
+
+        this.dataReplayer.ReplayDataReceived += model => { ReplayDataReceived?.Invoke(model); };
     }
 
     public void StartRecording(string fileName = "")
@@ -20,6 +25,11 @@ public class ReplayController
             return;
         
         dataRecorder.Start(fileName);
+    }
+
+    public void RecordData(RaceDataModel data)
+    {
+        Task.Run(async () => await dataRecorder.AddRecordAsync(data));
     }
 
     public async Task StopRecordingAsync()

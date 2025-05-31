@@ -196,7 +196,7 @@ public class RacingAid
             UpdateModel(model);
 
             if (replayController is { IsRecording: true } recorder)
-                recorder.RecordDataAsync(model);
+                recorder.RecordData(model);
         }
         
         MaybeTriggerModelUpdate();

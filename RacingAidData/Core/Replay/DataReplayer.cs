@@ -13,7 +13,7 @@ public class DataReplayer : IReplayData
     private CancellationTokenSource? cancellationTokenSource;
     private CancellationToken cancellationToken;
 
-    public event Action<RaceDataModel>? RaceDataReceived;
+    public event Action<RaceDataModel>? ReplayDataReceived;
     
     public bool IsSetup => !string.IsNullOrEmpty(replayFilePath);
     public bool IsReplaying => replayThread is { IsAlive: true };
@@ -62,7 +62,7 @@ public class DataReplayer : IReplayData
         var firstData = replayDataEnumerator.Current;
         var previousPacketTimestamp = firstData.Timestamp;
 
-        RaceDataReceived?.Invoke(firstData);
+        ReplayDataReceived?.Invoke(firstData);
         var timeOfLastDataUpdate = DateTime.Now;
 
         while (!cancellationToken.IsCancellationRequested && replayDataEnumerator.MoveNext())
@@ -78,9 +78,9 @@ public class DataReplayer : IReplayData
             if (!delaySuccess && cancellationToken.IsCancellationRequested)
                 break;
             
-            RaceDataReceived?.Invoke(currentData);
-            previousPacketTimestamp = currentDataTimestamp;
+            ReplayDataReceived?.Invoke(currentData);
             timeOfLastDataUpdate = DateTime.Now;
+            previousPacketTimestamp = currentDataTimestamp;
         }
     }
 

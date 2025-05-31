@@ -10,7 +10,6 @@ public class DataRecorder : IRecordData
 {
     private class FileExistsException(string message) : Exception(message);
     
-    
     private const string DefaultFileExtension = ".json1";
     private const string DefaultFileNamePrefix = "RacingAidData";
     private const string DateTimeFormat = "YY-MM-dd_HH-mm-ss";
