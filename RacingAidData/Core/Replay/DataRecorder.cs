@@ -1,18 +1,22 @@
-﻿using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 using RacingAidData.Core.Models;
 
 namespace RacingAidData.Core.Replay;
 
+/// <summary>
+/// Record and store racing data in a newline-delimited json (.json1) file format
+/// </summary>
 public class DataRecorder : IRecordData
 {
     private class FileExistsException(string message) : Exception(message);
+    
+    private const string FileExtension = ".json1";
     
     private const string DateTimeFormat = "YY-MM-dd_HH-mm-ss";
     private const string DefaultFileNamePrefix = "RacingAidData";
     
     private SemaphoreSlim? fileWriteSemaphore;
-    private FileStream? fileStream;
+    private StreamWriter? streamWriter;
     
     private static string DefaultRecordDirectory => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -20,14 +24,16 @@ public class DataRecorder : IRecordData
     
     public bool IsRecording { get; private set; }
     
-    public void Start(string filePath)
+    public void Start(string directory, string fileName)
     {
         if (IsRecording)
             return;
+
+        string filePath;
         
         try
         {
-            filePath = GetFilePath(filePath);
+            filePath = GetFilePath(directory, fileName);
         }
         catch (Exception e)
         {
@@ -54,12 +60,12 @@ public class DataRecorder : IRecordData
 
     private async Task CloseRecordingFileAsync()
     {
-        if (fileStream == null || fileWriteSemaphore == null)
+        if (streamWriter == null || fileWriteSemaphore == null)
             return;
         
-        await fileStream.FlushAsync();
-        await fileStream.DisposeAsync();
-        fileStream = null;
+        await streamWriter.FlushAsync();
+        await streamWriter.DisposeAsync();
+        streamWriter = null;
         
         fileWriteSemaphore?.Dispose();
         fileWriteSemaphore = null;
@@ -67,40 +73,35 @@ public class DataRecorder : IRecordData
 
     public async Task AddRecordAsync(RaceDataModel raceDataRecord)
     {
-        if (fileStream == null || fileWriteSemaphore == null)
+        if (streamWriter == null || fileWriteSemaphore == null)
             return;
 
         await fileWriteSemaphore.WaitAsync();
 
-        var bytes = ModelToBytes(raceDataRecord);
-        
-        await fileStream.WriteAsync(bytes);
-        await fileStream.FlushAsync();
+        var jsonString = JsonSerializer.Serialize(raceDataRecord);
+        await streamWriter.WriteLineAsync(jsonString);
+        await streamWriter.FlushAsync();
         
         fileWriteSemaphore.Release();
     }
 
     private void OpenRecordingFile(string filePath)
     {
-        fileStream = new FileStream(filePath, FileMode.Append, FileAccess.Write, FileShare.Read);
+        streamWriter = new StreamWriter(filePath);
     }
 
-    private static string GetFilePath(string filePath)
+    private static string GetFilePath(string directory, string fileName)
     {
+        var filePath = Path.Combine(directory, fileName);
+        
         if (string.IsNullOrEmpty(filePath))
             filePath = Path.Combine(DefaultRecordDirectory, DefaultFileNamePrefix);
         
-        filePath += $"_{DateTime.Now.ToString(DateTimeFormat)}";
+        filePath += $"_{DateTime.Now.ToString(DateTimeFormat)}{FileExtension}";
 
         if (File.Exists(filePath))
             throw new FileExistsException("File already exists");
         
         return filePath;
-    }
-
-    private static byte[] ModelToBytes(RaceDataModel raceDataRecord)
-    {
-        var json = JsonSerializer.Serialize(raceDataRecord);
-        return Encoding.UTF8.GetBytes(json + Environment.NewLine);
     }
 }
