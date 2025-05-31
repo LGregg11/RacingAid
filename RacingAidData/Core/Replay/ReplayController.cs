@@ -14,15 +14,12 @@ public class ReplayController
         this.dataReplayer = dataReplayer ?? new DataReplayer();
     }
 
-    public void StartRecording(string filePath = "")
+    public void StartRecording(string fileName = "")
     {
         if (IsRecording || IsReplaying)
             return;
         
-        var directory = Path.GetDirectoryName(filePath) ?? string.Empty;
-        var fileName = Path.GetFileNameWithoutExtension(filePath);
-        
-        dataRecorder.Start(directory, fileName);
+        dataRecorder.Start(fileName);
     }
 
     public async Task StopRecordingAsync()
@@ -35,17 +32,22 @@ public class ReplayController
 
     public IList<string> GetReplays()
     {
-        return new List<string>();
+        return Directory.GetFiles(dataRecorder.RecordDirectory, $"*{dataRecorder.RecordExtension}");
     }
 
-    public void SelectReplay(string filePath)
+    public bool SelectReplay(string filePath)
     {
+        if (!GetReplays().Contains(filePath))
+            return false;
+        
         dataReplayer.SetupReplay(filePath);
+        return true;
+
     }
 
     public void StartReplay()
     {
-        if (IsRecording || IsReplaying)
+        if (IsRecording || IsReplaying || !dataReplayer.IsSetup)
             return;
         
         dataReplayer.Start();
