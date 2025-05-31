@@ -1,5 +1,6 @@
 ﻿using RacingAidData.Core.Deserializers;
 using RacingAidData.Core.Models;
+using RacingAidData.Core.Replay;
 using RacingAidData.Core.Subscribers;
 using RacingAidData.Simulators;
 using RacingAidData.Simulators.Debug;
@@ -9,6 +10,8 @@ namespace RacingAidData;
 
 public class RacingAid
 {
+    private IReplayControl? replayController;
+    
     private bool modelsHaveUpdated;
     private bool isRunning;
     
@@ -34,9 +37,9 @@ public class RacingAid
         }
     }
 
-    public event Action<bool> InSessionUpdated;
+    public event Action<bool>? InSessionUpdated;
 
-    public event Action ModelsUpdated;
+    public event Action? ModelsUpdated;
     
     #region Model Properties
 
@@ -119,9 +122,19 @@ public class RacingAid
 
     public bool InSession => DataSubscriber is { IsConnected: true };
 
-    public RacingAid()
+    public RacingAid(IReplayControl? replayControl = null)
     {
+        if (replayControl != null)
+            SetupReplayController(replayControl);
+        
         SetupSimulator(Simulator.iRacing);
+    }
+
+    public void SetupReplayController(IReplayControl replayControl)
+    {
+        replayController = replayControl;
+
+        replayController.ReplayDataReceived += OnReplayDataReceived;
     }
 
     public void SetupSimulator(Simulator simulator)
@@ -179,8 +192,24 @@ public class RacingAid
             return;
 
         foreach (var model in models)
+        {
             UpdateModel(model);
 
+            if (replayController is { IsRecording: true } recorder)
+                recorder.RecordDataAsync(model);
+        }
+        
+        MaybeTriggerModelUpdate();
+    }
+
+    private void OnReplayDataReceived(RaceDataModel model)
+    {
+        UpdateModel(model);
+        MaybeTriggerModelUpdate();
+    }
+
+    private void MaybeTriggerModelUpdate()
+    {
         if (modelsHaveUpdated)
             ModelsUpdated?.Invoke();
         
