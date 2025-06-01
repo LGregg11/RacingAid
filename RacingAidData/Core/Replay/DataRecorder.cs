@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Newtonsoft.Json;
 using RacingAidData.Core.Models;
 
 namespace RacingAidData.Core.Replay;
@@ -82,7 +83,7 @@ public class DataRecorder : IRecordData
 
         await fileWriteSemaphore.WaitAsync();
 
-        var jsonString = JsonSerializer.Serialize(raceDataRecord);
+        var jsonString = JsonConvert.SerializeObject(raceDataRecord);
         await streamWriter.WriteLineAsync(jsonString);
         await streamWriter.FlushAsync();
         
