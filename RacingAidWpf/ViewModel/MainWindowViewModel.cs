@@ -37,6 +37,8 @@ public sealed class MainWindowViewModel : ViewModel
     public ICommand StopRecordingCommand { get; }
     
     public ICommand OpenReplaySelectorCommand { get; }
+    public ICommand StartReplayCommand { get; }
+    public ICommand StopReplayCommand { get; }
 
     public string SelectedReplayFileName => Path.GetFileName(SelectedReplayFilePath);
 
@@ -494,6 +496,8 @@ public sealed class MainWindowViewModel : ViewModel
         StopRecordingCommand = new Command(StopRecording);
 
         OpenReplaySelectorCommand = new Command(OpenReplaySelector);
+        StartReplayCommand = new Command(StartReplay);
+        StopReplayCommand = new Command(StopReplay);
     }
 
     public void Close()
@@ -554,10 +558,25 @@ public sealed class MainWindowViewModel : ViewModel
         replaySelectorView.ShowDialog();
     }
 
+    private void StartReplay()
+    {
+        Logger?.LogDebug("Starting replay");
+        replayController.StartReplay();
+    }
+
+    private void StopReplay()
+    {
+        Logger?.LogDebug("Stopping replay");
+        replayController.StopReplay();
+    }
+
     private void OnReplayFileSelected(string replayFilePath)
     {
         if (replayController.SelectReplay(replayFilePath))
+        {
             SelectedReplayFilePath = replayFilePath;
+            Logger?.LogDebug($"Replay selected: {SelectedReplayFilePath}");
+        }
     }
 
     private void StartRecording()

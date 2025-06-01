@@ -75,6 +75,16 @@
             <TextBlock x:Name="SelectedReplayTextBlock"
                        VerticalAlignment="Center" Height="20" Width="250" Margin="10,0"
                        Text="{Binding SelectedReplayFileName}"/>
+            <Button x:Name="StartReplayButton"
+                    Height="25" Width="100"
+                    Margin="10,0,0,0"
+                    Content="Start Replay"
+                    Command="{Binding StartReplayCommand}"/>
+            <Button x:Name="StopReplayButton"
+                    Height="25" Width="100"
+                    Margin="10,0,0,0"
+                    Content="Stop Replay"
+                    Command="{Binding StopReplayCommand}"/>
                        
 
         </StackPanel>
