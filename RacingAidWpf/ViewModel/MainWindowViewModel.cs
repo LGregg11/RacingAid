@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows.Input;
 using RacingAidData.Core.Replay;
 using RacingAidData.Simulators;
@@ -25,6 +26,7 @@ public sealed class MainWindowViewModel : ViewModel
     private readonly RelativeConfigSection relativeConfigSection = ConfigSectionSingleton.RelativeSection;
     private readonly TelemetryConfigSection telemetryConfigSection = ConfigSectionSingleton.TelemetrySection;
     private readonly TrackMapConfigSection trackMapConfigSection = ConfigSectionSingleton.TrackMapSection;
+    
     private readonly OverlayController overlayController;
     private readonly ReplayController replayController;
 
@@ -33,6 +35,26 @@ public sealed class MainWindowViewModel : ViewModel
     
     public ICommand StartRecordingCommand { get; }
     public ICommand StopRecordingCommand { get; }
+    
+    public ICommand OpenReplaySelectorCommand { get; }
+
+    public string SelectedReplayFileName => Path.GetFileName(SelectedReplayFilePath);
+
+    private string selectedReplayFilePath;
+
+    public string SelectedReplayFilePath
+    {
+        get => selectedReplayFilePath;
+        private set
+        {
+            if (selectedReplayFilePath == value)
+                return;
+            
+            selectedReplayFilePath = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(SelectedReplayFileName));
+        }
+    }
 
     private bool inSession;
     public bool InSession
@@ -470,6 +492,8 @@ public sealed class MainWindowViewModel : ViewModel
         
         StartRecordingCommand = new Command(StartRecording);
         StopRecordingCommand = new Command(StopRecording);
+
+        OpenReplaySelectorCommand = new Command(OpenReplaySelector);
     }
 
     public void Close()
@@ -495,18 +519,6 @@ public sealed class MainWindowViewModel : ViewModel
         Logger?.LogInformation("Started racing aid");
     }
 
-    public void StartRecording()
-    {
-        var recordFile = replayController.StartRecording();
-        Logger?.LogDebug($"Starting recording: {recordFile}");
-    }
-
-    public void StopRecording()
-    {
-        replayController.StopRecording();
-        Logger?.LogDebug("Stopping recording");
-    }
-
     public void Stop()
     {
         Logger?.LogDebug("Stopping racing aid");
@@ -528,6 +540,36 @@ public sealed class MainWindowViewModel : ViewModel
         }
         
         IsRepositionEnabled = !IsRepositionEnabled;
+    }
+
+    private void OpenReplaySelector()
+    {
+        var replaySelectorView = new ReplaySelectorView();
+        if (replaySelectorView.DataContext is ReplaySelectorViewModel viewModel)
+        {
+            viewModel.ReplayFileSelected += OnReplayFileSelected;
+            viewModel.ReplayFilePaths = [..replayController.GetReplays()];
+        }
+
+        replaySelectorView.ShowDialog();
+    }
+
+    private void OnReplayFileSelected(string replayFilePath)
+    {
+        if (replayController.SelectReplay(replayFilePath))
+            SelectedReplayFilePath = replayFilePath;
+    }
+
+    private void StartRecording()
+    {
+        var recordFile = replayController.StartRecording();
+        Logger?.LogDebug($"Starting recording: {recordFile}");
+    }
+
+    private void StopRecording()
+    {
+        replayController.StopRecording();
+        Logger?.LogDebug("Stopping recording");
     }
 
     private void OnSessionUpdated(bool connected)
