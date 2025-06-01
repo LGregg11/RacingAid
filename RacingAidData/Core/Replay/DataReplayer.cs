@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+﻿using Newtonsoft.Json;
 using RacingAidData.Core.Models;
 
 namespace RacingAidData.Core.Replay;
@@ -59,6 +59,9 @@ public class DataReplayer : IReplayData
         
         // Handle the first object outside the loop to get the start time
         // We use the timestamp so that we know when to send the next bit of data
+        if (!replayDataEnumerator.MoveNext())
+            return;
+        
         var firstData = replayDataEnumerator.Current;
         var previousPacketTimestamp = firstData.Timestamp;
 
@@ -94,7 +97,7 @@ public class DataReplayer : IReplayData
             if (string.IsNullOrWhiteSpace(line))
                 continue; 
             
-            if (JsonSerializer.Deserialize<RaceDataModel>(line) is { } data)
+            if (JsonConvert.DeserializeObject<RaceDataModel>(line, ReplaySettings.DefaultJsonSerializerSettings) is { } data)
                 yield return data;
         }
     }

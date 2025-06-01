@@ -82,8 +82,9 @@ public class DataRecorder : IRecordData
             return;
 
         await fileWriteSemaphore.WaitAsync();
-
-        var jsonString = JsonConvert.SerializeObject(raceDataRecord);
+        
+        
+        var jsonString = JsonConvert.SerializeObject(raceDataRecord, ReplaySettings.DefaultJsonSerializerSettings);
         await streamWriter.WriteLineAsync(jsonString);
         await streamWriter.FlushAsync();
         
