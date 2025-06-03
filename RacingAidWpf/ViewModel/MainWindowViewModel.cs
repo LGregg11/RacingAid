@@ -561,12 +561,14 @@ public sealed class MainWindowViewModel : ViewModel
     private void StartReplay()
     {
         Logger?.LogDebug("Starting replay");
+        StartAndDisplayOverlays();
         replayController.StartReplay();
     }
 
     private void StopReplay()
     {
         Logger?.LogDebug("Stopping replay");
+        HideAndResetOverlays();
         replayController.StopReplay();
     }
 

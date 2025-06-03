@@ -9,7 +9,4 @@ public enum Simulator
     
     [Description("Formula 1")]
     F1,
-    
-    [Description("Debug")]
-    Debug
 }

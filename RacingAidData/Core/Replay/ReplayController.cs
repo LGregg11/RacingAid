@@ -8,6 +8,7 @@ public class ReplayController : IReplayControl
     private readonly IReplayData dataReplayer;
 
     public event Action<RaceDataModel>? ReplayDataReceived;
+    public event Action<bool>? IsReplayingUpdated;
     public bool IsRecording => dataRecorder.IsRecording;
     public bool IsReplaying => dataReplayer.IsReplaying;
 
@@ -29,7 +30,7 @@ public class ReplayController : IReplayControl
 
     public void RecordData(RaceDataModel data)
     {
-        Task.Run(async () => await dataRecorder.AddRecordAsync(data));
+        dataRecorder.AddRecord(data);
     }
 
     public void StopRecording()
@@ -37,7 +38,7 @@ public class ReplayController : IReplayControl
         if (!IsRecording || IsReplaying)
             return;
         
-        Task.Run(async () => await dataRecorder.StopAsync());
+        dataRecorder.Stop();
     }
 
     public IList<string> GetReplays()
@@ -59,8 +60,9 @@ public class ReplayController : IReplayControl
     {
         if (IsRecording || IsReplaying || !dataReplayer.IsSetup)
             return;
-        
+
         dataReplayer.Start();
+        IsReplayingUpdated?.Invoke(IsReplaying);
     }
 
     public void StopReplay()
@@ -69,5 +71,6 @@ public class ReplayController : IReplayControl
             return;
         
         dataReplayer.Stop();
+        IsReplayingUpdated?.Invoke(IsReplaying);
     }
 }

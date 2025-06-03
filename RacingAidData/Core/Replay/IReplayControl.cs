@@ -5,6 +5,7 @@ namespace RacingAidData.Core.Replay;
 public interface IReplayControl
 {
     public event Action<RaceDataModel> ReplayDataReceived;
+    public event Action<bool> IsReplayingUpdated;
     
     public bool IsRecording { get; }
     public bool IsReplaying { get; }

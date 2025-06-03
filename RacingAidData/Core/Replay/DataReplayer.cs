@@ -108,16 +108,12 @@ public class DataReplayer : IReplayData
     private bool DelayTillNextPacketSend(TimeSpan timestampDelta, TimeSpan timeSinceLastDataUpdate)
     {
         var dataDelay = timestampDelta.Subtract(timeSinceLastDataUpdate);
+        Console.WriteLine($"delay: {dataDelay}");
 
-        try
-        {
-            Task.Delay(dataDelay, cancellationToken);
-        }
-        catch (OperationCanceledException)
-        {
+        if (dataDelay < TimeSpan.Zero)
             return false;
-        }
-
+        
+        Thread.Sleep(dataDelay);
         return true;
     }
 }

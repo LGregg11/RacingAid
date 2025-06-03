@@ -3,7 +3,6 @@ using RacingAidData.Core.Models;
 using RacingAidData.Core.Replay;
 using RacingAidData.Core.Subscribers;
 using RacingAidData.Simulators;
-using RacingAidData.Simulators.Debug;
 using RacingAidData.Simulators.iRacing;
 
 namespace RacingAidData;
@@ -120,7 +119,7 @@ public class RacingAid
     
     #endregion
 
-    public bool InSession => DataSubscriber is { IsConnected: true };
+    public bool InSession { get; private set; }
 
     public RacingAid(IReplayControl? replayControl = null)
     {
@@ -135,6 +134,7 @@ public class RacingAid
         replayController = replayControl;
 
         replayController.ReplayDataReceived += OnReplayDataReceived;
+        replayController.IsReplayingUpdated += OnReplayingUpdated;
     }
 
     public void SetupSimulator(Simulator simulator)
@@ -146,10 +146,6 @@ public class RacingAid
             case Simulator.iRacing:
                 DataDeserializer = new iRacingDataDeserializer();
                 DataSubscriber = new iRacingDataSubscriber();
-                break;
-            case Simulator.Debug:
-                DataDeserializer = new DebugDeserializer();
-                DataSubscriber = new DebugSubscriber();
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(simulator), simulator, null);
@@ -180,6 +176,7 @@ public class RacingAid
 
     private void OnConnectionUpdated(bool connected)
     {
+        InSession = connected;
         InSessionUpdated?.Invoke(InSession);
     }
 
@@ -200,6 +197,12 @@ public class RacingAid
         }
         
         MaybeTriggerModelUpdate();
+    }
+
+    private void OnReplayingUpdated(bool isReplaying)
+    {
+        InSession = isReplaying;
+        InSessionUpdated?.Invoke(InSession);
     }
 
     private void OnReplayDataReceived(RaceDataModel model)

@@ -4,7 +4,7 @@ namespace RacingAidData.Core.Replay;
 
 public static class ReplaySettings
 {
-    public static JsonSerializerSettings DefaultJsonSerializerSettings = new()
+    public static readonly JsonSerializerSettings DefaultJsonSerializerSettings = new()
     {
         TypeNameHandling = TypeNameHandling.All
     };

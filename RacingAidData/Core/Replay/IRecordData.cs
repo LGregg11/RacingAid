@@ -10,7 +10,6 @@ public interface IRecordData
     public string RecordExtension { get; }
     
     public string Start(string fileName);
-    public Task StopAsync();
-    
-    public Task AddRecordAsync(RaceDataModel raceDataRecord);
+    public void Stop();
+    public void AddRecord(RaceDataModel raceData);
 }

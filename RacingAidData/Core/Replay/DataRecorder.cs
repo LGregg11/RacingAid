@@ -15,8 +15,7 @@ public class DataRecorder : IRecordData
     private const string DefaultFileNamePrefix = "RacingAidData";
     private const string DateTimeFormat = "yy-MM-dd_HH-mm-ss";
     
-    private SemaphoreSlim? fileWriteSemaphore;
-    private StreamWriter? streamWriter;
+    private NewLineDelimitedJsonFileWriter<RaceDataModel>? dataFileWriter;
     
     private static string DefaultRecordDirectory => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -47,48 +46,28 @@ public class DataRecorder : IRecordData
             return string.Empty;
         }
         
-        // Ensures only one write operation at a time
-        fileWriteSemaphore = new SemaphoreSlim(1, 1);
-        
         IsRecording = true;
         return filePath;
     }
 
-    public async Task StopAsync()
+    public void Stop()
     {
         if (!IsRecording)
             return;
         
-        await CloseRecordingFileAsync();
+        CloseRecordingFile();
         IsRecording = false;
     }
 
-    private async Task CloseRecordingFileAsync()
+    private void CloseRecordingFile()
     {
-        if (streamWriter == null || fileWriteSemaphore == null)
-            return;
-        
-        await streamWriter.FlushAsync();
-        await streamWriter.DisposeAsync();
-        streamWriter = null;
-        
-        fileWriteSemaphore?.Dispose();
-        fileWriteSemaphore = null;
+        dataFileWriter?.Dispose();
+        dataFileWriter = null;
     }
 
-    public async Task AddRecordAsync(RaceDataModel raceDataRecord)
+    public void AddRecord(RaceDataModel raceData)
     {
-        if (streamWriter == null || fileWriteSemaphore == null)
-            return;
-
-        await fileWriteSemaphore.WaitAsync();
-        
-        
-        var jsonString = JsonConvert.SerializeObject(raceDataRecord, ReplaySettings.DefaultJsonSerializerSettings);
-        await streamWriter.WriteLineAsync(jsonString);
-        await streamWriter.FlushAsync();
-        
-        fileWriteSemaphore.Release();
+        dataFileWriter?.EnqueueData(raceData);
     }
 
     private void OpenRecordingFile(string filePath)
@@ -99,8 +78,8 @@ public class DataRecorder : IRecordData
         
         if (!Directory.Exists(directory))
             Directory.CreateDirectory(directory);
-        
-        streamWriter = new StreamWriter(filePath);
+
+        dataFileWriter = new NewLineDelimitedJsonFileWriter<RaceDataModel>(filePath);
     }
 
     private string GetFilePath(string fileName)
