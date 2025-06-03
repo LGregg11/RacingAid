@@ -2,5 +2,5 @@
 
 public abstract class RaceDataModel
 {
-    public DateTime Timestamp { get; } = DateTime.Now;
+    public DateTime Timestamp { get; set; } = DateTime.Now;
 }
