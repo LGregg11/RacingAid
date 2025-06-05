@@ -12,6 +12,11 @@ public class ReplayController : IReplayControl
     public bool IsRecording => dataRecorder.IsRecording;
     public bool IsReplaying => dataReplayer.IsReplaying;
 
+    public ReplaySpeed ReplaySpeed
+    {
+        set => dataReplayer.ReplaySpeed = value;
+    }
+
     public ReplayController(IRecordData? dataRecorder = null, IReplayData? dataReplayer = null)
     {
         this.dataRecorder = dataRecorder ?? new DataRecorder();

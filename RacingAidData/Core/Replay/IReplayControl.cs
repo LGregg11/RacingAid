@@ -10,6 +10,8 @@ public interface IReplayControl
     public bool IsRecording { get; }
     public bool IsReplaying { get; }
     
+    public ReplaySpeed ReplaySpeed { set; }
+    
     public string StartRecording(string filePath);
     public void RecordData(RaceDataModel data);
     public void StopRecording();

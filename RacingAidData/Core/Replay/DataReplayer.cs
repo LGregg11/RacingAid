@@ -13,8 +13,18 @@ public class DataReplayer : IReplayData
     private CancellationTokenSource? cancellationTokenSource;
     private CancellationToken cancellationToken;
 
+    private readonly Dictionary<ReplaySpeed, float> replaySpeedMap = new()
+    {
+        { ReplaySpeed.X1, 1f },
+        { ReplaySpeed.X2, 1f / 2f },
+        { ReplaySpeed.X4, 1f / 4f },
+        { ReplaySpeed.X8, 1f / 8f },
+        { ReplaySpeed.X16, 1f / 16f }
+    };
+
     public event Action<RaceDataModel>? ReplayDataReceived;
     
+    public ReplaySpeed ReplaySpeed { private get; set; }
     public bool IsSetup => !string.IsNullOrEmpty(replayFilePath);
     public bool IsReplaying => replayThread is { IsAlive: true };
 
@@ -76,8 +86,10 @@ public class DataReplayer : IReplayData
             var timestampDelta = currentDataTimestamp - previousPacketTimestamp;
             var timeSinceLastDataUpdate = DateTime.Now - timeOfLastDataUpdate;
 
+            var timestampPlaybackDelta = timestampDelta * replaySpeedMap[ReplaySpeed];
+
             // If delay was not successfully completed, check if cancellation was requested
-            var delaySuccess = DelayTillNextPacketSend(timestampDelta, timeSinceLastDataUpdate);
+            var delaySuccess = DelayTillNextPacketSend(timestampPlaybackDelta, timeSinceLastDataUpdate);
             if (!delaySuccess && cancellationToken.IsCancellationRequested)
                 break;
             
@@ -108,7 +120,6 @@ public class DataReplayer : IReplayData
     private bool DelayTillNextPacketSend(TimeSpan timestampDelta, TimeSpan timeSinceLastDataUpdate)
     {
         var dataDelay = timestampDelta.Subtract(timeSinceLastDataUpdate);
-        Console.WriteLine($"delay: {dataDelay}");
 
         if (dataDelay < TimeSpan.Zero)
             return false;
