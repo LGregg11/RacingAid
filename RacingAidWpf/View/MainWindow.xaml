@@ -57,36 +57,13 @@
                     </Style>
                 </ToggleButton.Style>
             </ToggleButton>
-            <Button x:Name="StartRecordingButton"
+            <Button x:Name="DevToolsButton"
                     Height="25" Width="100"
                     Margin="10,0,0,0"
-                    Content="Start Recording"
-                    Command="{Binding StartRecordingCommand}"/>
-            <Button x:Name="StopRecordingButton"
-                    Height="25" Width="100"
-                    Margin="10,0,0,0"
-                    Content="Stop Recording"
-                    Command="{Binding StopRecordingCommand}"/>
-            <Button x:Name="OpenReplaySelectorButton"
-                    Height="25" Width="100"
-                    Margin="10,0,0,0"
-                    Content="Select Replay"
-                    Command="{Binding OpenReplaySelectorCommand}"/>
-            <TextBlock x:Name="SelectedReplayTextBlock"
-                       VerticalAlignment="Center" Height="20" Width="250" Margin="10,0"
-                       Text="{Binding SelectedReplayFileName}"/>
-            <Button x:Name="StartReplayButton"
-                    Height="25" Width="100"
-                    Margin="10,0,0,0"
-                    Content="Start Replay"
-                    Command="{Binding StartReplayCommand}"/>
-            <Button x:Name="StopReplayButton"
-                    Height="25" Width="100"
-                    Margin="10,0,0,0"
-                    Content="Stop Replay"
-                    Command="{Binding StopReplayCommand}"/>
-                       
-
+                    Content="Open Dev Tools"
+                    Visibility="{Binding DevToolsVisibility}"
+                    Command="{Binding OpenDevToolsCommand}"
+                    />
         </StackPanel>
         
         <GroupBox Grid.Row="1" Grid.Column="0" Header="General" MinHeight="100" MinWidth="165">

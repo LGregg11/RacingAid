@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
-using System.IO;
+using System.Windows;
 using System.Windows.Input;
-using RacingAidData.Core.Replay;
 using RacingAidData.Simulators;
 using RacingAidWpf.Commands;
 using RacingAidWpf.Core.Configuration;
@@ -28,35 +27,11 @@ public sealed class MainWindowViewModel : ViewModel
     private readonly TrackMapConfigSection trackMapConfigSection = ConfigSectionSingleton.TrackMapSection;
     
     private readonly OverlayController overlayController;
-    private readonly ReplayController replayController;
 
     public ICommand StartCommand { get; }
     public ICommand StopCommand { get; }
     
-    public ICommand StartRecordingCommand { get; }
-    public ICommand StopRecordingCommand { get; }
-    
-    public ICommand OpenReplaySelectorCommand { get; }
-    public ICommand StartReplayCommand { get; }
-    public ICommand StopReplayCommand { get; }
-
-    public string SelectedReplayFileName => Path.GetFileName(SelectedReplayFilePath);
-
-    private string selectedReplayFilePath;
-
-    public string SelectedReplayFilePath
-    {
-        get => selectedReplayFilePath;
-        private set
-        {
-            if (selectedReplayFilePath == value)
-                return;
-            
-            selectedReplayFilePath = value;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(SelectedReplayFileName));
-        }
-    }
+    public ICommand OpenDevToolsCommand { get; }
 
     private bool inSession;
     public bool InSession
@@ -125,6 +100,9 @@ public sealed class MainWindowViewModel : ViewModel
             OnPropertyChanged();
         }
     }
+
+    public Visibility DevToolsVisibility =>
+        generalConfigSection.EnabledDevMode ? Visibility.Visible : Visibility.Collapsed;
 
     #endregion
 
@@ -476,33 +454,22 @@ public sealed class MainWindowViewModel : ViewModel
             this.overlayController.AddOverlay(overlay);
 
         Logger?.LogDebug("Creating simulator entries");
-        SimulatorEntries = CreateObservableEnumCollection<Simulator>();
+        SimulatorEntries = EnumEntryModelUtility.CreateObservableEnumCollection<Simulator>();
         SelectedSimulatorEntry = SimulatorEntries.First();
         
         Logger?.LogDebug("Creating track map driver number entries");
-        DriverNumberEntries = CreateObservableEnumCollection<DriverNumberType>();
+        DriverNumberEntries = EnumEntryModelUtility.CreateObservableEnumCollection<DriverNumberType>();
         SelectedDriverNumberEntry = DriverNumberEntries.First(d => d.Value == trackMapConfigSection.DriverNumberType);
-        
-        // Setup recording
-        replayController = new ReplayController();
-        
-        var racingAid = RacingAidSingleton.Instance;
-        racingAid.SetupReplayController(replayController);
 
         StartCommand = new Command(Start);
         StopCommand = new Command(Stop);
-        
-        StartRecordingCommand = new Command(StartRecording);
-        StopRecordingCommand = new Command(StopRecording);
 
-        OpenReplaySelectorCommand = new Command(OpenReplaySelector);
-        StartReplayCommand = new Command(StartReplay);
-        StopReplayCommand = new Command(StopReplay);
+        OpenDevToolsCommand = new Command(OpenDevTools);
     }
 
     public void Close()
     {
-        Logger?.LogDebug("Stopping and closing overlays");
+        Logger?.LogInformation("Stopping and closing overlays");
         Stop();
         overlayController.CloseAll();
         Logger?.LogDebug("Overlays closed");
@@ -510,7 +477,7 @@ public sealed class MainWindowViewModel : ViewModel
 
     public void Start()
     {
-        Logger?.LogDebug("Starting racing aid");
+        Logger?.LogInformation("Starting racing aid");
         IsStarted = true;
 
         var racingAid = RacingAidSingleton.Instance;
@@ -525,7 +492,7 @@ public sealed class MainWindowViewModel : ViewModel
 
     public void Stop()
     {
-        Logger?.LogDebug("Stopping racing aid");
+        Logger?.LogInformation("Stopping racing aid");
         var racingAid = RacingAidSingleton.Instance;
         racingAid.Stop();
         racingAid.InSessionUpdated -= OnSessionUpdated;
@@ -546,51 +513,16 @@ public sealed class MainWindowViewModel : ViewModel
         IsRepositionEnabled = !IsRepositionEnabled;
     }
 
-    private void OpenReplaySelector()
+    private void OpenDevTools()
     {
-        var replaySelectorView = new ReplaySelectorView();
-        if (replaySelectorView.DataContext is ReplaySelectorViewModel viewModel)
+        var devToolsView = new DevToolsView();
+        if (devToolsView.DataContext is DevToolsViewModel viewModel)
         {
-            viewModel.ReplayFileSelected += OnReplayFileSelected;
-            viewModel.ReplayFilePaths = [..replayController.GetReplays()];
+            viewModel.ReplayStarted += StartAndDisplayOverlays;
+            viewModel.ReplayStopped += HideAndResetOverlays;
         }
 
-        replaySelectorView.ShowDialog();
-    }
-
-    private void StartReplay()
-    {
-        Logger?.LogDebug("Starting replay");
-        StartAndDisplayOverlays();
-        replayController.StartReplay();
-    }
-
-    private void StopReplay()
-    {
-        Logger?.LogDebug("Stopping replay");
-        HideAndResetOverlays();
-        replayController.StopReplay();
-    }
-
-    private void OnReplayFileSelected(string replayFilePath)
-    {
-        if (replayController.SelectReplay(replayFilePath))
-        {
-            SelectedReplayFilePath = replayFilePath;
-            Logger?.LogDebug($"Replay selected: {SelectedReplayFilePath}");
-        }
-    }
-
-    private void StartRecording()
-    {
-        var recordFile = replayController.StartRecording();
-        Logger?.LogDebug($"Starting recording: {recordFile}");
-    }
-
-    private void StopRecording()
-    {
-        replayController.StopRecording();
-        Logger?.LogDebug("Stopping recording");
+        devToolsView.Show();
     }
 
     private void OnSessionUpdated(bool connected)
@@ -628,13 +560,5 @@ public sealed class MainWindowViewModel : ViewModel
         Logger?.LogDebug("Deactivating & Resetting overlays");
         overlayController.AreOverlaysActive = false;
         overlayController.ResetAll();
-    }
-
-    private static ObservableCollection<EnumEntryModel<T>> CreateObservableEnumCollection<T>() where T : struct, Enum
-    {
-        var entries = new ObservableCollection<EnumEntryModel<T>>();
-        foreach (var entry in Enum.GetValues(typeof(T)).Cast<T>())
-            entries.Add(new EnumEntryModel<T>(entry));
-        return entries;
     }
 }
