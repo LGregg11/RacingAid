@@ -8,5 +8,5 @@ public enum Simulator
     iRacing,
     
     [Description("Formula 1")]
-    F1
+    F1,
 }

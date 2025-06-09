@@ -21,7 +21,7 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Grid.ColumnSpan="5" Orientation="Horizontal" HorizontalAlignment="Left" Margin="5">
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="5" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5">
             <ComboBox Height="25" Width="150"
                       ItemsSource="{Binding SimulatorEntries}"
                       SelectedValue="{Binding SelectedSimulatorEntry}"
@@ -43,21 +43,27 @@
               Margin="10, 0, 0, 0"
               IsChecked="{Binding IsRepositionEnabled}" 
               IsEnabled="{Binding InSession}">
-            <ToggleButton.Style>
-                <Style TargetType="ToggleButton">
-                    <Setter Property="Content" Value="Enable Reposition" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsRepositionEnabled}" Value="True">
-                            <Setter Property="Content" Value="Disable Reposition" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsRepositionEnabled}" Value="False">
-                            <Setter Property="Content" Value="Enable Reposition" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ToggleButton.Style>
-        </ToggleButton>
-
+                <ToggleButton.Style>
+                    <Style TargetType="ToggleButton">
+                        <Setter Property="Content" Value="Enable Reposition" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsRepositionEnabled}" Value="True">
+                                <Setter Property="Content" Value="Disable Reposition" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsRepositionEnabled}" Value="False">
+                                <Setter Property="Content" Value="Enable Reposition" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ToggleButton.Style>
+            </ToggleButton>
+            <Button x:Name="DevToolsButton"
+                    Height="25" Width="100"
+                    Margin="10,0,0,0"
+                    Content="Open Dev Tools"
+                    Visibility="{Binding DevToolsVisibility}"
+                    Command="{Binding OpenDevToolsCommand}"
+                    />
         </StackPanel>
         
         <GroupBox Grid.Row="1" Grid.Column="0" Header="General" MinHeight="100" MinWidth="165">

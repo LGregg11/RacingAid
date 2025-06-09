@@ -1,0 +1,31 @@
+﻿<Window x:Class="RacingAidWpf.View.ReplaySelectorView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:viewModel="clr-namespace:RacingAidWpf.ViewModel"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance viewModel:ReplaySelectorViewModel}"
+        Title="ReplaySelectorView"
+        SizeToContent="WidthAndHeight"
+        MinHeight="400"
+        MinWidth="400">
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <ListBox Name="SelectorListBox"
+                     Margin="10"
+                     MinHeight="325"
+                     ItemsSource="{Binding ReplayFiles}"
+                     SelectedItem="{Binding SelectedReplayFile, Mode=TwoWay}"/>
+            <StackPanel Orientation="Horizontal" Height="Auto" Margin="5,0">
+                <TextBlock Name="SelectedFile"
+                           Margin="10"
+                           Height="25" Width="250"
+                           VerticalAlignment="Center"
+                           Text="{Binding SelectedReplayFile}"/>
+                <Button Name="SelectButton" Content="Select" Height="25" Width="50" Margin="5,0" Command="{Binding SelectReplayFileCommand}"/>
+                <Button Name="CloseButton" Content="Close" Height="25" Width="50" Margin="5,0" Command="{Binding CloseCommand}"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

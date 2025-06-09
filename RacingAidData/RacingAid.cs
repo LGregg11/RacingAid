@@ -1,5 +1,6 @@
 ﻿using RacingAidData.Core.Deserializers;
 using RacingAidData.Core.Models;
+using RacingAidData.Core.Replay;
 using RacingAidData.Core.Subscribers;
 using RacingAidData.Simulators;
 using RacingAidData.Simulators.iRacing;
@@ -8,6 +9,8 @@ namespace RacingAidData;
 
 public class RacingAid
 {
+    private IReplayControl? replayController;
+    
     private bool modelsHaveUpdated;
     private bool isRunning;
     
@@ -33,9 +36,9 @@ public class RacingAid
         }
     }
 
-    public event Action<bool> InSessionUpdated;
+    public event Action<bool>? InSessionUpdated;
 
-    public event Action ModelsUpdated;
+    public event Action? ModelsUpdated;
     
     #region Model Properties
 
@@ -116,11 +119,22 @@ public class RacingAid
     
     #endregion
 
-    public bool InSession => DataSubscriber is { IsConnected: true };
+    public bool InSession { get; private set; }
 
-    public RacingAid()
+    public RacingAid(IReplayControl? replayControl = null)
     {
+        if (replayControl != null)
+            SetupReplayController(replayControl);
+        
         SetupSimulator(Simulator.iRacing);
+    }
+
+    public void SetupReplayController(IReplayControl replayControl)
+    {
+        replayController = replayControl;
+
+        replayController.ReplayDataReceived += OnReplayDataReceived;
+        replayController.IsReplayingUpdated += OnReplayingUpdated;
     }
 
     public void SetupSimulator(Simulator simulator)
@@ -162,6 +176,7 @@ public class RacingAid
 
     private void OnConnectionUpdated(bool connected)
     {
+        InSession = connected;
         InSessionUpdated?.Invoke(InSession);
     }
 
@@ -174,8 +189,30 @@ public class RacingAid
             return;
 
         foreach (var model in models)
+        {
             UpdateModel(model);
 
+            if (replayController is { IsRecording: true } recorder)
+                recorder.RecordData(model);
+        }
+        
+        MaybeTriggerModelUpdate();
+    }
+
+    private void OnReplayingUpdated(bool isReplaying)
+    {
+        InSession = isReplaying;
+        InSessionUpdated?.Invoke(InSession);
+    }
+
+    private void OnReplayDataReceived(RaceDataModel model)
+    {
+        UpdateModel(model);
+        MaybeTriggerModelUpdate();
+    }
+
+    private void MaybeTriggerModelUpdate()
+    {
         if (modelsHaveUpdated)
             ModelsUpdated?.Invoke();
         

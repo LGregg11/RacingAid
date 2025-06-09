@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RacingAidWpf", "RacingAidWp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RacingAidWpfTests", "RacingAidWpfTests\RacingAidWpfTests.csproj", "{6316EA52-76D0-4BB5-BDA5-B47E5BEF0226}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RacingAidGrpc", "RacingAidGrpc\RacingAidGrpc.csproj", "{88328F1F-BBFC-491B-9CBC-0E6CF7219DE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{6316EA52-76D0-4BB5-BDA5-B47E5BEF0226}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6316EA52-76D0-4BB5-BDA5-B47E5BEF0226}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6316EA52-76D0-4BB5-BDA5-B47E5BEF0226}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88328F1F-BBFC-491B-9CBC-0E6CF7219DE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88328F1F-BBFC-491B-9CBC-0E6CF7219DE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88328F1F-BBFC-491B-9CBC-0E6CF7219DE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88328F1F-BBFC-491B-9CBC-0E6CF7219DE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
 using RacingAidData.Simulators;
 using RacingAidWpf.Commands;
@@ -24,10 +25,13 @@ public sealed class MainWindowViewModel : ViewModel
     private readonly RelativeConfigSection relativeConfigSection = ConfigSectionSingleton.RelativeSection;
     private readonly TelemetryConfigSection telemetryConfigSection = ConfigSectionSingleton.TelemetrySection;
     private readonly TrackMapConfigSection trackMapConfigSection = ConfigSectionSingleton.TrackMapSection;
+    
     private readonly OverlayController overlayController;
 
     public ICommand StartCommand { get; }
     public ICommand StopCommand { get; }
+    
+    public ICommand OpenDevToolsCommand { get; }
 
     private bool inSession;
     public bool InSession
@@ -96,6 +100,9 @@ public sealed class MainWindowViewModel : ViewModel
             OnPropertyChanged();
         }
     }
+
+    public Visibility DevToolsVisibility =>
+        generalConfigSection.EnabledDevMode ? Visibility.Visible : Visibility.Collapsed;
 
     #endregion
 
@@ -447,20 +454,22 @@ public sealed class MainWindowViewModel : ViewModel
             this.overlayController.AddOverlay(overlay);
 
         Logger?.LogDebug("Creating simulator entries");
-        SimulatorEntries = CreateObservableEnumCollection<Simulator>();
+        SimulatorEntries = EnumEntryModelUtility.CreateObservableEnumCollection<Simulator>();
         SelectedSimulatorEntry = SimulatorEntries.First();
         
         Logger?.LogDebug("Creating track map driver number entries");
-        DriverNumberEntries = CreateObservableEnumCollection<DriverNumberType>();
+        DriverNumberEntries = EnumEntryModelUtility.CreateObservableEnumCollection<DriverNumberType>();
         SelectedDriverNumberEntry = DriverNumberEntries.First(d => d.Value == trackMapConfigSection.DriverNumberType);
 
         StartCommand = new Command(Start);
         StopCommand = new Command(Stop);
+
+        OpenDevToolsCommand = new Command(OpenDevTools);
     }
 
     public void Close()
     {
-        Logger?.LogDebug("Stopping and closing overlays");
+        Logger?.LogInformation("Stopping and closing overlays");
         Stop();
         overlayController.CloseAll();
         Logger?.LogDebug("Overlays closed");
@@ -468,7 +477,7 @@ public sealed class MainWindowViewModel : ViewModel
 
     public void Start()
     {
-        Logger?.LogDebug("Starting racing aid");
+        Logger?.LogInformation("Starting racing aid");
         IsStarted = true;
 
         var racingAid = RacingAidSingleton.Instance;
@@ -483,7 +492,7 @@ public sealed class MainWindowViewModel : ViewModel
 
     public void Stop()
     {
-        Logger?.LogDebug("Stopping racing aid");
+        Logger?.LogInformation("Stopping racing aid");
         var racingAid = RacingAidSingleton.Instance;
         racingAid.Stop();
         racingAid.InSessionUpdated -= OnSessionUpdated;
@@ -502,6 +511,18 @@ public sealed class MainWindowViewModel : ViewModel
         }
         
         IsRepositionEnabled = !IsRepositionEnabled;
+    }
+
+    private void OpenDevTools()
+    {
+        var devToolsView = new DevToolsView();
+        if (devToolsView.DataContext is DevToolsViewModel viewModel)
+        {
+            viewModel.ReplayStarted += StartAndDisplayOverlays;
+            viewModel.ReplayStopped += HideAndResetOverlays;
+        }
+
+        devToolsView.Show();
     }
 
     private void OnSessionUpdated(bool connected)
@@ -539,13 +560,5 @@ public sealed class MainWindowViewModel : ViewModel
         Logger?.LogDebug("Deactivating & Resetting overlays");
         overlayController.AreOverlaysActive = false;
         overlayController.ResetAll();
-    }
-
-    private static ObservableCollection<EnumEntryModel<T>> CreateObservableEnumCollection<T>() where T : struct, Enum
-    {
-        var entries = new ObservableCollection<EnumEntryModel<T>>();
-        foreach (var entry in Enum.GetValues(typeof(T)).Cast<T>())
-            entries.Add(new EnumEntryModel<T>(entry));
-        return entries;
     }
 }
