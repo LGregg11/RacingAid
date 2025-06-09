@@ -32,9 +32,9 @@
         <Canvas Grid.ColumnSpan="4" Style="{StaticResource DefaultCanvasStyle}"/>
         
         <StackPanel Grid.Column="1" Margin="5,0" Orientation="Horizontal">
-            <ProgressBar Style="{StaticResource DefaultProgressBar}" Foreground="Green" Value="{Binding ThrottlePercentage, Mode=OneWay}"/>
-            <ProgressBar Style="{StaticResource DefaultProgressBar}" Foreground="Red" Value="{Binding BrakePercentage, Mode=OneWay}"/>
             <ProgressBar Style="{StaticResource DefaultProgressBar}" Foreground="Blue" Value="{Binding ClutchPercentage, Mode=OneWay}"/>
+            <ProgressBar Style="{StaticResource DefaultProgressBar}" Foreground="Red" Value="{Binding BrakePercentage, Mode=OneWay}"/>
+            <ProgressBar Style="{StaticResource DefaultProgressBar}" Foreground="Green" Value="{Binding ThrottlePercentage, Mode=OneWay}"/>
         </StackPanel>
         
         <Image Grid.Column="2" 
