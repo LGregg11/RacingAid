@@ -18,20 +18,6 @@ public class TelemetryOverlayViewModel : OverlayViewModel
     private readonly TelemetryConfigSection telemetryConfigSection = ConfigSectionSingleton.TelemetrySection;
     private readonly TelemetryInfo telemetryInfo;
     
-    private string driverName = "N/A";
-    public string DriverName
-    {
-        get => driverName;
-        private set
-        {
-            if (driverName == value)
-                return;
-            
-            driverName = value;
-            InvokeOnMainThread(() => OnPropertyChanged());
-        }
-    }
-
     private float speedMetresPerSecond;
     public float SpeedMetresPerSecond
     {
@@ -151,10 +137,6 @@ public class TelemetryOverlayViewModel : OverlayViewModel
         SpeedMetresPerSecond = telemetryInfo.SpeedMetresPerSecond;
         SteeringAngleDegrees = telemetryInfo.SteeringAngleDegrees;
         Gear = telemetryInfo.Gear;
-        
-        var fullName = racingAid.Leaderboard.LocalEntry?.FullName;
-        if (!string.IsNullOrEmpty(fullName))
-            DriverName = fullName;
     }
 
     private void OnConfigUpdated()
