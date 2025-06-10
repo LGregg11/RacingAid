@@ -4,6 +4,7 @@ using RacingAidData.Core.Models;
 
 namespace RacingAidData.Simulators.DataFaker;
 
+#if DEBUG
 public class DataFakerDeserializer : IDeserializeData
 {
     public bool TryDeserializeData(object data, out List<RaceDataModel> models)
@@ -33,3 +34,4 @@ public class DataFakerDeserializer : IDeserializeData
         return new DriverDataModel();
     }
 }
+#endif

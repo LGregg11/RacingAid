@@ -3,6 +3,7 @@ using RacingAidGrpc;
 
 namespace RacingAidData.Simulators.Debug;
 
+#if DEBUG
 public class DataFakerSubscriber : ISubscribeData
 {
     private readonly TelemetryClient telemetryClient;
@@ -34,3 +35,4 @@ public class DataFakerSubscriber : ISubscribeData
         telemetryClient.Stop();
     }
 }
+#endif
