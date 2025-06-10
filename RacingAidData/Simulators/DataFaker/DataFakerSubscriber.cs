@@ -3,7 +3,7 @@ using RacingAidGrpc;
 
 namespace RacingAidData.Simulators.Debug;
 
-public class DebugSubscriber : ISubscribeData
+public class DataFakerSubscriber : ISubscribeData
 {
     private readonly TelemetryClient telemetryClient;
     
@@ -13,7 +13,7 @@ public class DebugSubscriber : ISubscribeData
     public bool IsConnected => telemetryClient.IsConnected;
     public bool IsSubscribed => telemetryClient.IsStarted;
 
-    public DebugSubscriber()
+    public DataFakerSubscriber()
     {
         telemetryClient = new TelemetryClient();
         telemetryClient.SessionStatusUpdated += OnStatusUpdated;

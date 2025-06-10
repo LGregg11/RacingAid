@@ -2,9 +2,9 @@
 using RacingAidData.Core.Deserializers;
 using RacingAidData.Core.Models;
 
-namespace RacingAidData.Simulators.Debug;
+namespace RacingAidData.Simulators.DataFaker;
 
-public class DebugDeserializer : IDeserializeData
+public class DataFakerDeserializer : IDeserializeData
 {
     public bool TryDeserializeData(object data, out List<RaceDataModel> models)
     {
