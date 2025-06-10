@@ -6,8 +6,10 @@
         xmlns:converters="clr-namespace:RacingAidWpf.Converters"
         xmlns:overlays="clr-namespace:RacingAidWpf.Core.Overlays"
         xmlns:viewModel="clr-namespace:RacingAidWpf.ViewModel"
+        xmlns:lc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModel:TelemetryOverlayViewModel}"
+        
         Title="Telemetry"
         SizeToContent="WidthAndHeight"
         WindowStyle="None"
@@ -23,7 +25,8 @@
     </overlays:Overlay.Background>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition/>
             <ColumnDefinition/>
             <ColumnDefinition/>
@@ -31,10 +34,37 @@
         
         <Canvas Grid.ColumnSpan="4" Style="{StaticResource DefaultCanvasStyle}"/>
         
+        <Grid Grid.Column="0">
+            <lc:CartesianChart Series="{Binding InputSeries}"
+                               Height="80"
+                               Width="{Binding ChartWidth}"
+                               AnimationsSpeed="0"
+                               Background="Transparent"
+                               Foreground="Transparent">
+                <lc:CartesianChart.ToolTip>
+                    <lc:DefaultTooltip Visibility="Hidden"/>
+                </lc:CartesianChart.ToolTip>
+                <lc:CartesianChart.AxisX>
+                    <lc:Axis Visibility="Collapsed" Labels="" Foreground="Transparent">
+                        <lc:Axis.Separator>
+                            <lc:Separator StrokeThickness="0"></lc:Separator>
+                        </lc:Axis.Separator>
+                    </lc:Axis>
+                </lc:CartesianChart.AxisX>
+                <lc:CartesianChart.AxisY>
+                    <lc:Axis MinValue="-0.01" MaxValue="1.01" Labels="">
+                        <lc:Axis.Separator>
+                            <lc:Separator StrokeThickness="0" Visibility="Collapsed"></lc:Separator>
+                        </lc:Axis.Separator>
+                    </lc:Axis>
+                </lc:CartesianChart.AxisY>
+            </lc:CartesianChart>
+        </Grid>
+        
         <StackPanel Grid.Column="1" Margin="5,0" Orientation="Horizontal">
-            <ProgressBar Style="{StaticResource DefaultProgressBar}" Foreground="Blue" Value="{Binding ClutchPercentage, Mode=OneWay}"/>
-            <ProgressBar Style="{StaticResource DefaultProgressBar}" Foreground="Red" Value="{Binding BrakePercentage, Mode=OneWay}"/>
-            <ProgressBar Style="{StaticResource DefaultProgressBar}" Foreground="Green" Value="{Binding ThrottlePercentage, Mode=OneWay}"/>
+            <ProgressBar Style="{StaticResource DefaultProgressBar}" Foreground="{Binding ClutchBrush}" Value="{Binding ClutchPercentage, Mode=OneWay}"/>
+            <ProgressBar Style="{StaticResource DefaultProgressBar}" Foreground="{Binding BrakeBrush}" Value="{Binding BrakePercentage, Mode=OneWay}"/>
+            <ProgressBar Style="{StaticResource DefaultProgressBar}" Foreground="{Binding ThrottleBrush}" Value="{Binding ThrottlePercentage, Mode=OneWay}"/>
         </StackPanel>
         
         <Image Grid.Column="2" 
