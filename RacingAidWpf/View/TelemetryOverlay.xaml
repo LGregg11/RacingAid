@@ -9,7 +9,6 @@
         xmlns:lc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModel:TelemetryOverlayViewModel}"
-        
         Title="Telemetry"
         SizeToContent="WidthAndHeight"
         WindowStyle="None"
@@ -39,11 +38,8 @@
                                Height="80"
                                Width="{Binding ChartWidth}"
                                AnimationsSpeed="0"
-                               Background="Transparent"
-                               Foreground="Transparent">
-                <lc:CartesianChart.ToolTip>
-                    <lc:DefaultTooltip Visibility="Hidden"/>
-                </lc:CartesianChart.ToolTip>
+                               Hoverable="False"
+                               DataTooltip="{x:Null}">
                 <lc:CartesianChart.AxisX>
                     <lc:Axis Visibility="Collapsed" Labels="" Foreground="Transparent">
                         <lc:Axis.Separator>

@@ -197,7 +197,8 @@ public class TelemetryOverlayViewModel : OverlayViewModel
             Stroke = brush,
             StrokeThickness = 2f,
             Fill = Brushes.Transparent,
-            PointGeometry = null
+            PointGeometry = null,
+            ToolTip = null
         };
         
         for (var i = 0; i < NChartPoints; i++)
