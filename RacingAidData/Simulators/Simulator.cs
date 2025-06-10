@@ -9,4 +9,9 @@ public enum Simulator
     
     [Description("Formula 1")]
     F1,
+    
+    #if DEBUG
+    [Description("Data Faker")]
+    DataFaker,
+    #endif
 }

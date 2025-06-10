@@ -3,6 +3,8 @@ using RacingAidData.Core.Models;
 using RacingAidData.Core.Replay;
 using RacingAidData.Core.Subscribers;
 using RacingAidData.Simulators;
+using RacingAidData.Simulators.DataFaker;
+using RacingAidData.Simulators.Debug;
 using RacingAidData.Simulators.iRacing;
 
 namespace RacingAidData;
@@ -147,6 +149,12 @@ public class RacingAid
                 DataDeserializer = new iRacingDataDeserializer();
                 DataSubscriber = new iRacingDataSubscriber();
                 break;
+            #if DEBUG
+            case Simulator.DataFaker:
+                DataDeserializer = new DataFakerDeserializer();
+                DataSubscriber = new DataFakerSubscriber();
+                break;
+            #endif
             default:
                 throw new ArgumentOutOfRangeException(nameof(simulator), simulator, null);
         }
