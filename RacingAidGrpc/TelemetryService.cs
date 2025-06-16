@@ -1,44 +1,47 @@
-﻿using System.Threading.Channels;
-using Google.Protobuf.WellKnownTypes;
+﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 
 namespace RacingAidGrpc;
 
 public class TelemetryService : Telemetry.TelemetryBase
 {
-    private event EventHandler<bool> StatusUpdated;
-
-    public void UpdateStatus(bool status)
-    {
-        StatusUpdated?.Invoke(this, status);
-    }
+    private readonly List<IServerStreamWriter<SessionStatusResponse>> subscribers = [];
+    private readonly object lockObject = new();
 
     public override async Task SubscribeToSessionStatus(
         Empty _,
         IServerStreamWriter<SessionStatusResponse> responseStream,
         ServerCallContext context)
     {
-        var channel = Channel.CreateUnbounded<bool>();
-        
-        StatusUpdated += async (_, active) =>
+        lock (lockObject)
         {
-            await channel.Writer.WriteAsync(active);
-        };
+            subscribers.Add(responseStream);
+        }
 
         try
         {
-            await foreach (var active in channel.Reader.ReadAllAsync(context.CancellationToken))
+            while (!context.CancellationToken.IsCancellationRequested)
             {
-                await responseStream.WriteAsync(new SessionStatusResponse { SessionActive = active });
+                await Task.Delay(1000); // Keep connection alive
             }
-        }
-        catch (OperationCanceledException)
-        {
-            // Do nothing I guess
         }
         finally
         {
-            channel.Writer.TryComplete(); // Close the channel when done
+            lock (lockObject)
+            {
+                subscribers.Remove(responseStream);
+            }
+        }
+    }
+    
+    public async Task BroadcastSessionStatus(bool sessionActive)
+    {
+        lock (lockObject)
+        {
+            foreach (var subscriber in subscribers)
+            {
+                subscriber.WriteAsync(new SessionStatusResponse { SessionActive = sessionActive });
+            }
         }
     }
 }
