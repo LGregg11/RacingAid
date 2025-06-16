@@ -1,0 +1,17 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<h3>Session active: @sessionActive</h3>
+
+<button @onclick="ToggleSessionActive">Toggle session active</button>
+
+@code {
+    private bool sessionActive;
+
+    private void ToggleSessionActive()
+    {
+        sessionActive = !sessionActive;
+        Console.WriteLine($"Toggled: {sessionActive}");
+    }
+}
