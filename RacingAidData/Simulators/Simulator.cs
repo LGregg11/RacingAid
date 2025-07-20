@@ -11,7 +11,7 @@ public enum Simulator
     F1,
     
     #if DEBUG
-    [Description("Data Faker")]
-    DataFaker,
+    [Description("Data Injector")]
+    DataInjector,
     #endif
 }

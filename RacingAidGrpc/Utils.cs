@@ -2,6 +2,6 @@
 
 public static class Utils
 {
-    public static string DefaultHost => "127.0.0.1";
-    public static string DefaultPort => "5000";
+    public static string DefaultHost => "https://localhost";
+    public static string DefaultPort => "7001";
 }

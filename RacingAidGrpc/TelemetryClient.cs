@@ -4,9 +4,9 @@ using Grpc.Net.Client;
 
 namespace RacingAidGrpc;
 
-public class TelemetryClient(GrpcChannel channel)
+public class TelemetryClient
 {
-    private readonly Telemetry.TelemetryClient telemetryClient = new(channel);
+    private readonly Telemetry.TelemetryClient telemetryClient;
     
     private CancellationTokenSource cancellationTokenSource;
     private Task sessionStatusSubscriptionTask;
@@ -21,8 +21,10 @@ public class TelemetryClient(GrpcChannel channel)
     {
     }
 
-    public TelemetryClient(string host, string port) : this(GrpcChannel.ForAddress($"{host}:{port}"))
+    public TelemetryClient(string host, string port)
     {
+        var channel = GrpcChannel.ForAddress($"{host}:{port}");
+        telemetryClient = new Telemetry.TelemetryClient(channel);
     }
 
     public void Start()

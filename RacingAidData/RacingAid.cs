@@ -3,9 +3,12 @@ using RacingAidData.Core.Models;
 using RacingAidData.Core.Replay;
 using RacingAidData.Core.Subscribers;
 using RacingAidData.Simulators;
+using RacingAidData.Simulators.iRacing;
+
+#if DEBUG
 using RacingAidData.Simulators.DataFaker;
 using RacingAidData.Simulators.Debug;
-using RacingAidData.Simulators.iRacing;
+#endif
 
 namespace RacingAidData;
 
@@ -150,9 +153,9 @@ public class RacingAid
                 DataSubscriber = new iRacingDataSubscriber();
                 break;
             #if DEBUG
-            case Simulator.DataFaker:
-                DataDeserializer = new DataFakerDeserializer();
-                DataSubscriber = new DataFakerSubscriber();
+            case Simulator.DataInjector:
+                DataDeserializer = new DataInjectorDeserializer();
+                DataSubscriber = new DataInjectorSubscriber();
                 break;
             #endif
             default:

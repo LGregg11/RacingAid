@@ -1,11 +1,29 @@
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using BlazorApp1;
+using RacingAidGrpc;
 
-var builder = WebAssemblyHostBuilder.CreateDefault(args);
-builder.RootComponents.Add<App>("#app");
-builder.RootComponents.Add<HeadOutlet>("head::after");
+using RacingAidDataInjector.Controllers;
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+var builder = WebApplication.CreateBuilder(args);
 
-await builder.Build().RunAsync();
+builder.Services.AddControllersWithViews();
+builder.Services.AddGrpc();
+
+var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapGrpcService<TelemetryService>(); // Maps your TelemetryService to handle gRPC requests
+
+app.Run();

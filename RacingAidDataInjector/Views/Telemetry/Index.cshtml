@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "Telemetry Control";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["Message"]
+    </div>
+}
+
+<p>Click a button to change the session status and broadcast it to subscribers.</p>
+
+<form asp-controller="Telemetry" asp-action="BroadcastSessionStatus" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <button type="submit" name="newStatus" value="true" class="btn btn-success btn-lg">
+            Activate Session
+        </button>
+        <button type="submit" name="newStatus" value="false" class="btn btn-danger btn-lg">
+            Deactivate Session
+        </button>
+    </div>
+</form>
+
+<hr/>
+
+<h3>Client Subscription Test</h3>
+<p>
+    Ensure your gRPC client is running and subscribed to see real-time updates when you press these buttons.
+</p>
