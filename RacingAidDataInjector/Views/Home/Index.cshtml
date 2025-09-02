@@ -13,7 +13,7 @@
 
 <p>Click a button to change the session status and broadcast it to subscribers.</p>
 
-<form asp-controller="Telemetry" asp-action="BroadcastSessionStatus" method="post">
+<form asp-controller="Home" asp-action="BroadcastSessionStatus" method="post">
     @Html.AntiForgeryToken()
 
     <div class="form-group">

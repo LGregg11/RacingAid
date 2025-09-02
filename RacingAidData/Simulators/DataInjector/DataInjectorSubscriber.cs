@@ -1,7 +1,7 @@
 ﻿using RacingAidData.Core.Subscribers;
 using RacingAidGrpc;
 
-namespace RacingAidData.Simulators.Debug;
+namespace RacingAidData.Simulators.DataInjector;
 
 #if DEBUG
 public class DataInjectorSubscriber : ISubscribeData
@@ -18,11 +18,18 @@ public class DataInjectorSubscriber : ISubscribeData
     {
         telemetryClient = new TelemetryClient();
         telemetryClient.SessionStatusUpdated += OnStatusUpdated;
+        telemetryClient.RelativeUpdated += OnRelativeUpdated;
     }
 
-    private void OnStatusUpdated(object? sender, bool status)
+    private void OnRelativeUpdated(object? sender, RelativeResponse relative)
     {
-        ConnectionUpdated?.Invoke(status);
+        LatestData = relative;
+        DataReceived?.Invoke();
+    }
+
+    private void OnStatusUpdated(object? sender, SessionStatusResponse status)
+    {
+        ConnectionUpdated?.Invoke(status.SessionActive);
     }
 
     public void Start()

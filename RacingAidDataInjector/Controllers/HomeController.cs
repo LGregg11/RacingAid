@@ -3,7 +3,7 @@ using RacingAidGrpc;
 
 namespace RacingAidDataInjector.Controllers;
 
-public class TelemetryController : Controller
+public class HomeController : Controller
 {
     public IActionResult Index()
     {
@@ -12,7 +12,8 @@ public class TelemetryController : Controller
 
     public async Task<IActionResult> BroadcastSessionStatus(bool newStatus)
     {
-        TelemetryService.BroadcastSessionStatus(newStatus);
+        await TelemetryService.BroadcastSessionStatus(new SessionStatusResponse { SessionActive = newStatus });
+        
         return RedirectToAction("Index");
     }
 }

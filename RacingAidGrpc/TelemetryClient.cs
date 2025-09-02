@@ -10,12 +10,15 @@ public class TelemetryClient
     
     private CancellationTokenSource cancellationTokenSource;
     private Task sessionStatusSubscriptionTask;
+    private Task relativeSubscriptionTask;
 
     public bool IsStarted { get; private set; }
     
     public bool IsConnected { get; private set; }
     
-    public event EventHandler<bool> SessionStatusUpdated;
+    public event EventHandler<SessionStatusResponse> SessionStatusUpdated;
+    
+    public event EventHandler<RelativeResponse> RelativeUpdated;
 
     public TelemetryClient() : this(Utils.DefaultHost, Utils.DefaultPort)
     {
@@ -34,6 +37,7 @@ public class TelemetryClient
         
         cancellationTokenSource = new CancellationTokenSource();
         sessionStatusSubscriptionTask = Task.Run(() => SubscribeToSessionStatus(telemetryClient, cancellationTokenSource.Token));
+        relativeSubscriptionTask = Task.Run(() => SubscribeToRelative(telemetryClient, cancellationTokenSource.Token));
         IsStarted = true;
     }
 
@@ -44,6 +48,7 @@ public class TelemetryClient
         
         cancellationTokenSource.Cancel();
         sessionStatusSubscriptionTask.Wait();
+        relativeSubscriptionTask.Wait();
         IsStarted = false;
     }
 
@@ -56,7 +61,28 @@ public class TelemetryClient
             await foreach (var response in call.ResponseStream.ReadAllAsync(cancellationToken))
             {
                 IsConnected = response.SessionActive;
-                SessionStatusUpdated?.Invoke(this, response.SessionActive);
+                SessionStatusUpdated?.Invoke(this, response);
+            }
+        }
+        catch (RpcException ex) when (ex.StatusCode == StatusCode.Cancelled)
+        {
+            Console.WriteLine("Stream cancelled.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    private async Task SubscribeToRelative(Telemetry.TelemetryClient client, CancellationToken cancellationToken)
+    {
+        try
+        {
+            using var call = client.SubscribeToRelative(new Empty(), cancellationToken: cancellationToken);
+
+            await foreach (var response in call.ResponseStream.ReadAllAsync(cancellationToken))
+            {
+                RelativeUpdated?.Invoke(this, response);
             }
         }
         catch (RpcException ex) when (ex.StatusCode == StatusCode.Cancelled)

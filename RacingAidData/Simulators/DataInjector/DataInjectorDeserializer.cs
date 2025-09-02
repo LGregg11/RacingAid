@@ -1,8 +1,9 @@
 ﻿using IRSDKSharper;
 using RacingAidData.Core.Deserializers;
 using RacingAidData.Core.Models;
+using RacingAidGrpc;
 
-namespace RacingAidData.Simulators.DataFaker;
+namespace RacingAidData.Simulators.DataInjector;
 
 #if DEBUG
 public class DataInjectorDeserializer : IDeserializeData
@@ -10,6 +11,17 @@ public class DataInjectorDeserializer : IDeserializeData
     public bool TryDeserializeData(object data, out List<RaceDataModel> models)
     {
         models = [];
+
+        if (data is RelativeResponse relativeResponse)
+        {
+            var relativeEntries = CreateRelativeEntries(relativeResponse);
+            var relativeModel = new TimesheetModel<RelativeEntryModel>
+            {
+                Entries = relativeEntries,
+                LocalEntry = relativeEntries.FirstOrDefault(e => e.IsLocal)
+            };
+            models.Add(relativeModel);
+        }
         
         return models.Count > 0;
     }
@@ -19,9 +31,30 @@ public class DataInjectorDeserializer : IDeserializeData
         return [];
     }
 
-    private static List<RelativeEntryModel> CreateRelativeEntries(IRacingSdkData iRacingData)
+    private static List<RelativeEntryModel> CreateRelativeEntries(RelativeResponse relative)
     {
-        return [];
+        var relativeEntries = new List<RelativeEntryModel>();
+        foreach (var relativeDriver in relative.Drivers)
+        {
+            relativeEntries.Add(new RelativeEntryModel
+            {
+                OverallPosition = relativeDriver.TimesheetEntry.OverallPosition,
+                ClassPosition = relativeDriver.TimesheetEntry.ClassPosition,
+                FullName = relativeDriver.TimesheetEntry.FullName,
+                CarModel = relativeDriver.TimesheetEntry.CarModel,
+                CarNumber = relativeDriver.TimesheetEntry.CarNumber,
+                InPits = relativeDriver.TimesheetEntry.InPits,
+                IsLocal = relativeDriver.TimesheetEntry.IsLocal,
+                LapsDriven = relativeDriver.TimesheetEntry.LapsDriven,
+                LastLapMs = relativeDriver.TimesheetEntry.LastLapMs,
+                FastestLapMs = relativeDriver.TimesheetEntry.FastestLapMs,
+                SkillRating = relativeDriver.TimesheetEntry.SkillRating,
+                SafetyRating = relativeDriver.TimesheetEntry.SafetyRating,
+                
+                GapToLocalMs = relativeDriver.GapToLocalMs
+            });
+        }
+        return relativeEntries;
     }
 
     private static RaceDataModel CreateTelemetryModel(IRacingSdkData iRacingData)

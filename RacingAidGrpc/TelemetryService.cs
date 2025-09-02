@@ -1,24 +1,33 @@
-﻿using System.Collections.Concurrent;
-using Google.Protobuf.WellKnownTypes;
+﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using Microsoft.Extensions.Logging;
 
 namespace RacingAidGrpc;
 
-public class TelemetryService(ILogger<TelemetryService> logger) : Telemetry.TelemetryBase
+public class TelemetryService : Telemetry.TelemetryBase
 {
     private static readonly SubscriberStream<SessionStatusResponse> SessionStatusStream =
         new();
+    
+    private static readonly SubscriberStream<RelativeResponse> RelativeStream =
+        new();
+
+    public static async Task BroadcastSessionStatus(SessionStatusResponse sessionStatusResponse)
+    {
+        await SessionStatusStream.TryWriteAllAsync(sessionStatusResponse);
+    }
+
+    public static async Task BroadcastRelative(RelativeResponse relativeResponse)
+    {
+        await RelativeStream.TryWriteAllAsync(relativeResponse);
+    }
 
     public override async Task SubscribeToSessionStatus(Empty request, IServerStreamWriter<SessionStatusResponse> responseStream, ServerCallContext context)
     {
         await SessionStatusStream.AddAndSendLastMessage(responseStream, context);
     }
 
-    public static async Task BroadcastSessionStatus(bool newStatus)
+    public override async Task SubscribeToRelative(Empty request, IServerStreamWriter<RelativeResponse> responseStream, ServerCallContext context)
     {
-        var response = new SessionStatusResponse { SessionActive = newStatus };
-        
-        await SessionStatusStream.TryWriteAllAsync(response);
+        await RelativeStream.AddAndSendLastMessage(responseStream, context);
     }
 }

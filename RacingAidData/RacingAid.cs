@@ -3,11 +3,10 @@ using RacingAidData.Core.Models;
 using RacingAidData.Core.Replay;
 using RacingAidData.Core.Subscribers;
 using RacingAidData.Simulators;
+using RacingAidData.Simulators.DataInjector;
 using RacingAidData.Simulators.iRacing;
 
 #if DEBUG
-using RacingAidData.Simulators.DataFaker;
-using RacingAidData.Simulators.Debug;
 #endif
 
 namespace RacingAidData;

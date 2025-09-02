@@ -1,0 +1,119 @@
+﻿@model RelativeViewModel
+
+@{
+    ViewData["Title"] = "Telemetry Control";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["Message"]
+    </div>
+}
+
+<p>Click a button to change the session status and broadcast it to subscribers.</p>
+
+<form asp-controller="Relative" asp-action="BroadcastRelative" method="post">
+    @Html.AntiForgeryToken()
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Overall Position</th>
+                <th>Class Position</th>
+                <th>Name</th>
+                <th>Lap Position</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="driversTableBody">
+        @for (var i = 0; i < Model.Drivers.Count; i++)
+        {
+            <tr>
+                <td>
+                    <input type="hidden" asp-for="Drivers[i].OverallPosition" />
+                    <span>@Model.Drivers[i].OverallPosition</span>
+                </td>
+                <td>
+                    <input type="number" asp-for="Drivers[i].ClassPosition" class="form-control" />
+                </td>
+                <td>
+                    <input type="text" asp-for="Drivers[i].FullName" class="form-control" />
+                </td>
+                <td>
+                    <input type="number" step="0.01" asp-for="Drivers[i].LapsDriven" class="form-control" />
+                </td>
+                <td>
+                    <input type="hidden" asp-for="Drivers[i].CarNumber" class="form-control" />
+                </td>
+                <td>
+                    <input type="hidden" asp-for="Drivers[i].CarModel" class="form-control" />
+                </td>
+                <td>
+                    <input type="hidden" asp-for="Drivers[i].GapToLocalMs" class="form-control" />
+                </td>
+                <td>
+                    <input type="hidden" asp-for="Drivers[i].InPits" class="form-control" />
+                </td>
+                <td>
+                    <input type="hidden" asp-for="Drivers[i].IsLocal" class="form-control" />
+                </td>
+                <td>
+                    <input type="hidden" asp-for="Drivers[i].SafetyRating" class="form-control" />
+                </td>
+                <td>
+                    <input type="hidden" asp-for="Drivers[i].SkillRating" class="form-control" />
+                </td>
+                <td>
+                    <input type="hidden" asp-for="Drivers[i].FastestLapMs" class="form-control" />
+                </td>
+                <td>
+                    <input type="hidden" asp-for="Drivers[i].LastLapMs" class="form-control" />
+                </td>
+                @* <td> *@
+                @*     <button type="button" class="btn btn-danger remove-row">Remove</button> *@
+                @* </td> *@
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <button type="button" id="addRowBtn" class="btn btn-secondary">Add Driver</button>
+    <button type="submit" class="btn btn-primary">Send Data</button>
+</form>
+
+<hr/>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const driversTableBody = document.getElementById('driversTableBody');
+            const addRowBtn = document.getElementById('addRowBtn');
+
+            // Counter for new rows
+            let driverCount = @Model.Drivers.Count;
+
+            // Function to add a new row
+            addRowBtn.addEventListener('click', function () {
+                const newRowHtml = ```
+            <tr>
+                <td>
+                    <input type="hidden" name="Drivers[${driverCount}].OverallPosition" value="${driverCount + 1}" />
+                    <span>${driverCount + 1}</span>
+                </td>
+                <td>
+                    <input type="text" name="Drivers[${driverCount}].FullName" class="form-control" />
+                </td>
+                <td>
+                    <input type="number" step="0.01" min="0" max="1" name="Drivers[${driverCount}].LapPosition" class="form-control" />
+                </td>
+            </tr>
+        ```;
+                driversTableBody.insertAdjacentHTML('beforeend', newRowHtml);
+                driverCount++;
+            });
+        });
+    </script>
+}
