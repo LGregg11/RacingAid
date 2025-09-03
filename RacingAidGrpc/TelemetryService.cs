@@ -1,44 +1,33 @@
-﻿using System.Threading.Channels;
-using Google.Protobuf.WellKnownTypes;
+﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 
 namespace RacingAidGrpc;
 
 public class TelemetryService : Telemetry.TelemetryBase
 {
-    private event EventHandler<bool> StatusUpdated;
+    private static readonly SubscriberStream<SessionStatusResponse> SessionStatusStream =
+        new();
+    
+    private static readonly SubscriberStream<RelativeResponse> RelativeStream =
+        new();
 
-    public void UpdateStatus(bool status)
+    public static async Task BroadcastSessionStatus(SessionStatusResponse sessionStatusResponse)
     {
-        StatusUpdated?.Invoke(this, status);
+        await SessionStatusStream.TryWriteAllAsync(sessionStatusResponse);
     }
 
-    public override async Task SubscribeToSessionStatus(
-        Empty _,
-        IServerStreamWriter<SessionStatusResponse> responseStream,
-        ServerCallContext context)
+    public static async Task BroadcastRelative(RelativeResponse relativeResponse)
     {
-        var channel = Channel.CreateUnbounded<bool>();
-        
-        StatusUpdated += async (_, active) =>
-        {
-            await channel.Writer.WriteAsync(active);
-        };
+        await RelativeStream.TryWriteAllAsync(relativeResponse);
+    }
 
-        try
-        {
-            await foreach (var active in channel.Reader.ReadAllAsync(context.CancellationToken))
-            {
-                await responseStream.WriteAsync(new SessionStatusResponse { SessionActive = active });
-            }
-        }
-        catch (OperationCanceledException)
-        {
-            // Do nothing I guess
-        }
-        finally
-        {
-            channel.Writer.TryComplete(); // Close the channel when done
-        }
+    public override async Task SubscribeToSessionStatus(Empty request, IServerStreamWriter<SessionStatusResponse> responseStream, ServerCallContext context)
+    {
+        await SessionStatusStream.AddAndSendLastMessage(responseStream, context);
+    }
+
+    public override async Task SubscribeToRelative(Empty request, IServerStreamWriter<RelativeResponse> responseStream, ServerCallContext context)
+    {
+        await RelativeStream.AddAndSendLastMessage(responseStream, context);
     }
 }

@@ -6,8 +6,33 @@ import "google/protobuf/empty.proto";
 
 service Telemetry {
   rpc SubscribeToSessionStatus (google.protobuf.Empty) returns (stream SessionStatusResponse);
+  rpc SubscribeToRelative (google.protobuf.Empty) returns (stream RelativeResponse);
 }
 
 message SessionStatusResponse {
   bool sessionActive = 1;
+}
+
+message TimesheetEntry {
+  int32 overallPosition = 1;
+  int32 ClassPosition = 2;
+  string fullName = 3;
+  string skillRating = 4;
+  string safetyRating = 5;
+  string carModel = 6;
+  int32 carNumber = 7;
+  int32 lastLapMs = 8;
+  int32 fastestLapMs = 9;
+  float lapsDriven = 10;
+  bool inPits = 11;
+  bool isLocal = 12;
+}
+
+message RelativeDriver {
+  TimesheetEntry timesheetEntry = 1;
+  int32 GapToLocalMs = 2;
+}
+
+message RelativeResponse {
+  repeated RelativeDriver drivers = 1;
 }

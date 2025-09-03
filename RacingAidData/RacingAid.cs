@@ -3,7 +3,11 @@ using RacingAidData.Core.Models;
 using RacingAidData.Core.Replay;
 using RacingAidData.Core.Subscribers;
 using RacingAidData.Simulators;
+using RacingAidData.Simulators.DataInjector;
 using RacingAidData.Simulators.iRacing;
+
+#if DEBUG
+#endif
 
 namespace RacingAidData;
 
@@ -147,6 +151,12 @@ public class RacingAid
                 DataDeserializer = new iRacingDataDeserializer();
                 DataSubscriber = new iRacingDataSubscriber();
                 break;
+            #if DEBUG
+            case Simulator.DataInjector:
+                DataDeserializer = new DataInjectorDeserializer();
+                DataSubscriber = new DataInjectorSubscriber();
+                break;
+            #endif
             default:
                 throw new ArgumentOutOfRangeException(nameof(simulator), simulator, null);
         }
