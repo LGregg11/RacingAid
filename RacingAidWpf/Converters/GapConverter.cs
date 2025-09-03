@@ -13,7 +13,7 @@ public class GapConverter : IValueConverter
         if (value is not int timeMs || Math.Abs(timeMs) < oneTenthMs)
             return "-";
         
-        var signStr = timeMs < 0 ? "-" : "+";
+        var signStr = timeMs > 0 ? "-" : "+";
         timeMs = Math.Abs(timeMs);
         
         var time = TimeSpan.FromMilliseconds(timeMs);
