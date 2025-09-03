@@ -141,10 +141,12 @@ public class iRacingDataDeserializer : IDeserializeData
             var lapPercentage = lapsDriven - (int)lapsDriven;
             
             var gapToLocalMs = GetGapToLocalMs(iRacingData, localCarIdx, carIdx);
-            if (localLapPercentage >= 0.5f && lapPercentage < 0.5f)
+            var lapDeltaAbs = MathF.Abs(localLapPercentage - lapPercentage);
+            if (lapDeltaAbs > 0.5f)
             {
-                var localLapPercentageDelta = -1f * (lapPercentage + (1f - localLapPercentage));
-                gapToLocalMs = (int)(localLapTimeMs * localLapPercentageDelta / localLapPercentage);
+                gapToLocalMs = (int)(localLapTimeMs * (1-lapDeltaAbs) / localLapPercentage);
+                if (localLapPercentage > lapPercentage)
+                    gapToLocalMs *= -1;
             }
 
             relativeEntries.Add(new RelativeEntryModel
