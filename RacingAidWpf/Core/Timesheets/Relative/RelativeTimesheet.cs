@@ -5,6 +5,8 @@ namespace RacingAidWpf.Core.Timesheets.Relative;
 
 public class RelativeTimesheet : Timesheet<RelativeEntryModel>
 {
+    private float localLapDriven;
+    
     public IEnumerable<RelativeTimesheetInfo> RelativeEntries => Entries.OfType<RelativeTimesheetInfo>();
 
     protected override TimesheetInfo CreateTimesheetInfo(RelativeEntryModel relativeEntryModel)
@@ -21,6 +23,7 @@ public class RelativeTimesheet : Timesheet<RelativeEntryModel>
             relativeEntryModel.FastestLapMs,
             relativeEntryModel.GapToLocalMs,
             relativeEntryModel.LapsDriven,
+            relativeEntryModel.LapsDriven - localLapDriven,
             relativeEntryModel.IsLocal,
             relativeEntryModel.InPits);
     }
@@ -28,6 +31,7 @@ public class RelativeTimesheet : Timesheet<RelativeEntryModel>
     protected override List<TimesheetInfo> CreateTimesheetEntries(TimesheetModel<RelativeEntryModel> relativeData)
     {
         var localLapPercentage = relativeData.LocalEntry?.LapPercentage ?? 0f;
+        localLapDriven = relativeData.LocalEntry?.LapsDriven ?? 0f;
         
         List<RelativeTimesheetInfo> relativeInfoEntries = [];
         foreach (var relativeEntry in relativeData.Entries)

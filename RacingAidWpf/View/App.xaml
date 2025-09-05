@@ -7,12 +7,12 @@
         <ResourceDictionary>
             <SolidColorBrush x:Key="DefaultBackgroundColor" Color="Transparent"/>
             <SolidColorBrush x:Key="DefaultTelemetryBarColor" Color="Black"/>
-            <SolidColorBrush x:Key="DefaultCanvasColor" Color="Black"/>
+            <SolidColorBrush x:Key="DefaultCanvasColor" Color="#111111"/>
             <SolidColorBrush x:Key="DefaultTextColor" Color="White"/>
             
-            <sys:Double x:Key="DefaultOpacity">0.5</sys:Double>
+            <sys:Double x:Key="DefaultOpacity">0.7</sys:Double>
             <sys:Double x:Key="DefaultFontSize">15</sys:Double>
-            <sys:Double x:Key="DefaultDataGridFontSize">15</sys:Double>
+            <sys:Double x:Key="DefaultDataGridFontSize">12</sys:Double>
             
             <Style x:Key="DefaultTextBlock" TargetType="TextBlock">
                 <Setter Property="Background" Value="{StaticResource DefaultBackgroundColor}"/>
@@ -37,6 +37,7 @@
                 <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource DefaultBackgroundColor}"/>
                 <Setter Property="VerticalGridLinesBrush" Value="{StaticResource DefaultBackgroundColor}"/>
                 <Setter Property="FontSize" Value="{StaticResource DefaultDataGridFontSize}"/>
+                <Setter Property="FontWeight" Value="Bold"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
                 <Setter Property="ColumnWidth" Value="*"/>
