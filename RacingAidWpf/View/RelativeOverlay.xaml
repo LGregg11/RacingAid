@@ -23,6 +23,7 @@
         <converters:LapTimeConverter x:Key="LapTimeConverter"/>
         <converters:GapConverter x:Key="GapConverter"/>
         <converters:PositionConverter x:Key="PositionConverter"/>
+        <converters:LapBehindAheadBrushConverter x:Key="LapBehindAheadBrushConverter"/>
     </overlays:Overlay.Resources>
     <Grid>
         
@@ -32,12 +33,13 @@
         <DataGrid ItemsSource="{Binding Relative}"
                   Style="{StaticResource DefaultDataGridStyle}"
                   ColumnHeaderStyle="{StaticResource DefaultDataGridColumnHeaderStyle}"
+                  Width="600"
                   AutoGenerateColumns="False"
                   VerticalScrollBarVisibility="Hidden"
                   HorizontalScrollBarVisibility="Hidden">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Pos." Binding="{Binding PositionOverall, Converter={StaticResource PositionConverter}}" Width="1*"/>
-                <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="4*"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="3*"/>
                 <DataGridTextColumn Header="No." Binding="{Binding CarNumber}" Width="1*" Visibility="{Binding DataContext.CarNumberColumnVisibility, Source={x:Reference DummyElement}}"/>
                 <DataGridTextColumn Header="Safety" Binding="{Binding SafetyRating}" Width="1*" Visibility="{Binding DataContext.SafetyColumnVisibility, Source={x:Reference DummyElement}}"/>
                 <DataGridTextColumn Header="Skill" Binding="{Binding SkillRating}" Width="1*" Visibility="{Binding DataContext.SkillColumnVisibility, Source={x:Reference DummyElement}}"/>
@@ -50,6 +52,25 @@
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsLocal}" Value="True">
                             <Setter Property="Foreground" Value="Yellow"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding InPits}" Value="True">
+                            <Setter Property="Opacity" Value="0.6"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=LapDeltaToLocal, Converter={StaticResource LapBehindAheadBrushConverter}}"
+                                     Value="{x:Static converters:RelativeLapState.TwoAhead}">
+                            <Setter Property="Foreground" Value="DarkRed"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=LapDeltaToLocal, Converter={StaticResource LapBehindAheadBrushConverter}}"
+                                     Value="{x:Static converters:RelativeLapState.OneAhead}">
+                            <Setter Property="Foreground" Value="Red"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=LapDeltaToLocal, Converter={StaticResource LapBehindAheadBrushConverter}}"
+                                     Value="{x:Static converters:RelativeLapState.OneBehind}">
+                            <Setter Property="Foreground" Value="CornflowerBlue"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=LapDeltaToLocal, Converter={StaticResource LapBehindAheadBrushConverter}}"
+                                     Value="{x:Static converters:RelativeLapState.TwoBehind}">
+                            <Setter Property="Foreground" Value="Blue"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
