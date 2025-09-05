@@ -22,11 +22,13 @@ public class TelemetryOverlayViewModel : OverlayViewModel
     private readonly TelemetryConfigSection telemetryConfigSection = ConfigSectionSingleton.TelemetrySection;
     private readonly TelemetryInfo telemetryInfo;
     
-    public double ChartWidth { get; set; } = 100;
+    public double ChartWidth { get; set; } = 250;
     private int NChartPoints => (int)(ChartWidth / 2);
     public SolidColorBrush ThrottleBrush { get; } = Brushes.Green;
     public SolidColorBrush BrakeBrush { get; } = Brushes.Red;
     public SolidColorBrush ClutchBrush { get; } = Brushes.Blue;
+    
+    public SolidColorBrush SteerBrush { get; } = new(Color.FromRgb(77,77,77));
 
     public SeriesCollection InputSeries { get; private init; }
 
@@ -101,7 +103,6 @@ public class TelemetryOverlayViewModel : OverlayViewModel
     }
 
     private float steeringAngleDegrees;
-
     public float SteeringAngleDegrees
     {
         get => steeringAngleDegrees;
@@ -116,6 +117,17 @@ public class TelemetryOverlayViewModel : OverlayViewModel
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(SteeringWheelAngle));
             });
+        }
+    }
+
+    public float SteeringAngleAsPercentage
+    {
+        get
+        {
+            const float angleLimit = 360f;
+            
+            var limitedSteeringAngle = MathF.Max(-1f * angleLimit, MathF.Min(angleLimit, SteeringAngleDegrees));
+            return 0.5f + (limitedSteeringAngle / angleLimit);
         }
     }
 
@@ -135,8 +147,9 @@ public class TelemetryOverlayViewModel : OverlayViewModel
         var clutchLineSeries = CreateLineSeries(ClutchBrush);
         var brakeLineSeries = CreateLineSeries(BrakeBrush);
         var throttleLineSeries = CreateLineSeries(ThrottleBrush);
+        var steerLineSeries = CreateLineSeries(SteerBrush, 1f);
 
-        InputSeries = [clutchLineSeries, brakeLineSeries, throttleLineSeries];
+        InputSeries = [clutchLineSeries, brakeLineSeries, throttleLineSeries, steerLineSeries];
     }
 
     public override void Reset()
@@ -156,7 +169,7 @@ public class TelemetryOverlayViewModel : OverlayViewModel
         SteeringAngleDegrees = telemetryInfo.SteeringAngleDegrees;
         Gear = telemetryInfo.Gear;
         
-        UpdateSeries(ThrottlePercentage, BrakePercentage, ClutchPercentage);
+        UpdateSeries(ThrottlePercentage, BrakePercentage, ClutchPercentage, SteeringAngleAsPercentage);
     }
 
     private void OnConfigUpdated()
@@ -165,13 +178,14 @@ public class TelemetryOverlayViewModel : OverlayViewModel
         OnPropertyChanged(nameof(SpeedMetresPerSecond));
     }
 
-    private void UpdateSeries(float throttle, float brake, float clutch)
+    private void UpdateSeries(float throttle, float brake, float clutch, float steer)
     {
         InvokeOnMainThread(() =>
         {
             InputSeries[0].Values = UpdateInputPlot(InputSeries[0].Values, clutch);
             InputSeries[1].Values = UpdateInputPlot(InputSeries[1].Values, brake);
             InputSeries[2].Values = UpdateInputPlot(InputSeries[2].Values, throttle);
+            InputSeries[3].Values = UpdateInputPlot(InputSeries[3].Values, steer);
         });
         
         OnPropertyChanged(nameof(InputSeries));
@@ -189,13 +203,13 @@ public class TelemetryOverlayViewModel : OverlayViewModel
         return inputValues;
     }
 
-    private LineSeries CreateLineSeries(SolidColorBrush brush)
+    private LineSeries CreateLineSeries(SolidColorBrush brush, float thickness = 2f)
     {
         var lineSeries = new LineSeries
         {
             Values = new ChartValues<float>(),
             Stroke = brush,
-            StrokeThickness = 2f,
+            StrokeThickness = thickness,
             Fill = Brushes.Transparent,
             PointGeometry = null,
             ToolTip = null
