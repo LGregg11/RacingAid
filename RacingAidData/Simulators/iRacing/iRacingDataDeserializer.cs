@@ -118,10 +118,6 @@ public class iRacingDataDeserializer : IDeserializeData
 
         var localCarIdx = driverInfo.DriverCarIdx;
         var resultsPositions = iRacingData.SessionInfo.SessionInfo.Sessions.LastOrDefault()?.ResultsPositions;
-        
-        var localLapPercentage = GetLapDistancePercentage(iRacingData, localCarIdx);
-        var localLapTimeMs = GetEstTimeToPositionOnTrackMs(iRacingData, localCarIdx);
-        Console.WriteLine($"{localLapPercentage}, {localLapTimeMs}, {localLapTimeMs/localLapPercentage}");
 
         // Loop through position results to ensure the position order is correct - can grab necessary driver info
         foreach (var driver in drivers.OrderBy(d => GetOverallPosition(iRacingData, d.CarIdx)))
@@ -138,7 +134,7 @@ public class iRacingDataDeserializer : IDeserializeData
                 hasResult = true;
                 resultPosition = position;
             }
-
+            
             relativeEntries.Add(new RelativeEntryModel
             {
                 FullName = driver.UserName,
@@ -230,25 +226,24 @@ public class iRacingDataDeserializer : IDeserializeData
 
     private static int GetGapToLocalMs(IRacingSdkData iRacingData, int localCarIdx, int carIdx)
     {
-        var gapToLocalMs = GetEstTimeToPositionOnTrackMs(iRacingData, localCarIdx) -
-               GetEstTimeToPositionOnTrackMs(iRacingData, carIdx);
+        var localEstTimeMs = GetEstTimeToPositionOnTrackMs(iRacingData, localCarIdx);
+        var localLapDrivenPct = GetLapDistancePercentage(iRacingData, localCarIdx);
+        var localEstTotalLapTimeMs = localEstTimeMs / localLapDrivenPct;
         
-        var localLapPercentage = GetLapDistancePercentage(iRacingData, localCarIdx);
-        var localLapTimeMs = GetEstTimeToPositionOnTrackMs(iRacingData, localCarIdx);
+        var lapsDrivenDelta = GetLapsDriven(iRacingData, localCarIdx) - GetLapsDriven(iRacingData, carIdx);
         
-        var lapsDriven = GetLapsDriven(iRacingData, carIdx);
-        var lapPercentage = lapsDriven - (int)lapsDriven;
-        
-        
-        var lapDeltaAbs = MathF.Abs(localLapPercentage - lapPercentage);
-        if (lapDeltaAbs > 0.5f)
+        var lapsDrivenPctDelta = lapsDrivenDelta - (int)lapsDrivenDelta;
+        var lapDeltaPctAbs = MathF.Abs(lapsDrivenPctDelta);
+
+        var delta = lapsDrivenPctDelta;
+        if (lapDeltaPctAbs > 0.5f)
         {
-            gapToLocalMs = (int)(localLapTimeMs * (1-lapDeltaAbs) / localLapPercentage);
-            if (localLapPercentage > lapPercentage)
-                gapToLocalMs *= -1;
+            delta = 1 - lapDeltaPctAbs;
+            if (lapsDrivenPctDelta > 0)
+                delta *= -1;
         }
 
-        return gapToLocalMs;
+        return (int)(localEstTotalLapTimeMs * delta);
     }
 
     private static int GetEstTimeToPositionOnTrackMs(IRacingSdkData iRacingData, int carIdx)
@@ -279,5 +274,15 @@ public class iRacingDataDeserializer : IDeserializeData
     private static int GetClassPosition(IRacingSdkData iRacingData, int carIdx)
     {
         return iRacingData.GetInt("CarIdxClassPosition", carIdx);
+    }
+
+    private static float GetLapDist(IRacingSdkData iRacingData)
+    {
+        return iRacingData.GetFloat("LapDist");
+    }
+
+    private static float GetLapDistPct(IRacingSdkData iRacingData)
+    {
+        return iRacingData.GetFloat("LapDistPct");
     }
 }
