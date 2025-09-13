@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RacingAidDataInjector.Models;
 using RacingAidGrpc;
+using Color = System.Drawing.Color;
 
 namespace RacingAidDataInjector.Controllers;
 
@@ -75,6 +76,17 @@ public class RelativeController : Controller
 
     private static TimesheetEntry TimesheetEntryFromModel(TimesheetEntryModel model)
     {
+        var safetyRatingCode = model.SafetyRating;
+        var safetyRatingColor = Color.Red;
+        if (safetyRatingCode.Contains("A"))
+            safetyRatingColor = Color.Blue;
+        if (safetyRatingCode.Contains("B"))
+            safetyRatingColor = Color.Green;
+        if (safetyRatingCode.Contains("C"))
+            safetyRatingColor = Color.Yellow;
+        if (safetyRatingCode.Contains("D"))
+            safetyRatingColor = Color.Orange;
+        
         return new TimesheetEntry
         {
             OverallPosition = model.OverallPosition,
@@ -86,7 +98,14 @@ public class RelativeController : Controller
             IsLocal = model.IsLocal,
             LapsDriven = model.LapsDriven,
             SkillRating = model.SkillRating,
-            SafetyRating = model.SafetyRating,
+            SafetyRating = new SafetyRating
+            {
+                Rating = model.SafetyRating,
+                Color = new RacingAidGrpc.Color
+                {
+                    ARGB = safetyRatingColor.ToArgb()
+                }
+            },
             FastestLapMs = model.FastestLapMs,
             LastLapMs = model.LastLapMs
         };
