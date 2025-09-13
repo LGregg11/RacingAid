@@ -36,6 +36,12 @@ public class DataInjectorDeserializer : IDeserializeData
         var relativeEntries = new List<RelativeEntryModel>();
         foreach (var relativeDriver in relative.Drivers)
         {
+            var safetyRating = new RacingAidData.Core.Models.SafetyRating
+            {
+                Rating = relativeDriver.TimesheetEntry.SafetyRating.Rating,
+                Color = System.Drawing.Color.FromArgb(relativeDriver.TimesheetEntry.SafetyRating.Color.ARGB)
+            };
+            
             relativeEntries.Add(new RelativeEntryModel
             {
                 OverallPosition = relativeDriver.TimesheetEntry.OverallPosition,
@@ -49,8 +55,7 @@ public class DataInjectorDeserializer : IDeserializeData
                 LastLapMs = relativeDriver.TimesheetEntry.LastLapMs,
                 FastestLapMs = relativeDriver.TimesheetEntry.FastestLapMs,
                 SkillRating = relativeDriver.TimesheetEntry.SkillRating,
-                SafetyRating = relativeDriver.TimesheetEntry.SafetyRating,
-                
+                SafetyRating = safetyRating,
                 GapToLocalMs = relativeDriver.GapToLocalMs
             });
         }

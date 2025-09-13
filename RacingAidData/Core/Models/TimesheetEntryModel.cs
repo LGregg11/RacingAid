@@ -28,7 +28,7 @@ public abstract class TimesheetEntryModel
     /// <summary>
     /// The safety rating
     /// </summary>
-    public string SafetyRating { get; init; }
+    public SafetyRating SafetyRating { get; init; }
     
     /// <summary>
     /// The model of the car the driver is racing

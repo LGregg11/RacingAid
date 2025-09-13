@@ -1,11 +1,13 @@
-﻿namespace RacingAidWpf.Model;
+﻿using RacingAidData.Core.Models;
+
+namespace RacingAidWpf.Model;
 
 public class TimesheetInfo(
     int position,
     int positionInClass,
     string name,
     string skillRating,
-    string safetyRating,
+    SafetyRating safetyRating,
     string carModel,
     int carNumber,
     int lastLapTimeMs = 0,
@@ -20,7 +22,7 @@ public class TimesheetInfo(
     public int PositionInClass { get; set; } = positionInClass;
     public string FullName { get; set; } = name;
     public string SkillRating { get; set; } = skillRating;
-    public string SafetyRating { get; set; } = safetyRating;
+    public SafetyRating SafetyRating { get; set; } = safetyRating;
     public int LastLapTimeMs { get; set; } = lastLapTimeMs;
     public int FastestLapTimeMs { get; set; } = fastestLapTimeMs;
     public bool IsLocal { get; set; } = isLocal;

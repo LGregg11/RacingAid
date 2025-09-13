@@ -13,12 +13,21 @@ message SessionStatusResponse {
   bool sessionActive = 1;
 }
 
+message Color {
+  int32 ARGB = 1;
+}
+
+message SafetyRating {
+  string rating = 1;
+  Color color = 2;
+}
+
 message TimesheetEntry {
   int32 overallPosition = 1;
   int32 ClassPosition = 2;
   string fullName = 3;
   string skillRating = 4;
-  string safetyRating = 5;
+  SafetyRating safetyRating = 5;
   string carModel = 6;
   int32 carNumber = 7;
   int32 lastLapMs = 8;
