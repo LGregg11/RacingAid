@@ -1,4 +1,5 @@
-﻿using IRSDKSharper;
+﻿using System.Drawing;
+using IRSDKSharper;
 using RacingAidData.Core.Deserializers;
 using RacingAidData.Core.Models;
 
@@ -55,6 +56,8 @@ public class iRacingDataDeserializer : IDeserializeData
 
     private static List<LeaderboardEntryModel> CreateTimesheetEntries(IRacingSdkData iRacingData)
     {
+        var colorConverter = new ColorConverter();
+        
         var timesheetEntries = new List<LeaderboardEntryModel>();
 
         if (iRacingData.SessionInfo?.DriverInfo is not { } driverInfo ||
@@ -89,13 +92,20 @@ public class iRacingDataDeserializer : IDeserializeData
                 ? GetGapToLeaderMs(iRacingData, driver.CarIdx) - leaderTimeMs
                 : 0;
             
+            var safetyRating = new SafetyRating
+            {
+                Rating = driver.LicString,
+                Color = (Color)(colorConverter.ConvertFromString(driver.LicColor.Replace("0x", "#")) ??
+                                Color.Transparent)
+            };
+            
             timesheetEntries.Add(new LeaderboardEntryModel
             {
                 FullName = driver.UserName,
                 CarModel = driver.CarScreenName,
                 CarNumber = carNumber, 
                 SkillRating = driver.IRating.ToString(),
-                SafetyRating = driver.LicString,
+                SafetyRating = safetyRating,
                 OverallPosition = resultPosition.Position,
                 ClassPosition = resultPosition.ClassPosition,
                 LapsDriven = GetLapsDriven(iRacingData, carIdx),
@@ -112,6 +122,8 @@ public class iRacingDataDeserializer : IDeserializeData
 
     private static List<RelativeEntryModel> CreateRelativeEntries(IRacingSdkData iRacingData)
     {
+        var colorConverter = new ColorConverter();
+        
         var relativeEntries = new List<RelativeEntryModel>();
         if (iRacingData.SessionInfo?.DriverInfo is not { Drivers: { Count: > 0 } drivers} driverInfo)
             return relativeEntries;
@@ -134,6 +146,13 @@ public class iRacingDataDeserializer : IDeserializeData
                 hasResult = true;
                 resultPosition = position;
             }
+
+            var safetyRating = new SafetyRating
+            {
+                Rating = driver.LicString,
+                Color = (Color)(colorConverter.ConvertFromString(driver.LicColor.Replace("0x", "#")) ??
+                                Color.Transparent)
+            };
             
             relativeEntries.Add(new RelativeEntryModel
             {
@@ -141,7 +160,7 @@ public class iRacingDataDeserializer : IDeserializeData
                 CarModel = driver.CarScreenName,
                 CarNumber = carNumber, 
                 SkillRating = driver.IRating.ToString(),
-                SafetyRating = driver.LicString,
+                SafetyRating = safetyRating,
                 OverallPosition = GetOverallPosition(iRacingData, carIdx), // might not have a 'result' yet
                 ClassPosition = GetClassPosition(iRacingData, carIdx), // might not have a 'result' yet
                 LapsDriven = GetLapsDriven(iRacingData, carIdx),

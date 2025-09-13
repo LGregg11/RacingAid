@@ -1,11 +1,13 @@
-﻿namespace RacingAidWpf.Model;
+﻿using RacingAidData.Core.Models;
+
+namespace RacingAidWpf.Model;
 
 public class LeaderboardTimesheetInfo(
     int position,
     int positionInClass,
     string name,
     string skillRating,
-    string safetyRating,
+    SafetyRating safetyRating,
     string carModel,
     int carNumber,
     int lastLapTimeMs = 0,

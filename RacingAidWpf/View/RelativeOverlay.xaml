@@ -39,13 +39,13 @@
                   HorizontalScrollBarVisibility="Hidden">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Pos." Binding="{Binding PositionOverall, Converter={StaticResource PositionConverter}}" Width="1*"/>
-                <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="3*"/>
-                <DataGridTextColumn Header="No." Binding="{Binding CarNumber}" Width="1*" Visibility="{Binding DataContext.CarNumberColumnVisibility, Source={x:Reference DummyElement}}"/>
-                <DataGridTextColumn Header="Safety" Binding="{Binding SafetyRating}" Width="1*" Visibility="{Binding DataContext.SafetyColumnVisibility, Source={x:Reference DummyElement}}"/>
-                <DataGridTextColumn Header="Skill" Binding="{Binding SkillRating}" Width="1*" Visibility="{Binding DataContext.SkillColumnVisibility, Source={x:Reference DummyElement}}"/>
-                <DataGridTextColumn Header="Last Lap" Binding="{Binding LastLapTimeMs, Converter={StaticResource LapTimeConverter}}" Width="2*" Visibility="{Binding DataContext.LastLapColumnVisibility, Source={x:Reference DummyElement}}"/>
-                <DataGridTextColumn Header="Fastest Lap" Binding="{Binding FastestLapTimeMs, Converter={StaticResource LapTimeConverter}}" Width="2*" Visibility="{Binding DataContext.FastestLapColumnVisibility, Source={x:Reference DummyElement}}"/>
-                <DataGridTextColumn Header="Delta" Binding="{Binding DeltaToLocalMs, Converter={StaticResource GapConverter}}" Width="1*" Visibility="{Binding DataContext.DeltaToLocalColumnVisibility, Source={x:Reference DummyElement}}"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="5*"/>
+                <DataGridTextColumn Header="#" Binding="{Binding CarNumber}" Width="1*" Visibility="{Binding DataContext.CarNumberColumnVisibility, Source={x:Reference DummyElement}}"/>
+                <DataGridTextColumn Header="Safety" Binding="{Binding SafetyRating.Rating}" Width="2*" Visibility="{Binding DataContext.SafetyColumnVisibility, Source={x:Reference DummyElement}}">
+                <DataGridTextColumn Header="Skill" Binding="{Binding SkillRating}" Width="2*" Visibility="{Binding DataContext.SkillColumnVisibility, Source={x:Reference DummyElement}}"/>
+                <DataGridTextColumn Header="Last Lap" Binding="{Binding LastLapTimeMs, Converter={StaticResource LapTimeConverter}}" Width="3*" Visibility="{Binding DataContext.LastLapColumnVisibility, Source={x:Reference DummyElement}}"/>
+                <DataGridTextColumn Header="Fastest Lap" Binding="{Binding FastestLapTimeMs, Converter={StaticResource LapTimeConverter}}" Width="3*" Visibility="{Binding DataContext.FastestLapColumnVisibility, Source={x:Reference DummyElement}}"/>
+                <DataGridTextColumn Header="Delta" Binding="{Binding DeltaToLocalMs, Converter={StaticResource GapConverter}}" Width="2*" Visibility="{Binding DataContext.DeltaToLocalColumnVisibility, Source={x:Reference DummyElement}}"/>
             </DataGrid.Columns>
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow" BasedOn="{StaticResource DefaultDataGridRowStyle}">
